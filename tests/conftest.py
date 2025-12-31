@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from custom_components.navirec.const import CONF_API_TOKEN, CONF_API_URL
+from custom_components.navirec.const import CONF_ACCOUNT_ID, CONF_API_TOKEN, CONF_API_URL
 
 
 @pytest.fixture
@@ -71,9 +71,10 @@ def mock_api_client(
 
 
 @pytest.fixture
-def mock_config_entry_data() -> dict[str, Any]:
+def mock_config_entry_data(accounts_fixture: list[dict[str, Any]]) -> dict[str, Any]:
     """Return mock config entry data."""
     return {
-        CONF_API_URL: "https://api.navirec.test/",
+        CONF_API_URL: "https://api.navirec.test",
         CONF_API_TOKEN: "test-token",
+        CONF_ACCOUNT_ID: accounts_fixture[0]["id"],
     }

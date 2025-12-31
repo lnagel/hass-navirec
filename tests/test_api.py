@@ -172,6 +172,113 @@ class TestNavirecApiClient:
         assert "account=test-account-id" in call_args.kwargs["url"]
         assert "active=true" in call_args.kwargs["url"]
 
+    @pytest.mark.asyncio
+    async def test_get_vehicles_with_pagination(
+        self,
+        api_client: NavirecApiClient,
+        mock_session: MagicMock,
+        vehicles_fixture: list[dict[str, Any]],
+    ) -> None:
+        """Test vehicles fetch with pagination via Link header."""
+        # Split vehicles into two pages
+        page1 = vehicles_fixture[:2]
+        page2 = vehicles_fixture[2:]
+
+        mock_response_page1 = create_mock_response(
+            status=200,
+            json_data=page1,
+            headers={
+                "Link": '<https://api.navirec.test/vehicles/?cursor=abc123>; rel="next"'
+            },
+        )
+        mock_response_page2 = create_mock_response(
+            status=200,
+            json_data=page2,
+            headers={},  # No next link = last page
+        )
+
+        mock_session.request = AsyncMock(
+            side_effect=[mock_response_page1, mock_response_page2]
+        )
+
+        vehicles = await api_client.async_get_vehicles()
+
+        # Should have all vehicles from both pages
+        assert len(vehicles) == len(vehicles_fixture)
+        # Should have made 2 requests
+        assert mock_session.request.call_count == 2
+
+    @pytest.mark.asyncio
+    async def test_get_sensors_with_pagination(
+        self,
+        api_client: NavirecApiClient,
+        mock_session: MagicMock,
+        sensors_fixture: list[dict[str, Any]],
+    ) -> None:
+        """Test sensors fetch with pagination via Link header."""
+        # Split sensors into two pages
+        page1 = sensors_fixture[:5]
+        page2 = sensors_fixture[5:10]
+        page3 = sensors_fixture[10:]
+
+        mock_response_page1 = create_mock_response(
+            status=200,
+            json_data=page1,
+            headers={
+                "Link": '<https://api.navirec.test/sensors/?cursor=abc123>; rel="next"'
+            },
+        )
+        mock_response_page2 = create_mock_response(
+            status=200,
+            json_data=page2,
+            headers={
+                "Link": '<https://api.navirec.test/sensors/?cursor=def456>; rel="next", <https://api.navirec.test/sensors/>; rel="prev"'
+            },
+        )
+        mock_response_page3 = create_mock_response(
+            status=200,
+            json_data=page3,
+            headers={
+                "Link": '<https://api.navirec.test/sensors/?cursor=abc123>; rel="prev"'
+            },  # Only prev link = last page
+        )
+
+        mock_session.request = AsyncMock(
+            side_effect=[mock_response_page1, mock_response_page2, mock_response_page3]
+        )
+
+        sensors = await api_client.async_get_sensors(account_id="test-account-id")
+
+        # Should have all sensors from all pages
+        assert len(sensors) == len(sensors_fixture)
+        # Should have made 3 requests
+        assert mock_session.request.call_count == 3
+
+    @pytest.mark.asyncio
+    async def test_get_accounts_no_pagination(
+        self,
+        api_client: NavirecApiClient,
+        mock_session: MagicMock,
+        accounts_fixture: list[dict[str, Any]],
+    ) -> None:
+        """Test that accounts fetch does NOT follow pagination."""
+        # Even if server returns Link header, accounts should only fetch first page
+        mock_response = create_mock_response(
+            status=200,
+            json_data=accounts_fixture,
+            headers={
+                "Link": '<https://api.navirec.test/accounts/?cursor=abc123>; rel="next"'
+            },
+        )
+        mock_session.request = AsyncMock(return_value=mock_response)
+
+        accounts = await api_client.async_get_accounts()
+
+        # Should only return first page data
+        assert len(accounts) == len(accounts_fixture)
+        # Should have made only 1 request (no pagination follow)
+        assert mock_session.request.call_count == 1
+
 
 class TestNavirecStreamClient:
     """Test NavirecStreamClient."""
