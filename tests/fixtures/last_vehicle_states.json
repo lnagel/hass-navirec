@@ -1,415 +1,404 @@
 [
   {
-    "id": "c6d2a0b0-e650-11f0-8001-000000000002",
+    "id": "34f2dcb0-e67c-11f0-8001-000000000002",
     "vehicle": "https://api.navirec.namespace.ee/vehicles/4283ab53-69c7-4e32-9b38-c0e96296abb3/",
-    "time": "2025-12-31T13:58:25.595000Z",
+    "time": "2025-12-31T19:09:18.715000Z",
     "location": {
       "type": "Point",
       "coordinates": [
-        24.733462,
-        59.443594
+        24.735317,
+        59.443962
       ]
     },
     "trail": {
       "type": "LineString",
       "coordinates": [
         [
-          24.735591,
-          59.443268
+          24.735317,
+          59.443962
         ],
         [
-          24.736874,
-          59.442603
+          24.735317,
+          59.443962
         ],
         [
-          24.734917,
-          59.44182
+          24.735317,
+          59.443962
         ],
         [
-          24.732379,
-          59.442638
+          24.735317,
+          59.443962
         ],
         [
-          24.733462,
-          59.443594
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
+        ],
+        [
+          24.735317,
+          59.443962
         ]
       ]
     },
     "eco_score": 0.4,
     "activity": "parking",
-    "activity_started_at": "2025-12-31T13:57:05.595000Z",
+    "activity_started_at": "2025-12-31T19:05:18.715000Z",
     "activity_distance": 0.0,
     "activity_engine_time": 0.0,
-    "received_at": "2025-12-31T13:58:25.597000Z",
-    "updated_at": "2025-12-31T13:58:26.829587Z",
-    "interpolated_at": "2025-12-31T13:58:26.807000Z",
-    "accumulated_distance": 3507368,
-    "accumulated_engine_time": 1775925.0,
+    "received_at": "2025-12-31T19:09:18.716000Z",
+    "updated_at": "2025-12-31T19:09:19.854575Z",
+    "interpolated_at": "2025-12-31T19:09:19.832000Z",
+    "accumulated_distance": 3520644,
+    "accumulated_engine_time": 1783395.0,
     "alarm": false,
-    "altitude": 10,
+    "altitude": 44,
     "digital_input_1": false,
     "digital_input_2": false,
     "digital_input_3": false,
     "digital_input_4": false,
-    "fuel_level": 51.56216730474562,
-    "fuel_level_ewma": 51.704,
+    "fuel_level": 46.11433895009561,
+    "fuel_level_ewma": 46.32,
     "heading": 180,
     "ignition": false,
     "satellites": 8,
     "speed": 0,
-    "supply_voltage": 12.767,
+    "supply_voltage": 12.787,
     "timezone_offset": 7200.0,
-    "total_distance": 94465801,
-    "total_engine_time": 67536413.996132,
-    "total_fuel_used": 25635.447085152755
+    "total_distance": 94478225,
+    "total_engine_time": 67543782.754777,
+    "total_fuel_used": 25640.894913507407
   },
   {
-    "id": "cb857a60-e650-11f0-8001-000000000003",
+    "id": "37c361d0-e67c-11f0-8001-000000000003",
     "vehicle": "https://api.navirec.namespace.ee/vehicles/4d7df82d-56a2-45da-bd8a-affacae26606/",
-    "time": "2025-12-31T13:58:33.478000Z",
+    "time": "2025-12-31T19:09:23.437000Z",
     "location": {
       "type": "Point",
       "coordinates": [
-        25.480166,
-        58.542683
+        27.023422,
+        59.172552
       ]
     },
     "trail": {
       "type": "LineString",
       "coordinates": [
         [
-          25.504549139534884,
-          58.52875290697675
+          26.9994193,
+          59.1703402
         ],
         [
-          25.495635,
-          58.53017
-        ],
-        [
-          25.489427,
-          58.53273
-        ],
-        [
-          25.480166,
-          58.542683
+          27.023422,
+          59.172552
         ]
       ]
     },
     "eco_score": 10.0,
     "activity": "driving",
-    "activity_started_at": "2025-12-31T12:48:59.064000Z",
-    "activity_distance": 65433.0,
+    "activity_started_at": "2025-12-31T14:50:56.909000Z",
+    "activity_distance": 155997.0,
     "activity_engine_time": null,
-    "received_at": "2025-12-31T13:58:33.479000Z",
-    "updated_at": "2025-12-31T13:58:34.418620Z",
-    "interpolated_at": "2025-12-31T13:58:34.395000Z",
-    "accumulated_distance": 39872289,
+    "received_at": "2025-12-31T19:09:23.439000Z",
+    "updated_at": "2025-12-31T19:09:24.796730Z",
+    "interpolated_at": "2025-12-31T19:09:24.773000Z",
+    "accumulated_distance": 40049042,
     "alarm": false,
-    "altitude": 69,
-    "digital_input_1": true,
-    "digital_input_2": true,
-    "driver_1_card_id": "BB00000000000000",
+    "altitude": 4,
+    "digital_input_1": false,
+    "digital_input_2": false,
+    "driver_1_card_id": "AA00000000000000",
     "driver_1_card_present": true,
-    "driver_1_working_state": 3,
-    "fuel_level": 8.0322827976687,
-    "fuel_level_ewma": 9.845,
-    "heading": 321,
-    "satellites": 20,
-    "speed": 69,
-    "tacho_current_time": "2025-12-31T13:58:33.478000Z",
+    "driver_1_working_state": 0,
+    "fuel_level": 60.870256874813165,
+    "fuel_level_ewma": 62.379,
+    "heading": 180,
+    "satellites": 8,
+    "speed": 0,
+    "tacho_current_time": "2025-12-31T19:09:23.437000Z",
     "timezone_offset": 7200.0,
-    "total_distance": 2105872192,
-    "total_engine_time": 112256070.610293,
-    "total_fuel_used": 196423.28836900558
+    "total_distance": 2106152712,
+    "total_engine_time": 112273718.569681,
+    "total_fuel_used": 196468.17171952117
   },
   {
-    "id": "cc679d00-e650-11f0-8001-000000000001",
+    "id": "32509380-e67c-11f0-8001-000000000001",
     "vehicle": "https://api.navirec.namespace.ee/vehicles/924da156-1a68-4fce-8da1-a196c9bf22be/",
-    "time": "2025-12-31T13:58:34.960000Z",
+    "time": "2025-12-31T19:09:14.296000Z",
     "location": {
       "type": "Point",
       "coordinates": [
-        24.726546444444445,
-        59.40249844444445
+        24.899324,
+        59.37621
       ]
     },
     "trail": {
       "type": "LineString",
       "coordinates": [
         [
-          24.7017525,
-          59.406194
+          24.899324,
+          59.37621
         ],
         [
-          24.70071,
-          59.405023
+          24.899324,
+          59.37621
         ],
         [
-          24.710427,
-          59.402343
+          24.899324,
+          59.37621
         ],
         [
-          24.722643,
-          59.402241
+          24.899324,
+          59.37621
         ],
         [
-          24.726546444444445,
-          59.40249844444445
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
+        ],
+        [
+          24.899324,
+          59.37621
         ]
       ]
     },
     "eco_score": 6.3,
-    "activity": "towing",
-    "activity_started_at": "2025-12-31T13:55:03.285000Z",
-    "activity_distance": 2008.0,
-    "activity_engine_time": 0.0,
-    "received_at": "2025-12-31T13:58:34.962000Z",
-    "updated_at": "2025-12-31T13:58:35.487196Z",
-    "interpolated_at": "2025-12-31T13:58:35.464000Z",
-    "accumulated_distance": 23934680,
-    "accumulated_engine_time": 1780493.0,
-    "alarm": true,
-    "altitude": 46,
-    "digital_input_1": false,
-    "digital_input_2": true,
-    "digital_input_3": false,
-    "digital_input_4": false,
-    "fuel_level": 74.61592068935123,
-    "fuel_level_ewma": 74.619,
-    "heading": 83,
-    "ignition": false,
-    "satellites": 20,
-    "speed": 70,
-    "supply_voltage": 12.772,
-    "timezone_offset": 7200.0,
-    "total_distance": 1170776227,
-    "total_engine_time": 81855029.112347,
-    "total_fuel_used": 127963.05912973623
-  },
-  {
-    "id": "c706f720-e650-11f0-8001-000000000005",
-    "vehicle": "https://api.navirec.namespace.ee/vehicles/944230fd-545b-4342-977f-a695c6f08685/",
-    "time": "2025-12-31T13:58:25.938000Z",
-    "location": {
-      "type": "Point",
-      "coordinates": [
-        25.97836,
-        57.77825
-      ]
-    },
-    "trail": {
-      "type": "LineString",
-      "coordinates": [
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ],
-        [
-          25.97836,
-          57.77825
-        ]
-      ]
-    },
-    "eco_score": 3.0,
     "activity": "parking",
-    "activity_started_at": "2025-12-31T13:55:15.938000Z",
+    "activity_started_at": "2025-12-31T18:57:24.296000Z",
     "activity_distance": 0.0,
     "activity_engine_time": 0.0,
-    "received_at": "2025-12-31T13:58:25.940000Z",
-    "updated_at": "2025-12-31T13:58:26.830337Z",
-    "interpolated_at": "2025-12-31T13:58:26.811000Z",
-    "accumulated_distance": 17596742,
-    "accumulated_engine_time": 1823580.0,
-    "altitude": 16,
-    "fuel_level": 33.53480448227072,
-    "fuel_level_ewma": 33.587,
+    "received_at": "2025-12-31T19:09:14.298000Z",
+    "updated_at": "2025-12-31T19:09:14.569126Z",
+    "interpolated_at": "2025-12-31T19:09:14.546000Z",
+    "accumulated_distance": 24066980,
+    "accumulated_engine_time": 1791138.0,
+    "alarm": false,
+    "altitude": 99,
+    "digital_input_1": false,
+    "digital_input_2": false,
+    "digital_input_3": false,
+    "digital_input_4": false,
+    "fuel_level": 46.780738332077384,
+    "fuel_level_ewma": 47.327,
     "heading": 180,
     "ignition": false,
     "satellites": 8,
     "speed": 0,
-    "supply_voltage": 12.769,
+    "supply_voltage": 12.764,
     "timezone_offset": 7200.0,
-    "total_distance": 345598515,
-    "total_engine_time": 39608738.948869,
-    "total_fuel_used": 39943.130546133776
+    "total_distance": 1170885491,
+    "total_engine_time": 81865610.07058,
+    "total_fuel_used": 127990.89431209347
   },
   {
-    "id": "430221f0-e62f-11f0-8001-000000000004",
-    "vehicle": "https://api.navirec.namespace.ee/vehicles/e6dfa233-6911-43e0-9bd7-9c46719ffb19/",
-    "time": "2025-12-31T09:58:31.055000Z",
+    "id": "37bdbc80-e67c-11f0-8001-000000000005",
+    "vehicle": "https://api.navirec.namespace.ee/vehicles/944230fd-545b-4342-977f-a695c6f08685/",
+    "time": "2025-12-31T19:09:23.400000Z",
     "location": {
       "type": "Point",
       "coordinates": [
-        26.204647,
-        58.611808
+        26.014917,
+        57.766161
       ]
     },
     "trail": {
       "type": "LineString",
       "coordinates": [
         [
-          26.204647,
-          58.611808
+          26.027675,
+          57.748905
         ],
         [
-          26.204647,
-          58.611808
+          26.014917,
+          57.766161
+        ]
+      ]
+    },
+    "eco_score": 3.0,
+    "activity": "driving",
+    "activity_started_at": "2025-12-31T18:55:56.947000Z",
+    "activity_distance": 7213.0,
+    "activity_engine_time": 807.0,
+    "received_at": "2025-12-31T19:09:23.401000Z",
+    "updated_at": "2025-12-31T19:09:24.797760Z",
+    "interpolated_at": "2025-12-31T19:09:24.783000Z",
+    "accumulated_distance": 17694493,
+    "accumulated_engine_time": 1832470.0,
+    "altitude": 73,
+    "driver_1_ibutton_id": "1900000000000F01",
+    "fuel_level": 25.858987593940643,
+    "fuel_level_ewma": 26.433,
+    "heading": 320,
+    "ignition": true,
+    "satellites": 20,
+    "speed": 53,
+    "supply_voltage": 14.362,
+    "timezone_offset": 7200.0,
+    "total_distance": 345650960,
+    "total_engine_time": 39617545.319528,
+    "total_fuel_used": 39950.8063630221
+  },
+  {
+    "id": "ae2e9960-e65a-11f0-8001-000000000004",
+    "vehicle": "https://api.navirec.namespace.ee/vehicles/e6dfa233-6911-43e0-9bd7-9c46719ffb19/",
+    "time": "2025-12-31T15:09:19.222000Z",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        27.803135,
+        59.124182
+      ]
+    },
+    "trail": {
+      "type": "LineString",
+      "coordinates": [
+        [
+          27.817156,
+          59.140425
         ],
         [
-          26.204647,
-          58.611808
+          27.810155,
+          59.135891
         ],
         [
-          26.204647,
-          58.611808
+          27.807951,
+          59.132782
         ],
         [
-          26.204647,
-          58.611808
+          27.801639,
+          59.129525
         ],
         [
-          26.204647,
-          58.611808
+          27.80146,
+          59.128409
         ],
         [
-          26.204647,
-          58.611808
+          27.803509,
+          59.125226
         ],
         [
-          26.204647,
-          58.611808
-        ],
-        [
-          26.204647,
-          58.611808
-        ],
-        [
-          26.204647,
-          58.611808
-        ],
-        [
-          26.204647,
-          58.611808
-        ],
-        [
-          26.204647,
-          58.611808
-        ],
-        [
-          26.204647,
-          58.611808
-        ],
-        [
-          26.204647,
-          58.611808
-        ],
-        [
-          26.204647,
-          58.611808
-        ],
-        [
-          26.204647,
-          58.611808
-        ],
-        [
-          26.204647,
-          58.611808
-        ],
-        [
-          26.204647,
-          58.611808
+          27.803135,
+          59.124182
         ]
       ]
     },
     "eco_score": 10.0,
     "activity_distance": null,
     "activity_engine_time": null,
-    "received_at": "2025-12-31T13:58:31.056000Z",
-    "updated_at": "2025-12-31T13:58:31.472424Z",
-    "interpolated_at": "2025-12-31T13:58:31.449000Z",
-    "accumulated_distance": 36157648,
-    "accumulated_engine_time": 1737710.0,
-    "altitude": 19,
-    "digital_input_3": false,
+    "received_at": "2025-12-31T19:09:19.223000Z",
+    "updated_at": "2025-12-31T19:09:20.834641Z",
+    "interpolated_at": "2025-12-31T19:09:20.812000Z",
+    "accumulated_distance": 36321998,
+    "accumulated_engine_time": 1755478.0,
+    "altitude": 7,
+    "digital_input_3": true,
     "digital_input_4": false,
-    "driver_2_card_id": "DD00000000000000",
+    "driver_2_card_id": "CC00000000000000",
     "driver_2_card_present": true,
-    "driver_2_working_state": 0,
-    "fuel_level": 65.54993160110394,
-    "fuel_level_ewma": 65.584,
-    "heading": 180,
-    "ignition": false,
-    "satellites": 8,
-    "speed": 0,
-    "supply_voltage": 12.773,
-    "tacho_current_time": "2025-12-31T09:58:31.055000Z",
+    "driver_2_working_state": 3,
+    "fuel_level": 37.624075162044576,
+    "fuel_level_ewma": 38.512,
+    "heading": 195,
+    "ignition": true,
+    "satellites": 20,
+    "speed": 54,
+    "supply_voltage": 14.352,
+    "tacho_current_time": "2025-12-31T15:09:19.222000Z",
     "timezone_offset": 7200.0,
-    "total_distance": 1532170576,
-    "total_engine_time": 91239353.483408,
-    "total_fuel_used": 87337.45842733064
+    "total_distance": 1532419346,
+    "total_engine_time": 91257110.650793,
+    "total_fuel_used": 87365.3842837697
   }
 ]

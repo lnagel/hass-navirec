@@ -31,6 +31,9 @@ API_TOKEN = os.environ.get("NAVIREC_API_TOKEN", "")
 API_VERSION = "1.45.0"
 USER_AGENT = "hass-navirec/fixtures-downloader"
 
+# Stream configuration
+STREAM_DURATION_SECONDS = 10
+
 # Output directory
 FIXTURES_DIR = Path(__file__).parent.parent / "tests" / "fixtures"
 
@@ -53,6 +56,15 @@ def get_headers() -> dict[str, str]:
     return {
         "Authorization": f"Token {API_TOKEN}",
         "Accept": f"application/json; version={API_VERSION}",
+        "User-Agent": USER_AGENT,
+    }
+
+
+def get_stream_headers() -> dict[str, str]:
+    """Get headers for stream requests."""
+    return {
+        "Authorization": f"Token {API_TOKEN}",
+        "Accept": f"application/x-ndjson; version={API_VERSION}",
         "User-Agent": USER_AGENT,
     }
 
@@ -186,6 +198,84 @@ async def download_per_account_endpoint(
         print(f"  Saved {len(all_results)} items to {filename}")
 
 
+async def download_stream_events(
+    session: aiohttp.ClientSession,
+    filename: str,
+    account_ids: list[str],
+    duration_seconds: int = STREAM_DURATION_SECONDS,
+) -> None:
+    """Download stream events for a specified duration.
+
+    Connects to the vehicle states stream and collects events for the
+    specified duration, then saves them to an ndjson file.
+    """
+    print(f"Downloading {filename} from stream (running for {duration_seconds}s)...")
+
+    all_events: list[str] = []
+
+    for account_id in account_ids:
+        url = f"{API_URL.rstrip('/')}/streams/vehicle_states/?account={account_id}"
+        print(f"  Connecting to stream for account {account_id}...")
+
+        try:
+            async with session.get(
+                url,
+                headers=get_stream_headers(),
+                timeout=aiohttp.ClientTimeout(total=None, sock_read=duration_seconds + 5),
+            ) as response:
+                if response.status == 401:
+                    print(f"  Authentication failed for account {account_id}")
+                    continue
+                if response.status == 429:
+                    retry_after = int(response.headers.get("Retry-After", "60"))
+                    print(f"  Rate limited. Waiting {retry_after} seconds...")
+                    await asyncio.sleep(retry_after)
+                    continue
+
+                response.raise_for_status()
+
+                # Read stream for the specified duration
+                start_time = asyncio.get_event_loop().time()
+                event_count = 0
+
+                async for line in response.content:
+                    # Check if we've exceeded the duration
+                    elapsed = asyncio.get_event_loop().time() - start_time
+                    if elapsed >= duration_seconds:
+                        print(f"  Duration reached ({duration_seconds}s), stopping stream...")
+                        break
+
+                    # Decode and store the line
+                    line_text = line.decode("utf-8").strip()
+                    if line_text:
+                        all_events.append(line_text)
+                        event_count += 1
+
+                        # Parse to show event type
+                        try:
+                            event_data = json.loads(line_text)
+                            event_type = event_data.get("event", "unknown")
+                            print(f"    Event {event_count}: {event_type}")
+                        except json.JSONDecodeError:
+                            print(f"    Event {event_count}: (invalid JSON)")
+
+                print(f"  Account {account_id}: collected {event_count} events")
+
+        except asyncio.TimeoutError:
+            print(f"  Stream timeout for account {account_id} (expected after {duration_seconds}s)")
+        except aiohttp.ClientError as e:
+            print(f"  Error streaming account {account_id}: {e}")
+
+    if all_events:
+        output_path = FIXTURES_DIR / filename
+        with open(output_path, "w", encoding="utf-8") as f:
+            for event in all_events:
+                f.write(event + "\n")
+        print(f"  Saved {len(all_events)} events to {filename}")
+    else:
+        print(f"  No events collected for {filename}")
+
+
 async def main() -> int:
     """Download all fixtures."""
     if not API_TOKEN:
@@ -209,7 +299,9 @@ async def main() -> int:
 
         # Load accounts to get account IDs for per-account endpoints
         accounts_file = FIXTURES_DIR / "accounts.json"
-        if accounts_file.exists() and PER_ACCOUNT_ENDPOINTS:
+        account_ids: list[str] = []
+
+        if accounts_file.exists():
             with open(accounts_file, encoding="utf-8") as f:
                 accounts = json.load(f)
             account_ids = [acc["id"] for acc in accounts if "id" in acc]
@@ -220,6 +312,15 @@ async def main() -> int:
                 await download_per_account_endpoint(
                     session, filename, endpoint, account_ids
                 )
+
+            # Download stream events
+            print()
+            await download_stream_events(
+                session,
+                "stream_events.ndjson",
+                account_ids,
+                duration_seconds=STREAM_DURATION_SECONDS,
+            )
 
     print()
     print("Done!")
