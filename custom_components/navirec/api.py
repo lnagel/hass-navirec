@@ -88,8 +88,14 @@ class NavirecApiClient:
             return False
 
     async def async_get_accounts(self) -> list[dict[str, Any]]:
-        """Get all accounts accessible by the token."""
-        return await self._async_get_paginated(f"{self._api_url}/accounts/")
+        """Get accounts accessible by the token.
+
+        Note: This intentionally fetches only the first page since API tokens
+        typically have access to just one account, and we only need to find
+        that account's ID and name.
+        """
+        response = await self._async_request("GET", f"{self._api_url}/accounts/")
+        return await response.json()
 
     async def async_get_vehicles(
         self, account_id: str | None = None, active_only: bool = True
