@@ -56,6 +56,7 @@ ignore = [
     "E501", # line length in scripts
     "PTH", # Path vs open() in scripts
     "EXE001", # shebang executable permission
+    "ASYNC230", # blocking IO is fine in scripts
 ]
 
 [lint.flake8-pytest-style]
