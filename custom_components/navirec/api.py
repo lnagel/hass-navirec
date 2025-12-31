@@ -88,7 +88,8 @@ class NavirecApiClient:
             return False
 
     async def async_get_accounts(self) -> list[dict[str, Any]]:
-        """Get accounts accessible by the token.
+        """
+        Get accounts accessible by the token.
 
         Note: This intentionally fetches only the first page since API tokens
         typically have access to just one account, and we only need to find

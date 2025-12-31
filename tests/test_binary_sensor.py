@@ -25,7 +25,9 @@ def find_sensor_by_interpretation(
     return None
 
 
-def find_vehicle_by_id(vehicles: list[dict[str, Any]], vehicle_id: str) -> dict[str, Any] | None:
+def find_vehicle_by_id(
+    vehicles: list[dict[str, Any]], vehicle_id: str
+) -> dict[str, Any] | None:
     """Find a vehicle by ID from fixture data."""
     for vehicle in vehicles:
         if vehicle.get("id") == vehicle_id:
@@ -55,7 +57,9 @@ class TestNavirecBinarySensor:
         vehicle_states_fixture: list[dict[str, Any]],
     ) -> None:
         """Test ignition sensor has correct device class."""
-        ignition_sensor_data = find_sensor_by_interpretation(sensors_fixture, "ignition")
+        ignition_sensor_data = find_sensor_by_interpretation(
+            sensors_fixture, "ignition"
+        )
         assert ignition_sensor_data is not None, "No ignition sensor in fixtures"
 
         vehicle_id = extract_vehicle_id_from_url(ignition_sensor_data["vehicle"])
@@ -94,7 +98,9 @@ class TestNavirecBinarySensor:
         vehicle_states_fixture: list[dict[str, Any]],
     ) -> None:
         """Test ignition sensor returns correct boolean value."""
-        ignition_sensor_data = find_sensor_by_interpretation(sensors_fixture, "ignition")
+        ignition_sensor_data = find_sensor_by_interpretation(
+            sensors_fixture, "ignition"
+        )
         assert ignition_sensor_data is not None
 
         vehicle_id = extract_vehicle_id_from_url(ignition_sensor_data["vehicle"])
@@ -136,7 +142,9 @@ class TestNavirecBinarySensor:
         sensors_fixture: list[dict[str, Any]],
     ) -> None:
         """Test binary sensor unique ID generation."""
-        ignition_sensor_data = find_sensor_by_interpretation(sensors_fixture, "ignition")
+        ignition_sensor_data = find_sensor_by_interpretation(
+            sensors_fixture, "ignition"
+        )
         assert ignition_sensor_data is not None
 
         vehicle_id = extract_vehicle_id_from_url(ignition_sensor_data["vehicle"])
@@ -169,7 +177,9 @@ class TestNavirecBinarySensor:
     ) -> None:
         """Test sensor enabled by default based on show_in_map."""
         # Find an ignition sensor with show_in_map attribute
-        ignition_sensor_data = find_sensor_by_interpretation(sensors_fixture, "ignition")
+        ignition_sensor_data = find_sensor_by_interpretation(
+            sensors_fixture, "ignition"
+        )
         assert ignition_sensor_data is not None
 
         vehicle_id = extract_vehicle_id_from_url(ignition_sensor_data["vehicle"])
@@ -203,7 +213,9 @@ class TestNavirecBinarySensor:
         sensors_fixture: list[dict[str, Any]],
     ) -> None:
         """Test sensor returns None when no state available."""
-        ignition_sensor_data = find_sensor_by_interpretation(sensors_fixture, "ignition")
+        ignition_sensor_data = find_sensor_by_interpretation(
+            sensors_fixture, "ignition"
+        )
         assert ignition_sensor_data is not None
 
         vehicle_id = extract_vehicle_id_from_url(ignition_sensor_data["vehicle"])

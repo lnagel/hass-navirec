@@ -116,7 +116,8 @@ def get_activity_from_state(state: VehicleState) -> str | None:
 
 @dataclass
 class NavirecData:
-    """Runtime data for the Navirec integration.
+    """
+    Runtime data for the Navirec integration.
 
     Each config entry represents a single account. This simplifies the
     coordinator setup and entity creation.

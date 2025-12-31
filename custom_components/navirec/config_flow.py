@@ -188,7 +188,8 @@ class NavirecFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     async def _validate_and_get_account(
         self, api_url: str, api_token: str, account_id: str | None
     ) -> dict[str, Any]:
-        """Validate credentials and return the account to use.
+        """
+        Validate credentials and return the account to use.
 
         If account_id is provided, validates that it exists.
         Otherwise, returns the first available account.

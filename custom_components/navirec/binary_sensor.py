@@ -11,7 +11,7 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import BINARY_SENSOR_INTERPRETATIONS, DOMAIN, LOGGER
+from .const import BINARY_SENSOR_INTERPRETATIONS, LOGGER
 from .data import get_sensor_value_from_state
 from .entity import NavirecEntity
 from .models import Sensor, Vehicle

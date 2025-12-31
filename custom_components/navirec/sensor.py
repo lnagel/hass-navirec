@@ -20,7 +20,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import BINARY_SENSOR_INTERPRETATIONS, DOMAIN, LOGGER
+from .const import BINARY_SENSOR_INTERPRETATIONS, LOGGER
 from .data import get_sensor_value_from_state
 from .entity import NavirecEntity
 from .models import Sensor, Vehicle
@@ -192,7 +192,11 @@ class NavirecSensor(NavirecEntity, SensorEntity):
             if self._interpretation == "activity":
                 # All possible activity values from Activity3b5Enum
                 self._attr_options = [
-                    "offline", "parking", "towing", "idling", "driving"
+                    "offline",
+                    "parking",
+                    "towing",
+                    "idling",
+                    "driving",
                 ]
             elif self._interpretation in (
                 "driver_1_working_state",

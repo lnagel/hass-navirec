@@ -8,7 +8,7 @@ from homeassistant.components.device_tracker import SourceType, TrackerEntity
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, LOGGER
+from .const import LOGGER
 from .data import get_activity_from_state, get_coordinates_from_state
 from .entity import NavirecEntity
 from .models import Vehicle

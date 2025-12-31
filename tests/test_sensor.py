@@ -22,7 +22,9 @@ def find_sensor_by_interpretation(
     return None
 
 
-def find_vehicle_by_id(vehicles: list[dict[str, Any]], vehicle_id: str) -> dict[str, Any] | None:
+def find_vehicle_by_id(
+    vehicles: list[dict[str, Any]], vehicle_id: str
+) -> dict[str, Any] | None:
     """Find a vehicle by ID from fixture data."""
     for vehicle in vehicles:
         if vehicle.get("id") == vehicle_id:
@@ -190,7 +192,9 @@ class TestNavirecSensor:
         vehicle_states_fixture: list[dict[str, Any]],
     ) -> None:
         """Test activity sensor returns string value for enum."""
-        activity_sensor_data = find_sensor_by_interpretation(sensors_fixture, "activity")
+        activity_sensor_data = find_sensor_by_interpretation(
+            sensors_fixture, "activity"
+        )
         assert activity_sensor_data is not None
 
         vehicle_id = extract_vehicle_id_from_url(activity_sensor_data["vehicle"])
@@ -225,7 +229,9 @@ class TestNavirecSensor:
         # Activity should be a string value, not an object
         if state_data and "activity" in state_data:
             native_value = sensor.native_value
-            assert isinstance(native_value, str), f"Expected string, got {type(native_value)}"
+            assert isinstance(native_value, str), (
+                f"Expected string, got {type(native_value)}"
+            )
             assert native_value in ["offline", "parking", "towing", "idling", "driving"]
 
     def test_sensor_unique_id(

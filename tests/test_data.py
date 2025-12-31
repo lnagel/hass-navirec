@@ -48,6 +48,7 @@ class TestVehicleModel:
         assert vehicle.name_display == vehicle_dict.get("name_display", "")
         assert vehicle.registration == vehicle_dict.get("registration", "")
 
+
 class TestSensorModel:
     """Test Sensor Pydantic model."""
 

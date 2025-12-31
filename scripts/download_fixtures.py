@@ -109,7 +109,9 @@ async def fetch_all_pages(
             # Concatenate results from this page
             if isinstance(data, list):
                 all_results.extend(data)
-                print(f"  Page {page}: fetched {len(data)} items (total: {len(all_results)})")
+                print(
+                    f"  Page {page}: fetched {len(data)} items (total: {len(all_results)})"
+                )
             else:
                 # Some endpoints return a single object or dict
                 all_results.append(data)
@@ -221,7 +223,9 @@ async def download_stream_events(
             async with session.get(
                 url,
                 headers=get_stream_headers(),
-                timeout=aiohttp.ClientTimeout(total=None, sock_read=duration_seconds + 5),
+                timeout=aiohttp.ClientTimeout(
+                    total=None, sock_read=duration_seconds + 5
+                ),
             ) as response:
                 if response.status == 401:
                     print(f"  Authentication failed for account {account_id}")
@@ -242,7 +246,9 @@ async def download_stream_events(
                     # Check if we've exceeded the duration
                     elapsed = asyncio.get_event_loop().time() - start_time
                     if elapsed >= duration_seconds:
-                        print(f"  Duration reached ({duration_seconds}s), stopping stream...")
+                        print(
+                            f"  Duration reached ({duration_seconds}s), stopping stream..."
+                        )
                         break
 
                     # Decode and store the line
@@ -261,16 +267,17 @@ async def download_stream_events(
 
                 print(f"  Account {account_id}: collected {event_count} events")
 
-        except asyncio.TimeoutError:
-            print(f"  Stream timeout for account {account_id} (expected after {duration_seconds}s)")
+        except TimeoutError:
+            print(
+                f"  Stream timeout for account {account_id} (expected after {duration_seconds}s)"
+            )
         except aiohttp.ClientError as e:
             print(f"  Error streaming account {account_id}: {e}")
 
     if all_events:
         output_path = FIXTURES_DIR / filename
         with open(output_path, "w", encoding="utf-8") as f:
-            for event in all_events:
-                f.write(event + "\n")
+            f.writelines(event + "\n" for event in all_events)
         print(f"  Saved {len(all_events)} events to {filename}")
     else:
         print(f"  No events collected for {filename}")

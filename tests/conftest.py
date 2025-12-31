@@ -9,7 +9,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from custom_components.navirec.const import CONF_ACCOUNT_ID, CONF_API_TOKEN, CONF_API_URL
+from custom_components.navirec.const import (
+    CONF_ACCOUNT_ID,
+    CONF_API_TOKEN,
+    CONF_API_URL,
+)
 
 
 @pytest.fixture

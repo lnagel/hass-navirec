@@ -84,7 +84,9 @@ async def test_setup_entry_success(
         # Verify runtime data was set
         assert mock_config_entry.runtime_data is not None
         assert mock_config_entry.runtime_data.account_id == accounts_fixture[0]["id"]
-        assert mock_config_entry.runtime_data.account_name == accounts_fixture[0]["name"]
+        assert (
+            mock_config_entry.runtime_data.account_name == accounts_fixture[0]["name"]
+        )
         assert len(mock_config_entry.runtime_data.vehicles) == len(vehicles_fixture)
         assert len(mock_config_entry.runtime_data.sensors) == len(sensors_fixture)
 
