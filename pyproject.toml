@@ -1,0 +1,52 @@
+[project]
+name = "hass-navirec"
+version = "0.1.0"
+description = "A Home Assistant integration for Navirec"
+readme = "README.md"
+requires-python = ">=3.13.2"
+authors = [
+    { name = "lnagel", email = "lnagel@users.noreply.github.com" }
+]
+dependencies = [
+    "colorlog>=6.10.1",
+    "homeassistant>=2025.10.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.20.0",
+    "pytest-cov>=4.0.0",
+    "pytest-homeassistant-custom-component>=0.13.285",
+]
+dev = [
+    "ruff>=0.14.5",
+]
+
+[project.urls]
+Documentation = "https://github.com/lnagel/hass-navirec"
+Repository = "https://github.com/lnagel/hass-navirec"
+Issues = "https://github.com/lnagel/hass-navirec/issues"
+
+[tool.uv]
+package = false
+
+[tool.black]
+line-length = 88
+target-version = ["py313"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | build
+  | dist
+
+)/
+'''
+
+[tool.pytest.ini_options]
+pythonpath = "."
+asyncio_mode = "auto"
+testpaths = ["tests"]
+norecursedirs = [".git", "testing_config"]
+asyncio_default_fixture_loop_scope = "function"
