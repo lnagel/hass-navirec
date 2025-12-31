@@ -1,0 +1,12 @@
+{
+  "domain": "navirec",
+  "name": "Navirec",
+  "codeowners": [
+    "@lnagel"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/lnagel/hass-navirec",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/lnagel/hass-navirec/issues",
+  "version": "0.1.0"
+}
