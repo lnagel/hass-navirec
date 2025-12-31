@@ -1,63 +1,122 @@
 """
 Custom integration to integrate Navirec with Home Assistant.
 
-For more details about this integration, please refer to
-https://github.com/lnagel/hass-navirec
+Navirec is a fleet management platform. This integration streams real-time
+vehicle locations and sensor data via the Navirec API.
 """
 
 from __future__ import annotations
 
-from datetime import timedelta
+from collections import defaultdict
 from typing import TYPE_CHECKING
 
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
+from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.loader import async_get_loaded_integration
 
 from .api import NavirecApiClient
-from .const import DOMAIN, LOGGER
-from .coordinator import NavirecDataUpdateCoordinator
-from .data import NavirecData
+from .const import CONF_API_TOKEN, CONF_API_URL, LOGGER
+from .const import DOMAIN as DOMAIN
+from .coordinator import NavirecCoordinator
+from .data import NavirecData, get_vehicle_id_from_sensor
+from .models import Account, Sensor, Vehicle
 
 if TYPE_CHECKING:
-    from homeassistant.core import HomeAssistant
-
     from .data import NavirecConfigEntry
 
 PLATFORMS: list[Platform] = [
+    Platform.DEVICE_TRACKER,
     Platform.SENSOR,
     Platform.BINARY_SENSOR,
-    Platform.SWITCH,
 ]
 
 
-# https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: NavirecConfigEntry,
 ) -> bool:
     """Set up this integration using UI."""
-    coordinator = NavirecDataUpdateCoordinator(
-        hass=hass,
-        logger=LOGGER,
-        name=DOMAIN,
-        update_interval=timedelta(hours=1),
+    api_url = entry.data[CONF_API_URL]
+    api_token = entry.data[CONF_API_TOKEN]
+
+    # Create API client
+    client = NavirecApiClient(
+        api_url=api_url,
+        api_token=api_token,
+        session=async_get_clientsession(hass),
     )
+
+    # Fetch accounts, vehicles, and sensors
+    LOGGER.debug("Fetching accounts from Navirec API")
+    accounts_data = await client.async_get_accounts()
+    accounts = [Account.model_validate(a) for a in accounts_data]
+
+    LOGGER.debug("Fetching vehicles from Navirec API")
+    vehicles_data = await client.async_get_vehicles(active_only=True)
+
+    LOGGER.debug("Fetching sensors from Navirec API")
+    sensors_data = await client.async_get_sensors()
+
+    # Build lookup dictionaries with Pydantic models
+    vehicles: dict[str, Vehicle] = {}
+    for v in vehicles_data:
+        vehicle = Vehicle.model_validate(v)
+        if vehicle.id:
+            vehicles[str(vehicle.id)] = vehicle
+
+    sensors: dict[str, Sensor] = {}
+    sensors_by_vehicle: dict[str, list[Sensor]] = defaultdict(list)
+    for s in sensors_data:
+        sensor = Sensor.model_validate(s)
+        if sensor.id:
+            sensors[str(sensor.id)] = sensor
+            # Extract vehicle ID from URL
+            vehicle_id = get_vehicle_id_from_sensor(sensor)
+            if vehicle_id and vehicle_id in vehicles:
+                sensors_by_vehicle[vehicle_id].append(sensor)
+
+    LOGGER.info(
+        "Found %d accounts, %d vehicles, %d sensors",
+        len(accounts),
+        len(vehicles),
+        len(sensors),
+    )
+
+    # Create coordinators for each account
+    coordinators: dict[str, NavirecCoordinator] = {}
+    for account in accounts:
+        if not account.id:
+            continue
+        account_id = str(account.id)
+        account_name = account.name or account_id
+
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url=api_url,
+            api_token=api_token,
+            account_id=account_id,
+            account_name=account_name,
+        )
+        coordinators[account_id] = coordinator
+
+    # Store runtime data
     entry.runtime_data = NavirecData(
-        client=NavirecApiClient(
-            username=entry.data[CONF_USERNAME],
-            password=entry.data[CONF_PASSWORD],
-            session=async_get_clientsession(hass),
-        ),
+        client=client,
         integration=async_get_loaded_integration(hass, entry.domain),
-        coordinator=coordinator,
+        coordinators=coordinators,
+        accounts=accounts,
+        vehicles=vehicles,
+        sensors=sensors,
+        sensors_by_vehicle=dict(sensors_by_vehicle),
     )
 
-    # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
-    await coordinator.async_config_entry_first_refresh()
-
+    # Set up platforms
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
+    # Start streaming for all coordinators
+    for coordinator in coordinators.values():
+        await coordinator.async_start_streaming()
 
     return True
 
@@ -67,12 +126,10 @@ async def async_unload_entry(
     entry: NavirecConfigEntry,
 ) -> bool:
     """Handle removal of an entry."""
+    # Stop streaming for all coordinators
+    if entry.runtime_data:
+        for coordinator in entry.runtime_data.coordinators.values():
+            await coordinator.async_stop_streaming()
+
+    # Unload platforms
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-
-
-async def async_reload_entry(
-    hass: HomeAssistant,
-    entry: NavirecConfigEntry,
-) -> None:
-    """Reload config entry."""
-    await hass.config_entries.async_reload(entry.entry_id)

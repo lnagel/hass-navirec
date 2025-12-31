@@ -21,6 +21,7 @@ test = [
 ]
 dev = [
     "ruff>=0.14.5",
+    "datamodel-code-generator>=0.26.0",
 ]
 
 [project.urls]
@@ -50,3 +51,24 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 norecursedirs = [".git", "testing_config"]
 asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "C4", "UP"]
+ignore = [
+    "E501",  # Line too long - handled by formatter
+]
+
+[tool.ruff.lint.isort]
+force-single-line = false
+combine-as-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "S101",   # Allow assert in tests
+    "S106",   # Allow hardcoded passwords in tests
+    "ARG001", # Allow unused arguments in fixtures
+]

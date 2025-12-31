@@ -2,20 +2,76 @@
     "config": {
         "step": {
             "user": {
-                "description": "If you need help with the configuration have a look here: https://github.com/lnagel/hass-navirec",
+                "description": "Enter your Navirec API credentials. You can create an API token in the Navirec web app under Profile > Account settings > API access.",
                 "data": {
-                    "username": "Username",
-                    "password": "Password"
+                    "api_url": "API URL",
+                    "api_token": "API Token"
+                },
+                "data_description": {
+                    "api_url": "The Navirec API URL. Use the default unless you have a custom deployment.",
+                    "api_token": "Your API access token from the Navirec web app."
                 }
             }
         },
         "error": {
-            "auth": "Username/Password is wrong.",
-            "connection": "Unable to connect to the server.",
+            "auth": "Invalid API token or no accounts accessible.",
+            "connection": "Unable to connect to the Navirec API.",
             "unknown": "Unknown error occurred."
         },
         "abort": {
-            "already_configured": "This entry is already configured."
+            "already_configured": "This Navirec instance is already configured."
+        }
+    },
+    "entity": {
+        "device_tracker": {
+            "vehicle": {
+                "name": "Location"
+            }
+        },
+        "sensor": {
+            "speed": {
+                "name": "Speed"
+            },
+            "fuel_level": {
+                "name": "Fuel level"
+            },
+            "altitude": {
+                "name": "Altitude"
+            },
+            "heading": {
+                "name": "Heading"
+            },
+            "total_distance": {
+                "name": "Total distance"
+            },
+            "total_engine_time": {
+                "name": "Total engine time"
+            },
+            "total_fuel_used": {
+                "name": "Total fuel used"
+            },
+            "supply_voltage": {
+                "name": "Supply voltage"
+            },
+            "eco_score": {
+                "name": "Eco score"
+            },
+            "activity": {
+                "name": "Activity",
+                "state": {
+                    "driving": "Driving",
+                    "parking": "Parking",
+                    "idling": "Idling"
+                }
+            }
+        },
+        "binary_sensor": {
+            "ignition": {
+                "name": "Ignition"
+            },
+            "alarm": {
+                "name": "Alarm"
+            }
         }
     }
 }
