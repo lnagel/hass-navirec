@@ -9,7 +9,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import ATTRIBUTION, DOMAIN
 from .coordinator import NavirecCoordinator
-from .data import VehicleState, get_account_id_from_vehicle
+from .data import VehicleState
 from .models import Vehicle
 
 if TYPE_CHECKING:
@@ -34,17 +34,17 @@ class NavirecEntity(CoordinatorEntity[NavirecCoordinator]):
         self._vehicle_id = vehicle_id
         self._vehicle = vehicle
 
-        # Extract account ID from vehicle URL
-        account_id = get_account_id_from_vehicle(vehicle)
-
         # Device info for the vehicle
+        # Use account_id from runtime_data as the via_device
+        account_id = config_entry.runtime_data.account_id
+
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, vehicle_id)},
             name=vehicle.name_display or vehicle.registration or "",
             manufacturer=vehicle.make,
             model=vehicle.model,
             serial_number=vehicle.registration,
-            via_device=(DOMAIN, account_id) if account_id else None,
+            via_device=(DOMAIN, account_id),
         )
 
     @property

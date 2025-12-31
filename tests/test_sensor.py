@@ -260,7 +260,7 @@ class TestNavirecSensor:
             state_class=SensorStateClass.MEASUREMENT,
         )
 
-        assert f"navirec_{vehicle_id}" in sensor.unique_id
+        assert vehicle_id in sensor.unique_id
 
     def test_sensor_enabled_by_default(
         self,

@@ -155,7 +155,7 @@ class TestNavirecDeviceTracker:
             vehicle=mock_vehicle,
         )
 
-        assert tracker.unique_id == f"navirec_{vehicle_id}_location"
+        assert tracker.unique_id == f"{vehicle_id}_location"
 
     def test_no_state_returns_none(
         self, mock_coordinator, mock_config_entry, mock_vehicle, vehicle_id

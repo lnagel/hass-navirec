@@ -15,7 +15,14 @@ from .api import (
     NavirecApiClientCommunicationError,
     NavirecApiClientError,
 )
-from .const import CONF_API_TOKEN, CONF_API_URL, DEFAULT_API_URL, DOMAIN, LOGGER
+from .const import (
+    CONF_ACCOUNT_ID,
+    CONF_API_TOKEN,
+    CONF_API_URL,
+    DEFAULT_API_URL,
+    DOMAIN,
+    LOGGER,
+)
 
 
 class NavirecFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -33,9 +40,13 @@ class NavirecFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             api_url = user_input[CONF_API_URL].rstrip("/")
             api_token = user_input[CONF_API_TOKEN]
+            # Optional account_id - if empty string, treat as None
+            user_account_id = user_input.get(CONF_ACCOUNT_ID, "").strip() or None
 
             try:
-                accounts = await self._test_credentials(api_url, api_token)
+                account = await self._validate_and_get_account(
+                    api_url, api_token, user_account_id
+                )
             except NavirecApiClientAuthenticationError as exception:
                 LOGGER.warning(exception)
                 errors["base"] = "auth"
@@ -46,21 +57,19 @@ class NavirecFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 LOGGER.exception(exception)
                 errors["base"] = "unknown"
             else:
-                # Create unique ID from URL (without token for privacy)
-                # Using URL ensures one entry per Navirec instance
-                await self.async_set_unique_id(api_url)
+                account_id = account["id"]
+                account_name = account.get("name") or account_id
+
+                # Use account_id as unique ID
+                await self.async_set_unique_id(account_id)
                 self._abort_if_unique_id_configured()
 
-                # Use first account name as title, or "Navirec" as fallback
-                title = "Navirec"
-                if accounts:
-                    title = accounts[0].get("name", "Navirec")
-
                 return self.async_create_entry(
-                    title=title,
+                    title=account_name,
                     data={
                         CONF_API_URL: api_url,
                         CONF_API_TOKEN: api_token,
+                        CONF_ACCOUNT_ID: account_id,
                     },
                 )
 
@@ -81,23 +90,47 @@ class NavirecFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                             type=selector.TextSelectorType.PASSWORD,
                         ),
                     ),
+                    vol.Optional(
+                        CONF_ACCOUNT_ID,
+                        default=(user_input or {}).get(CONF_ACCOUNT_ID, ""),
+                    ): selector.TextSelector(
+                        selector.TextSelectorConfig(
+                            type=selector.TextSelectorType.TEXT,
+                        ),
+                    ),
                 },
             ),
             errors=errors,
         )
 
-    async def _test_credentials(
-        self, api_url: str, api_token: str
-    ) -> list[dict[str, Any]]:
-        """Validate credentials and return accounts."""
+    async def _validate_and_get_account(
+        self, api_url: str, api_token: str, account_id: str | None
+    ) -> dict[str, Any]:
+        """Validate credentials and return the account to use.
+
+        If account_id is provided, validates that it exists.
+        Otherwise, returns the first available account.
+        """
         client = NavirecApiClient(
             api_url=api_url,
             api_token=api_token,
             session=async_create_clientsession(self.hass),
         )
-        # This will raise an exception if credentials are invalid
+
+        # Fetch all accounts
         accounts = await client.async_get_accounts()
         if not accounts:
             msg = "No accounts found for this token"
             raise NavirecApiClientAuthenticationError(msg)
-        return accounts
+
+        # If account_id is provided, find that specific account
+        if account_id:
+            for account in accounts:
+                if account.get("id") == account_id:
+                    return account
+            # Account not found
+            msg = f"Account {account_id} not found or not accessible"
+            raise NavirecApiClientAuthenticationError(msg)
+
+        # No account_id provided, use the first one
+        return accounts[0]

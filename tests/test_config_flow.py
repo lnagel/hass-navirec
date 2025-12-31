@@ -11,7 +11,12 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.navirec.const import CONF_API_TOKEN, CONF_API_URL, DOMAIN
+from custom_components.navirec.const import (
+    CONF_ACCOUNT_ID,
+    CONF_API_TOKEN,
+    CONF_API_URL,
+    DOMAIN,
+)
 
 
 @pytest.fixture
@@ -52,6 +57,7 @@ async def test_form_success(
     assert result["data"] == {
         CONF_API_URL: "https://api.navirec.com",
         CONF_API_TOKEN: "test-token",
+        CONF_ACCOUNT_ID: "test-account-id",
     }
 
 
@@ -125,15 +131,16 @@ async def test_form_already_configured(
     enable_custom_integrations: None,
 ) -> None:
     """Test config flow when already configured."""
-    # Create an existing entry
+    # Create an existing entry - unique_id is just the account_id
     entry = MockConfigEntry(
         domain=DOMAIN,
-        title="Navirec",
+        title="Test Account",
         data={
             CONF_API_URL: "https://api.navirec.com",
             CONF_API_TOKEN: "existing-token",
+            CONF_ACCOUNT_ID: "test-account-id",
         },
-        unique_id="https://api.navirec.com",
+        unique_id="test-account-id",
     )
     entry.add_to_hass(hass)
 
@@ -155,3 +162,64 @@ async def test_form_already_configured(
 
     assert result["type"] == FlowResultType.ABORT
     assert result["reason"] == "already_configured"
+
+
+@pytest.mark.asyncio
+async def test_form_with_account_id(
+    hass: HomeAssistant,
+    mock_setup_entry: AsyncMock,
+    mock_accounts: list[dict[str, Any]],
+    enable_custom_integrations: None,
+) -> None:
+    """Test successful config flow with explicit account_id."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+    assert result["type"] == FlowResultType.FORM
+
+    with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.async_get_accounts = AsyncMock(return_value=mock_accounts)
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                CONF_API_URL: "https://api.navirec.com/",
+                CONF_API_TOKEN: "test-token",
+                CONF_ACCOUNT_ID: "test-account-id",
+            },
+        )
+        await hass.async_block_till_done()
+
+    assert result["type"] == FlowResultType.CREATE_ENTRY
+    assert result["title"] == "Test Account"
+    assert result["data"][CONF_ACCOUNT_ID] == "test-account-id"
+
+
+@pytest.mark.asyncio
+async def test_form_invalid_account_id(
+    hass: HomeAssistant,
+    mock_setup_entry: AsyncMock,
+    mock_accounts: list[dict[str, Any]],
+    enable_custom_integrations: None,
+) -> None:
+    """Test config flow with invalid account_id."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+
+    with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.async_get_accounts = AsyncMock(return_value=mock_accounts)
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                CONF_API_URL: "https://api.navirec.com/",
+                CONF_API_TOKEN: "test-token",
+                CONF_ACCOUNT_ID: "nonexistent-account-id",
+            },
+        )
+
+    assert result["type"] == FlowResultType.FORM
+    assert result["errors"] == {"base": "auth"}

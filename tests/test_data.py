@@ -6,7 +6,6 @@ from typing import Any
 
 from custom_components.navirec.data import (
     extract_uuid_from_url,
-    get_account_id_from_vehicle,
     get_activity_from_state,
     get_coordinates_from_state,
     get_sensor_value_from_state,
@@ -48,19 +47,6 @@ class TestVehicleModel:
         assert vehicle.name == vehicle_dict.get("name", "")
         assert vehicle.name_display == vehicle_dict.get("name_display", "")
         assert vehicle.registration == vehicle_dict.get("registration", "")
-
-    def test_get_account_id_from_vehicle(
-        self, vehicles_fixture: list[dict[str, Any]]
-    ) -> None:
-        """Test extracting account ID from vehicle."""
-        vehicle_dict = vehicles_fixture[0]
-        vehicle = Vehicle.model_validate(vehicle_dict)
-        account_id = get_account_id_from_vehicle(vehicle)
-
-        # Account URL should be in format: https://api.../accounts/{uuid}/
-        assert account_id is not None
-        assert len(account_id) == 36  # UUID length
-
 
 class TestSensorModel:
     """Test Sensor Pydantic model."""

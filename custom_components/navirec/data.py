@@ -12,7 +12,7 @@ import re
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from .models import Account, Sensor, Vehicle, VehicleState
+from .models import Sensor, Vehicle, VehicleState
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -50,13 +50,6 @@ def get_vehicle_id_from_sensor(sensor: Sensor) -> str | None:
     """Extract vehicle ID from sensor's vehicle URL."""
     if sensor.vehicle:
         return extract_uuid_from_url(str(sensor.vehicle))
-    return None
-
-
-def get_account_id_from_vehicle(vehicle: Vehicle) -> str | None:
-    """Extract account ID from vehicle's account URL."""
-    if vehicle.account:
-        return extract_uuid_from_url(str(vehicle.account))
     return None
 
 
@@ -123,27 +116,30 @@ def get_activity_from_state(state: VehicleState) -> str | None:
 
 @dataclass
 class NavirecData:
-    """Runtime data for the Navirec integration."""
+    """Runtime data for the Navirec integration.
+
+    Each config entry represents a single account. This simplifies the
+    coordinator setup and entity creation.
+    """
 
     client: NavirecApiClient
     integration: Integration
-    coordinators: dict[str, NavirecCoordinator] = field(default_factory=dict)
-    accounts: list[Account] = field(default_factory=list)
+    coordinator: NavirecCoordinator
+    account_id: str
+    account_name: str
     vehicles: dict[str, Vehicle] = field(default_factory=dict)
     sensors: dict[str, Sensor] = field(default_factory=dict)
     sensors_by_vehicle: dict[str, list[Sensor]] = field(default_factory=dict)
 
 
-# Re-export models for convenience
+# Re-export for convenience
 __all__ = [
-    "Account",
     "NavirecConfigEntry",
     "NavirecData",
     "Sensor",
     "Vehicle",
     "VehicleState",
     "extract_uuid_from_url",
-    "get_account_id_from_vehicle",
     "get_activity_from_state",
     "get_coordinates_from_state",
     "get_sensor_value_from_state",

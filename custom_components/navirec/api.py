@@ -107,9 +107,14 @@ class NavirecApiClient:
 
         return await self._async_get_paginated(url)
 
-    async def async_get_sensors(self) -> list[dict[str, Any]]:
-        """Get all sensors."""
-        return await self._async_get_paginated(f"{self._api_url}/sensors/")
+    async def async_get_sensors(
+        self, account_id: str | None = None
+    ) -> list[dict[str, Any]]:
+        """Get sensors, optionally filtered by account."""
+        url = f"{self._api_url}/sensors/"
+        if account_id:
+            url = f"{url}?account={account_id}"
+        return await self._async_get_paginated(url)
 
     async def _async_get_paginated(self, url: str) -> list[dict[str, Any]]:
         """Fetch all pages of a paginated endpoint."""

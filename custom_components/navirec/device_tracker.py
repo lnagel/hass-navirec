@@ -9,11 +9,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, LOGGER
-from .data import (
-    get_account_id_from_vehicle,
-    get_activity_from_state,
-    get_coordinates_from_state,
-)
+from .data import get_activity_from_state, get_coordinates_from_state
 from .entity import NavirecEntity
 from .models import Vehicle
 
@@ -29,23 +25,12 @@ async def async_setup_entry(
 ) -> None:
     """Set up Navirec device trackers from a config entry."""
     data = entry.runtime_data
+    coordinator = data.coordinator
 
     entities: list[NavirecDeviceTracker] = []
 
     # Create a device tracker for each vehicle
     for vehicle_id, vehicle in data.vehicles.items():
-        # Find the coordinator for this vehicle's account
-        account_id = get_account_id_from_vehicle(vehicle)
-
-        coordinator = data.coordinators.get(account_id) if account_id else None
-        if not coordinator:
-            LOGGER.warning(
-                "No coordinator found for vehicle %s (account %s)",
-                vehicle_id,
-                account_id,
-            )
-            continue
-
         entities.append(
             NavirecDeviceTracker(
                 coordinator=coordinator,
@@ -79,7 +64,7 @@ class NavirecDeviceTracker(NavirecEntity, TrackerEntity):
             vehicle=vehicle,
         )
         # Unique ID for this entity
-        self._attr_unique_id = f"{DOMAIN}_{vehicle_id}_location"
+        self._attr_unique_id = f"{vehicle_id}_location"
 
     @property
     def source_type(self) -> SourceType:

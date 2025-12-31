@@ -15,6 +15,7 @@ USER_AGENT = "hass-navirec"
 # Config entry keys
 CONF_API_URL = "api_url"
 CONF_API_TOKEN = "api_token"
+CONF_ACCOUNT_ID = "account_id"
 
 # Stream reconnection settings
 STREAM_RECONNECT_MIN_DELAY = 1  # seconds

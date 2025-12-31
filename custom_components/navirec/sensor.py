@@ -21,7 +21,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import BINARY_SENSOR_INTERPRETATIONS, DOMAIN, LOGGER
-from .data import get_account_id_from_vehicle, get_sensor_value_from_state
+from .data import get_sensor_value_from_state
 from .entity import NavirecEntity
 from .models import Sensor, Vehicle
 
@@ -102,18 +102,12 @@ async def async_setup_entry(
 ) -> None:
     """Set up Navirec sensors from a config entry."""
     data = entry.runtime_data
+    coordinator = data.coordinator
 
     entities: list[NavirecSensor] = []
 
     # Create sensors for each vehicle based on their sensor definitions
     for vehicle_id, vehicle in data.vehicles.items():
-        # Find the coordinator for this vehicle's account
-        account_id = get_account_id_from_vehicle(vehicle)
-
-        coordinator = data.coordinators.get(account_id) if account_id else None
-        if not coordinator:
-            continue
-
         # Get sensors for this vehicle
         vehicle_sensors = data.sensors_by_vehicle.get(vehicle_id, [])
 
@@ -179,7 +173,7 @@ class NavirecSensor(NavirecEntity, SensorEntity):
 
         # Entity attributes
         sensor_id = str(sensor_def.id) if sensor_def.id else ""
-        self._attr_unique_id = f"{DOMAIN}_{vehicle_id}_{sensor_id}"
+        self._attr_unique_id = f"{vehicle_id}_{sensor_id}"
         self._attr_name = sensor_def.name_display or interpretation
 
         # Use show_in_map to determine if entity is enabled by default
