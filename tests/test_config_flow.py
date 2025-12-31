@@ -223,3 +223,87 @@ async def test_form_invalid_account_id(
 
     assert result["type"] == FlowResultType.FORM
     assert result["errors"] == {"base": "auth"}
+
+
+@pytest.mark.asyncio
+async def test_reconfigure_success(
+    hass: HomeAssistant,
+    mock_accounts: list[dict[str, Any]],
+    enable_custom_integrations: None,
+) -> None:
+    """Test successful reconfiguration."""
+    # Create an existing entry
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        title="Test Account",
+        data={
+            CONF_API_URL: "https://api.navirec.com",
+            CONF_API_TOKEN: "old-token",
+            CONF_ACCOUNT_ID: "test-account-id",
+        },
+        unique_id="test-account-id",
+    )
+    entry.add_to_hass(hass)
+
+    result = await entry.start_reconfigure_flow(hass)
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == "reconfigure"
+
+    with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.async_get_accounts = AsyncMock(return_value=mock_accounts)
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                CONF_API_URL: "https://new-api.navirec.com/",
+                CONF_API_TOKEN: "new-token",
+                CONF_ACCOUNT_ID: "test-account-id",
+            },
+        )
+
+    assert result["type"] == FlowResultType.ABORT
+    assert result["reason"] == "reconfigure_successful"
+    assert entry.data[CONF_API_URL] == "https://new-api.navirec.com"
+    assert entry.data[CONF_API_TOKEN] == "new-token"
+
+
+@pytest.mark.asyncio
+async def test_reconfigure_auth_error(
+    hass: HomeAssistant,
+    enable_custom_integrations: None,
+) -> None:
+    """Test reconfiguration with authentication error."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        title="Test Account",
+        data={
+            CONF_API_URL: "https://api.navirec.com",
+            CONF_API_TOKEN: "old-token",
+            CONF_ACCOUNT_ID: "test-account-id",
+        },
+        unique_id="test-account-id",
+    )
+    entry.add_to_hass(hass)
+
+    result = await entry.start_reconfigure_flow(hass)
+
+    with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
+        from custom_components.navirec.api import NavirecApiClientAuthenticationError
+
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.async_get_accounts = AsyncMock(
+            side_effect=NavirecApiClientAuthenticationError("Invalid credentials")
+        )
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                CONF_API_URL: "https://api.navirec.com/",
+                CONF_API_TOKEN: "bad-token",
+                CONF_ACCOUNT_ID: "test-account-id",
+            },
+        )
+
+    assert result["type"] == FlowResultType.FORM
+    assert result["errors"] == {"base": "auth"}
