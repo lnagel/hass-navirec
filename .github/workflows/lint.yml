@@ -1,4 +1,4 @@
-name: Lint
+name: "Lint"
 
 on:
   push:
@@ -8,27 +8,29 @@ on:
     branches:
       - "main"
 
-permissions: {}
-
 jobs:
   ruff:
     name: "Ruff"
     runs-on: "ubuntu-latest"
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        - name: "Checkout the repository"
+          uses: "actions/checkout@v6"
 
-      - name: Set up Python
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
-        with:
-          python-version: "3.13"
-          cache: "pip"
+        - name: "Set up Python"
+          uses: actions/setup-python@v6
+          with:
+            python-version: "3.13"
 
-      - name: Install requirements
-        run: python3 -m pip install -r requirements.txt
+        - name: "Set up uv"
+          uses: astral-sh/setup-uv@v7
+          with:
+            enable-cache: true
 
-      - name: Lint
-        run: python3 -m ruff check .
+        - name: "Install dependencies"
+          run: uv sync --extra dev
 
-      - name: Format
-        run: python3 -m ruff format . --check
+        - name: "Lint"
+          run: uv run ruff check .
+
+        - name: "Format"
+          run: uv run ruff format . --check

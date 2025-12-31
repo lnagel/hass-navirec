@@ -1,0 +1,30 @@
+name: Code Quality Checks
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+# Kill existing jobs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-unittest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.13"]
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: python -c "import sys; print(sys.version)"
+      - run: uv sync --extra test
+      - run: uv run pytest
