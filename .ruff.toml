@@ -41,6 +41,11 @@ ignore = [
     "ARG001", # unused arguments in fixtures
     "PLR2004", # magic values in tests
     "D", # docstrings not required in tests
+    "E501", # line too long in tests
+    "ANN", # type annotations not required in tests
+    "SLF001", # private member access in tests
+    "TRY", # exception handling patterns in tests
+    "PTH", # Path vs open() in tests
 ]
 "custom_components/navirec/models.py" = [
     "D", # auto-generated file, no docstrings required
