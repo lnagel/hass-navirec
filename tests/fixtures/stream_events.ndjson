@@ -1,0 +1,8 @@
+{"event": "connected"}
+{"id": "state-1", "event": "vehicle_state", "data": {"id": "11111111-1111-1111-1111-111111111111", "vehicle": "https://api.navirec.com/vehicles/924da156-1a68-4fce-8da1-a196c9bf22be/", "time": "2025-12-31T12:32:06.656000Z", "location": {"type": "Point", "coordinates": [24.76271, 59.416163]}, "activity": "driving", "speed": 54, "heading": 265, "altitude": 6, "fuel_level": 79.58, "ignition": true, "updated_at": "2025-12-31T12:32:06.656000Z"}}
+{"event": "initial_state_sent"}
+{"event": "heartbeat"}
+{"id": "state-2", "event": "vehicle_state", "data": {"id": "22222222-2222-2222-2222-222222222222", "vehicle": "https://api.navirec.com/vehicles/924da156-1a68-4fce-8da1-a196c9bf22be/", "time": "2025-12-31T12:33:06.656000Z", "location": {"type": "Point", "coordinates": [24.76372, 59.417163]}, "activity": "driving", "speed": 60, "heading": 270, "altitude": 8, "fuel_level": 79.50, "ignition": true, "updated_at": "2025-12-31T12:33:06.656000Z"}}
+{"id": "state-3", "event": "vehicle_state", "data": {"id": "33333333-3333-3333-3333-333333333333", "vehicle": "https://api.navirec.com/vehicles/924da156-1a68-4fce-8da1-a196c9bf22be/", "time": "2025-12-31T12:34:06.656000Z", "location": {"type": "Point", "coordinates": [24.76472, 59.418163]}, "activity": "parking", "speed": 0, "heading": 270, "altitude": 10, "fuel_level": 79.50, "ignition": false, "updated_at": "2025-12-31T12:34:06.656000Z"}}
+{"event": "heartbeat"}
+{"event": "disconnected"}
