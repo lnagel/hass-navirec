@@ -1,0 +1,544 @@
+[
+  {
+    "id": "924da156-1a68-4fce-8da1-a196c9bf22be",
+    "url": "https://api.navirec.namespace.ee/vehicles/924da156-1a68-4fce-8da1-a196c9bf22be/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "secondary_accounts": [
+      "https://api.navirec.namespace.ee/accounts/01eb4cf4-dd7b-46db-9fd2-645cf5ed7b17/",
+      "https://api.navirec.namespace.ee/accounts/26c0b40e-738e-4d32-b733-af2731495716/",
+      "https://api.navirec.namespace.ee/accounts/aeb25e24-b291-4907-a4b7-16e3fceab85b/",
+      "https://api.navirec.namespace.ee/accounts/b6b7d88a-07e1-4864-bf26-6154fc7193e0/",
+      "https://api.navirec.namespace.ee/accounts/ce6fb153-f3b5-4622-8c99-5676b503b5a7/"
+    ],
+    "country": "EE",
+    "registration": "TEST-1",
+    "name": "",
+    "name_display": "TEST-1",
+    "active": true,
+    "accountable_user": "https://api.navirec.namespace.ee/users/f7c315c0-a9f5-48f5-a985-f3733c60d156/",
+    "driver": null,
+    "vehicle_groups": [
+      "https://api.navirec.namespace.ee/vehicle_groups/422863b0-2711-4e82-987d-f4ab4b45948c/",
+      "https://api.navirec.namespace.ee/vehicle_groups/aae3910a-5c4e-4af2-9dd5-27fc0ed36ef4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/e37f2c96-45d4-40e6-8f0f-d2882cd8d5d4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/8280f289-c4ab-4bfe-a994-d4620a5102c4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/91d16925-5721-40d4-a9b2-aac997799128/",
+      "https://api.navirec.namespace.ee/vehicle_groups/0c49b2c9-3d56-4296-a89c-a41279991470/",
+      "https://api.navirec.namespace.ee/vehicle_groups/4e7acc78-2a49-4f63-b345-759b597226be/",
+      "https://api.navirec.namespace.ee/vehicle_groups/2b5a87a6-5f00-4bb6-a7d2-ee1a629ccc3b/"
+    ],
+    "workhours": [
+      [
+        "05:06:00",
+        "07:00:00"
+      ],
+      [
+        "05:06:00",
+        "07:00:00"
+      ],
+      [
+        "05:06:00",
+        "07:00:00"
+      ],
+      [
+        "05:06:00",
+        "07:00:00"
+      ],
+      [
+        "05:06:00",
+        "07:00:00"
+      ],
+      [
+        "00:00:00",
+        "00:00:00"
+      ],
+      [
+        "00:00:00",
+        "00:00:00"
+      ]
+    ],
+    "error_state_threshold": "00:01:00",
+    "fuel_events_enabled": true,
+    "fuel_used_source": "total_fuel_used",
+    "total_distance_enabled": true,
+    "total_engine_time_enabled": true,
+    "eco_score_enabled": true,
+    "last_activity_enabled": true,
+    "country_split_enabled": true,
+    "daily_split_times_enabled": true,
+    "hide_private_trips": false,
+    "history_optimization_enabled": false,
+    "switched_by_ignition": false,
+    "average_fuel_consumption": "21.3000",
+    "hourly_fuel_consumption": null,
+    "average_co2_emission": 100,
+    "hourly_co2_emission": null,
+    "trip_tariff": null,
+    "fuel_tank_capacities": [
+      78,
+      89,
+      56
+    ],
+    "fuel_tanked_thresholds": [
+      3
+    ],
+    "fuel_removed_thresholds": [
+      1
+    ],
+    "tachograph_enabled": null,
+    "auth_tachograph_card": null,
+    "tachograph_lock_card": null,
+    "tachograph_locked_at": null,
+    "make": "Mercedes-Benz Metris",
+    "model": "Metris Model",
+    "type": "Medium Van",
+    "vin": "",
+    "color": "Red",
+    "fuel_type": "electric",
+    "engine_displacement": 3,
+    "manufacturing_year": 2017,
+    "first_registration_date": "2021-04-02",
+    "leasing_start": "2023-08-16",
+    "leasing_end": "2023-08-26",
+    "leasing_period_mileage": null,
+    "leasing_period_fee": null,
+    "additional_fields": {
+      "tire_type": "summer",
+      "multi_choi_2": "2"
+    }
+  },
+  {
+    "id": "4283ab53-69c7-4e32-9b38-c0e96296abb3",
+    "url": "https://api.navirec.namespace.ee/vehicles/4283ab53-69c7-4e32-9b38-c0e96296abb3/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "secondary_accounts": [
+      "https://api.navirec.namespace.ee/accounts/01eb4cf4-dd7b-46db-9fd2-645cf5ed7b17/",
+      "https://api.navirec.namespace.ee/accounts/26c0b40e-738e-4d32-b733-af2731495716/",
+      "https://api.navirec.namespace.ee/accounts/aeb25e24-b291-4907-a4b7-16e3fceab85b/",
+      "https://api.navirec.namespace.ee/accounts/b6b7d88a-07e1-4864-bf26-6154fc7193e0/",
+      "https://api.navirec.namespace.ee/accounts/ce6fb153-f3b5-4622-8c99-5676b503b5a7/"
+    ],
+    "country": "EE",
+    "registration": "TEST-2",
+    "name": "",
+    "name_display": "TEST-2",
+    "active": true,
+    "accountable_user": "https://api.navirec.namespace.ee/users/f7c315c0-a9f5-48f5-a985-f3733c60d156/",
+    "driver": null,
+    "vehicle_groups": [
+      "https://api.navirec.namespace.ee/vehicle_groups/50d07b69-cb1f-4d08-8164-887acdd7388e/",
+      "https://api.navirec.namespace.ee/vehicle_groups/d6dc689a-2ead-4313-9b71-985388be7c7f/",
+      "https://api.navirec.namespace.ee/vehicle_groups/c575f751-ec88-45d7-b223-5171abd6c560/",
+      "https://api.navirec.namespace.ee/vehicle_groups/0cb4bc15-cbf0-42fd-bb44-08cb36561be1/",
+      "https://api.navirec.namespace.ee/vehicle_groups/bb8cd5de-2e8a-4a6d-9562-629803aa4317/",
+      "https://api.navirec.namespace.ee/vehicle_groups/422863b0-2711-4e82-987d-f4ab4b45948c/",
+      "https://api.navirec.namespace.ee/vehicle_groups/b16e5f4d-ccbe-43d9-a744-26ba8815cf0b/",
+      "https://api.navirec.namespace.ee/vehicle_groups/b264df0d-0aea-42e6-b0e4-48847f41439f/",
+      "https://api.navirec.namespace.ee/vehicle_groups/384bea7b-3f1a-431d-af0f-ae4a2c62c5d5/",
+      "https://api.navirec.namespace.ee/vehicle_groups/6978d3b4-93f1-4c3b-abfd-133b01be2d13/",
+      "https://api.navirec.namespace.ee/vehicle_groups/9de2d3a7-e59d-4364-a889-069cea80872e/",
+      "https://api.navirec.namespace.ee/vehicle_groups/32699d83-b667-4bab-88fc-9c5c28a1e898/",
+      "https://api.navirec.namespace.ee/vehicle_groups/8280f289-c4ab-4bfe-a994-d4620a5102c4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/91d16925-5721-40d4-a9b2-aac997799128/",
+      "https://api.navirec.namespace.ee/vehicle_groups/0c49b2c9-3d56-4296-a89c-a41279991470/",
+      "https://api.navirec.namespace.ee/vehicle_groups/aae3910a-5c4e-4af2-9dd5-27fc0ed36ef4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/e37f2c96-45d4-40e6-8f0f-d2882cd8d5d4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/4e7acc78-2a49-4f63-b345-759b597226be/",
+      "https://api.navirec.namespace.ee/vehicle_groups/2b5a87a6-5f00-4bb6-a7d2-ee1a629ccc3b/"
+    ],
+    "workhours": [
+      [
+        "00:00:00",
+        "00:00:00"
+      ],
+      [
+        "00:00:00",
+        "00:00:00"
+      ],
+      [
+        "00:00:00",
+        "00:00:00"
+      ],
+      [
+        "00:00:00",
+        "00:00:00"
+      ],
+      [
+        "00:00:00",
+        "00:00:00"
+      ],
+      [
+        "00:00:00",
+        "00:00:00"
+      ],
+      [
+        "00:00:00",
+        "00:00:00"
+      ]
+    ],
+    "error_state_threshold": "00:01:00",
+    "fuel_events_enabled": true,
+    "fuel_used_source": "total_fuel_used",
+    "total_distance_enabled": true,
+    "total_engine_time_enabled": true,
+    "eco_score_enabled": true,
+    "last_activity_enabled": true,
+    "country_split_enabled": true,
+    "daily_split_times_enabled": true,
+    "hide_private_trips": false,
+    "history_optimization_enabled": true,
+    "switched_by_ignition": false,
+    "average_fuel_consumption": null,
+    "hourly_fuel_consumption": null,
+    "average_co2_emission": null,
+    "hourly_co2_emission": null,
+    "trip_tariff": null,
+    "fuel_tank_capacities": [
+      78
+    ],
+    "fuel_tanked_thresholds": [],
+    "fuel_removed_thresholds": [],
+    "tachograph_enabled": null,
+    "auth_tachograph_card": null,
+    "tachograph_lock_card": null,
+    "tachograph_locked_at": null,
+    "make": "Lexus",
+    "model": "",
+    "type": "Medium Van",
+    "vin": "2330423WQ24",
+    "color": "",
+    "fuel_type": null,
+    "engine_displacement": null,
+    "manufacturing_year": 2027,
+    "first_registration_date": "2021-04-08",
+    "leasing_start": "2021-04-09",
+    "leasing_end": "2021-04-08",
+    "leasing_period_mileage": null,
+    "leasing_period_fee": null,
+    "additional_fields": {
+      "tire_type": "summer",
+      "test_field": "https://api.navirec.namespace.ee/vehicles/4283ab53-69c7-4e32-9b38-c0e96296abb3/",
+      "a_new_field": "1",
+      "google_form": "1",
+      "soidu_eesmar": 26784,
+      "tire_dimensi": "28/18"
+    }
+  },
+  {
+    "id": "4d7df82d-56a2-45da-bd8a-affacae26606",
+    "url": "https://api.navirec.namespace.ee/vehicles/4d7df82d-56a2-45da-bd8a-affacae26606/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "secondary_accounts": [
+      "https://api.navirec.namespace.ee/accounts/01eb4cf4-dd7b-46db-9fd2-645cf5ed7b17/",
+      "https://api.navirec.namespace.ee/accounts/26c0b40e-738e-4d32-b733-af2731495716/",
+      "https://api.navirec.namespace.ee/accounts/aeb25e24-b291-4907-a4b7-16e3fceab85b/",
+      "https://api.navirec.namespace.ee/accounts/b6b7d88a-07e1-4864-bf26-6154fc7193e0/",
+      "https://api.navirec.namespace.ee/accounts/ce6fb153-f3b5-4622-8c99-5676b503b5a7/"
+    ],
+    "country": "EE",
+    "registration": "TEST-3",
+    "name": "",
+    "name_display": "TEST-3",
+    "active": true,
+    "accountable_user": "https://api.navirec.namespace.ee/users/f7c315c0-a9f5-48f5-a985-f3733c60d156/",
+    "driver": null,
+    "vehicle_groups": [
+      "https://api.navirec.namespace.ee/vehicle_groups/50d07b69-cb1f-4d08-8164-887acdd7388e/",
+      "https://api.navirec.namespace.ee/vehicle_groups/6a299c42-edc9-4a4c-a006-9e2260863eb1/",
+      "https://api.navirec.namespace.ee/vehicle_groups/4e7acc78-2a49-4f63-b345-759b597226be/",
+      "https://api.navirec.namespace.ee/vehicle_groups/2b5a87a6-5f00-4bb6-a7d2-ee1a629ccc3b/",
+      "https://api.navirec.namespace.ee/vehicle_groups/aae3910a-5c4e-4af2-9dd5-27fc0ed36ef4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/e37f2c96-45d4-40e6-8f0f-d2882cd8d5d4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/8280f289-c4ab-4bfe-a994-d4620a5102c4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/91d16925-5721-40d4-a9b2-aac997799128/",
+      "https://api.navirec.namespace.ee/vehicle_groups/0c49b2c9-3d56-4296-a89c-a41279991470/",
+      "https://api.navirec.namespace.ee/vehicle_groups/422863b0-2711-4e82-987d-f4ab4b45948c/",
+      "https://api.navirec.namespace.ee/vehicle_groups/639d7127-7a0d-4409-9492-dc16b7b170e1/"
+    ],
+    "workhours": [
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ]
+    ],
+    "error_state_threshold": "00:01:00",
+    "fuel_events_enabled": true,
+    "fuel_used_source": "total_fuel_used",
+    "total_distance_enabled": true,
+    "total_engine_time_enabled": false,
+    "eco_score_enabled": true,
+    "last_activity_enabled": true,
+    "country_split_enabled": true,
+    "daily_split_times_enabled": true,
+    "hide_private_trips": false,
+    "history_optimization_enabled": true,
+    "switched_by_ignition": false,
+    "average_fuel_consumption": null,
+    "hourly_fuel_consumption": null,
+    "average_co2_emission": null,
+    "hourly_co2_emission": null,
+    "trip_tariff": null,
+    "fuel_tank_capacities": [],
+    "fuel_tanked_thresholds": [],
+    "fuel_removed_thresholds": [],
+    "tachograph_enabled": true,
+    "auth_tachograph_card": null,
+    "tachograph_lock_card": null,
+    "tachograph_locked_at": null,
+    "make": "",
+    "model": "",
+    "type": "",
+    "vin": "2330423WQ24",
+    "color": "",
+    "fuel_type": "petrol",
+    "engine_displacement": 150,
+    "manufacturing_year": null,
+    "first_registration_date": "1990-02-01",
+    "leasing_start": null,
+    "leasing_end": null,
+    "leasing_period_mileage": null,
+    "leasing_period_fee": null,
+    "additional_fields": {
+      "test_field": "https://api.navirec.namespace.ee/vehicles/4d7df82d-56a2-45da-bd8a-affacae26606/"
+    }
+  },
+  {
+    "id": "e6dfa233-6911-43e0-9bd7-9c46719ffb19",
+    "url": "https://api.navirec.namespace.ee/vehicles/e6dfa233-6911-43e0-9bd7-9c46719ffb19/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "secondary_accounts": [
+      "https://api.navirec.namespace.ee/accounts/01eb4cf4-dd7b-46db-9fd2-645cf5ed7b17/",
+      "https://api.navirec.namespace.ee/accounts/26c0b40e-738e-4d32-b733-af2731495716/",
+      "https://api.navirec.namespace.ee/accounts/aeb25e24-b291-4907-a4b7-16e3fceab85b/",
+      "https://api.navirec.namespace.ee/accounts/b6b7d88a-07e1-4864-bf26-6154fc7193e0/",
+      "https://api.navirec.namespace.ee/accounts/ce6fb153-f3b5-4622-8c99-5676b503b5a7/"
+    ],
+    "country": "EE",
+    "registration": "TEST-4",
+    "name": "",
+    "name_display": "TEST-4",
+    "active": true,
+    "accountable_user": "https://api.navirec.namespace.ee/users/f7c315c0-a9f5-48f5-a985-f3733c60d156/",
+    "driver": null,
+    "vehicle_groups": [
+      "https://api.navirec.namespace.ee/vehicle_groups/50d07b69-cb1f-4d08-8164-887acdd7388e/",
+      "https://api.navirec.namespace.ee/vehicle_groups/1f659998-ae01-424d-8c3c-bf2c2b8c5455/",
+      "https://api.navirec.namespace.ee/vehicle_groups/d6dc689a-2ead-4313-9b71-985388be7c7f/",
+      "https://api.navirec.namespace.ee/vehicle_groups/6a299c42-edc9-4a4c-a006-9e2260863eb1/",
+      "https://api.navirec.namespace.ee/vehicle_groups/bb8cd5de-2e8a-4a6d-9562-629803aa4317/",
+      "https://api.navirec.namespace.ee/vehicle_groups/422863b0-2711-4e82-987d-f4ab4b45948c/",
+      "https://api.navirec.namespace.ee/vehicle_groups/6978d3b4-93f1-4c3b-abfd-133b01be2d13/",
+      "https://api.navirec.namespace.ee/vehicle_groups/8280f289-c4ab-4bfe-a994-d4620a5102c4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/91d16925-5721-40d4-a9b2-aac997799128/",
+      "https://api.navirec.namespace.ee/vehicle_groups/0c49b2c9-3d56-4296-a89c-a41279991470/",
+      "https://api.navirec.namespace.ee/vehicle_groups/639d7127-7a0d-4409-9492-dc16b7b170e1/",
+      "https://api.navirec.namespace.ee/vehicle_groups/e37f2c96-45d4-40e6-8f0f-d2882cd8d5d4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/4e7acc78-2a49-4f63-b345-759b597226be/",
+      "https://api.navirec.namespace.ee/vehicle_groups/2b5a87a6-5f00-4bb6-a7d2-ee1a629ccc3b/",
+      "https://api.navirec.namespace.ee/vehicle_groups/aae3910a-5c4e-4af2-9dd5-27fc0ed36ef4/"
+    ],
+    "workhours": [
+      [
+        "03:03:00",
+        "23:30:00"
+      ],
+      [
+        "03:03:00",
+        "23:30:00"
+      ],
+      [
+        "03:03:00",
+        "23:30:00"
+      ],
+      [
+        "03:03:00",
+        "23:30:00"
+      ],
+      [
+        "03:03:00",
+        "23:30:00"
+      ],
+      [
+        "03:03:00",
+        "23:30:00"
+      ],
+      [
+        "03:03:00",
+        "23:30:00"
+      ]
+    ],
+    "error_state_threshold": "04:01:00",
+    "fuel_events_enabled": true,
+    "fuel_used_source": "total_fuel_used",
+    "total_distance_enabled": false,
+    "total_engine_time_enabled": true,
+    "eco_score_enabled": true,
+    "last_activity_enabled": null,
+    "country_split_enabled": true,
+    "daily_split_times_enabled": true,
+    "hide_private_trips": false,
+    "history_optimization_enabled": true,
+    "switched_by_ignition": false,
+    "average_fuel_consumption": null,
+    "hourly_fuel_consumption": null,
+    "average_co2_emission": null,
+    "hourly_co2_emission": null,
+    "trip_tariff": null,
+    "fuel_tank_capacities": [
+      200
+    ],
+    "fuel_tanked_thresholds": [
+      7000
+    ],
+    "fuel_removed_thresholds": [
+      777
+    ],
+    "tachograph_enabled": true,
+    "auth_tachograph_card": null,
+    "tachograph_lock_card": null,
+    "tachograph_locked_at": null,
+    "make": "",
+    "model": "CRV",
+    "type": "Honda1",
+    "vin": "",
+    "color": "",
+    "fuel_type": "cng",
+    "engine_displacement": null,
+    "manufacturing_year": null,
+    "first_registration_date": "2023-08-30",
+    "leasing_start": null,
+    "leasing_end": null,
+    "leasing_period_mileage": null,
+    "leasing_period_fee": null,
+    "additional_fields": {}
+  },
+  {
+    "id": "944230fd-545b-4342-977f-a695c6f08685",
+    "url": "https://api.navirec.namespace.ee/vehicles/944230fd-545b-4342-977f-a695c6f08685/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "secondary_accounts": [
+      "https://api.navirec.namespace.ee/accounts/01eb4cf4-dd7b-46db-9fd2-645cf5ed7b17/",
+      "https://api.navirec.namespace.ee/accounts/26c0b40e-738e-4d32-b733-af2731495716/",
+      "https://api.navirec.namespace.ee/accounts/aeb25e24-b291-4907-a4b7-16e3fceab85b/",
+      "https://api.navirec.namespace.ee/accounts/b6b7d88a-07e1-4864-bf26-6154fc7193e0/",
+      "https://api.navirec.namespace.ee/accounts/ce6fb153-f3b5-4622-8c99-5676b503b5a7/"
+    ],
+    "country": "EE",
+    "registration": "TEST-5",
+    "name": "",
+    "name_display": "TEST-5",
+    "active": true,
+    "accountable_user": "https://api.navirec.namespace.ee/users/f7c315c0-a9f5-48f5-a985-f3733c60d156/",
+    "driver": null,
+    "vehicle_groups": [
+      "https://api.navirec.namespace.ee/vehicle_groups/8280f289-c4ab-4bfe-a994-d4620a5102c4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/422863b0-2711-4e82-987d-f4ab4b45948c/",
+      "https://api.navirec.namespace.ee/vehicle_groups/aae3910a-5c4e-4af2-9dd5-27fc0ed36ef4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/e37f2c96-45d4-40e6-8f0f-d2882cd8d5d4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/4e7acc78-2a49-4f63-b345-759b597226be/",
+      "https://api.navirec.namespace.ee/vehicle_groups/2b5a87a6-5f00-4bb6-a7d2-ee1a629ccc3b/",
+      "https://api.navirec.namespace.ee/vehicle_groups/91d16925-5721-40d4-a9b2-aac997799128/",
+      "https://api.navirec.namespace.ee/vehicle_groups/0c49b2c9-3d56-4296-a89c-a41279991470/"
+    ],
+    "workhours": [
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ],
+      [
+        "07:30:00",
+        "19:30:00"
+      ]
+    ],
+    "error_state_threshold": "00:01:00",
+    "fuel_events_enabled": true,
+    "fuel_used_source": "total_fuel_used",
+    "total_distance_enabled": false,
+    "total_engine_time_enabled": false,
+    "eco_score_enabled": true,
+    "last_activity_enabled": true,
+    "country_split_enabled": true,
+    "daily_split_times_enabled": true,
+    "hide_private_trips": false,
+    "history_optimization_enabled": true,
+    "switched_by_ignition": false,
+    "average_fuel_consumption": null,
+    "hourly_fuel_consumption": null,
+    "average_co2_emission": null,
+    "hourly_co2_emission": null,
+    "trip_tariff": null,
+    "fuel_tank_capacities": [
+      100
+    ],
+    "fuel_tanked_thresholds": [
+      10
+    ],
+    "fuel_removed_thresholds": [
+      1
+    ],
+    "tachograph_enabled": null,
+    "auth_tachograph_card": null,
+    "tachograph_lock_card": null,
+    "tachograph_locked_at": null,
+    "make": "VKW",
+    "model": "0001",
+    "type": "Passat",
+    "vin": "134",
+    "color": "red",
+    "fuel_type": "gas",
+    "engine_displacement": 4,
+    "manufacturing_year": 2029,
+    "first_registration_date": "2023-08-31",
+    "leasing_start": null,
+    "leasing_end": null,
+    "leasing_period_mileage": 1000,
+    "leasing_period_fee": "10.0000",
+    "additional_fields": {
+      "driver": "emmanuel"
+    }
+  }
+]

@@ -1,0 +1,19 @@
+[
+  {
+    "id": "89ea89c8-bffb-444a-9876-c54a865e4d67",
+    "url": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "name": "Namespace OÜ",
+    "reference": 161509824440,
+    "registry_code": "12746681",
+    "vat_number": "EE101755746",
+    "default_language": "en",
+    "timezone": "Europe/Tallinn",
+    "auth_tachograph_card": "https://api.navirec.namespace.ee/tachograph_cards/ae267bbc-9338-486a-88b9-6bda288a29b1/",
+    "password_authentication_enabled": true,
+    "active_in_countries": [
+      "https://api.navirec.namespace.ee/areas/72defd56-eba0-438c-9940-8bbf9f022800/",
+      "https://api.navirec.namespace.ee/areas/173eea78-4251-4b5f-ab3f-04c31956e8cd/",
+      "https://api.navirec.namespace.ee/areas/3746616e-3089-4c86-84ae-e2b74ec93ea7/"
+    ]
+  }
+]

@@ -1,0 +1,323 @@
+[
+  {
+    "id": "81a0ed45-ee56-4e65-83fd-95d03ce8431b",
+    "url": "https://api.navirec.namespace.ee/drivers/81a0ed45-ee56-4e65-83fd-95d03ce8431b/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Code 1111",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": null,
+    "active": true
+  },
+  {
+    "id": "4201f6c2-325d-420d-8297-24bc211361a6",
+    "url": "https://api.navirec.namespace.ee/drivers/4201f6c2-325d-420d-8297-24bc211361a6/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Code 2222",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": null,
+    "active": true
+  },
+  {
+    "id": "16633991-85b6-4a9e-bae2-89d435d3191c",
+    "url": "https://api.navirec.namespace.ee/drivers/16633991-85b6-4a9e-bae2-89d435d3191c/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/c8681ad8-b0ca-414f-bf43-928dd5d9e26c/",
+      "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Lenno Juhikaart",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": false,
+    "active": true
+  },
+  {
+    "id": "b2780815-7f10-4b2b-9742-93888c5628c9",
+    "url": "https://api.navirec.namespace.ee/drivers/b2780815-7f10-4b2b-9742-93888c5628c9/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Margus Paurson",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": null,
+    "active": true
+  },
+  {
+    "id": "e7db7502-a15a-402a-abb1-2152a1530fb6",
+    "url": "https://api.navirec.namespace.ee/drivers/e7db7502-a15a-402a-abb1-2152a1530fb6/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": "https://api.navirec.namespace.ee/users/a503e1c6-4f0a-4c72-b682-a15a6473400e/",
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Tacho",
+    "email": "info@namespace.ee",
+    "phone": "",
+    "eco_score_enabled": null,
+    "active": true
+  },
+  {
+    "id": "97d3657d-0fcb-4568-9749-f1ce0b825221",
+    "url": "https://api.navirec.namespace.ee/drivers/97d3657d-0fcb-4568-9749-f1ce0b825221/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Tacho Driver A",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "e89bb92c-7220-47ca-8a58-a9dae4feb058",
+    "url": "https://api.navirec.namespace.ee/drivers/e89bb92c-7220-47ca-8a58-a9dae4feb058/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Tacho Driver B",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "cbef69ef-6396-4f7c-b2a8-bb79dfaa1039",
+    "url": "https://api.navirec.namespace.ee/drivers/cbef69ef-6396-4f7c-b2a8-bb79dfaa1039/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Tacho Driver C",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "88983e27-ed56-4a03-a1ba-d5d22d179e09",
+    "url": "https://api.navirec.namespace.ee/drivers/88983e27-ed56-4a03-a1ba-d5d22d179e09/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Tacho Driver D",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "ad7afca2-964e-4625-a1c1-a2edf396dbd1",
+    "url": "https://api.navirec.namespace.ee/drivers/ad7afca2-964e-4625-a1c1-a2edf396dbd1/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Test Driver",
+    "email": "meiko@okiem.eu",
+    "phone": "+37256484092",
+    "eco_score_enabled": null,
+    "active": true
+  },
+  {
+    "id": "2ab860b5-1de3-4e81-9bb1-e45ed53f64c8",
+    "url": "https://api.navirec.namespace.ee/drivers/2ab860b5-1de3-4e81-9bb1-e45ed53f64c8/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Test Driver A1",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "02081b7a-13e1-4fbb-aab7-09d86c827de2",
+    "url": "https://api.navirec.namespace.ee/drivers/02081b7a-13e1-4fbb-aab7-09d86c827de2/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Test Driver A2",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "442b8a7b-841e-4ff8-b74b-4258ff6bc0c6",
+    "url": "https://api.navirec.namespace.ee/drivers/442b8a7b-841e-4ff8-b74b-4258ff6bc0c6/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Test Driver B1",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "67f8a583-f82e-43a0-868b-c0119a94e7b0",
+    "url": "https://api.navirec.namespace.ee/drivers/67f8a583-f82e-43a0-868b-c0119a94e7b0/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Test Driver B2",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "4493d290-0fd2-4d50-85e0-9f207baec3b4",
+    "url": "https://api.navirec.namespace.ee/drivers/4493d290-0fd2-4d50-85e0-9f207baec3b4/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Test Driver C",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "fbcb4634-cade-4680-a6a4-89c95cc61097",
+    "url": "https://api.navirec.namespace.ee/drivers/fbcb4634-cade-4680-a6a4-89c95cc61097/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Test Driver D",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "e99891a3-f991-43f0-9659-a3debff575ac",
+    "url": "https://api.navirec.namespace.ee/drivers/e99891a3-f991-43f0-9659-a3debff575ac/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Test Driver E",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "ccdf9021-a3f4-4494-8062-1011f77596c5",
+    "url": "https://api.navirec.namespace.ee/drivers/ccdf9021-a3f4-4494-8062-1011f77596c5/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Test Driver F",
+    "email": "",
+    "phone": "+37252345456",
+    "eco_score_enabled": true,
+    "active": true
+  },
+  {
+    "id": "83d77d50-499f-41c7-a987-8a0c9e3a6b96",
+    "url": "https://api.navirec.namespace.ee/drivers/83d77d50-499f-41c7-a987-8a0c9e3a6b96/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Test Runner",
+    "email": "info@namespace.ee",
+    "phone": "+2348107110834",
+    "eco_score_enabled": null,
+    "active": true
+  },
+  {
+    "id": "fac8fe2f-c687-4813-93eb-cd47da97f825",
+    "url": "https://api.navirec.namespace.ee/drivers/fac8fe2f-c687-4813-93eb-cd47da97f825/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": null,
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Tõnise Juhikaart",
+    "email": "",
+    "phone": "",
+    "eco_score_enabled": null,
+    "active": true
+  }
+]
