@@ -37,9 +37,14 @@ STREAM_DURATION_SECONDS = 10
 # Output directory
 FIXTURES_DIR = Path(__file__).parent.parent / "tests" / "fixtures"
 
-# Endpoints to download (paginated)
+# Endpoints to download without account filter (paginated)
 ENDPOINTS = {
     "accounts.json": "/accounts/",
+    "interpretations.json": "/interpretations/",
+}
+
+# Endpoints to download per-account with pagination
+PER_ACCOUNT_PAGINATED_ENDPOINTS = {
     "vehicles.json": "/vehicles/",
     "sensors.json": "/sensors/",
     "drivers.json": "/drivers/",
@@ -173,13 +178,42 @@ async def fetch_single_page(
         return [data]
 
 
+async def download_per_account_paginated_endpoint(
+    session: aiohttp.ClientSession,
+    filename: str,
+    endpoint: str,
+    account_ids: list[str],
+) -> None:
+    """Download data from a paginated endpoint with account filter."""
+    print(f"Downloading {filename} from {endpoint} (per account, paginated)...")
+
+    all_results = []
+    for account_id in account_ids:
+        url = f"{API_URL.rstrip('/')}{endpoint}?account={account_id}"
+        try:
+            data = await fetch_all_pages(session, url)
+            all_results.extend(data)
+            print(f"  Account {account_id}: fetched {len(data)} items")
+        except aiohttp.ClientError as e:
+            print(f"  Error fetching account {account_id}: {e}")
+        except ValueError as e:
+            print(f"  Error: {e}")
+
+    if all_results:
+        output_path = FIXTURES_DIR / filename
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(all_results, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+        print(f"  Saved {len(all_results)} items to {filename}")
+
+
 async def download_per_account_endpoint(
     session: aiohttp.ClientSession,
     filename: str,
     endpoint: str,
     account_ids: list[str],
 ) -> None:
-    """Download data from an endpoint that requires per-account fetching."""
+    """Download data from an endpoint that requires per-account fetching (no pagination)."""
     print(f"Downloading {filename} from {endpoint} (per account)...")
 
     all_results = []
@@ -314,7 +348,13 @@ async def main() -> int:
             account_ids = [acc["id"] for acc in accounts if "id" in acc]
             print(f"\nFound {len(account_ids)} accounts for per-account endpoints\n")
 
-            # Download per-account endpoints
+            # Download per-account paginated endpoints
+            for filename, endpoint in PER_ACCOUNT_PAGINATED_ENDPOINTS.items():
+                await download_per_account_paginated_endpoint(
+                    session, filename, endpoint, account_ids
+                )
+
+            # Download per-account non-paginated endpoints
             for filename, endpoint in PER_ACCOUNT_ENDPOINTS.items():
                 await download_per_account_endpoint(
                     session, filename, endpoint, account_ids
