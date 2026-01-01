@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.sensor import (
@@ -9,6 +10,7 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -113,7 +115,7 @@ async def async_setup_entry(
     coordinator = data.coordinator
     interpretations = data.interpretations
 
-    entities: list[NavirecSensor] = []
+    entities: list[NavirecSensor | NavirecDiagnosticSensor] = []
 
     # Create sensors for each vehicle based on their sensor definitions
     for vehicle_id, vehicle in data.vehicles.items():
@@ -179,6 +181,29 @@ async def async_setup_entry(
                     decimal_precision=decimal_precision,
                 )
             )
+
+    # Add static diagnostic sensors for each vehicle
+    for vehicle_id, vehicle in data.vehicles.items():
+        entities.append(
+            NavirecDiagnosticSensor(
+                coordinator=coordinator,
+                config_entry=entry,
+                vehicle_id=vehicle_id,
+                vehicle=vehicle,
+                sensor_key="time",
+                translation_key="time",
+            )
+        )
+        entities.append(
+            NavirecDiagnosticSensor(
+                coordinator=coordinator,
+                config_entry=entry,
+                vehicle_id=vehicle_id,
+                vehicle=vehicle,
+                sensor_key="updated_at",
+                translation_key="updated_at",
+            )
+        )
 
     LOGGER.debug("Adding %d sensor entities", len(entities))
     async_add_entities(entities)
@@ -264,6 +289,47 @@ class NavirecSensor(NavirecEntity, SensorEntity):
         if self.device_class == SensorDeviceClass.ENUM:
             return str(value)
         return value
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self.async_write_ha_state()
+
+
+class NavirecDiagnosticSensor(NavirecEntity, SensorEntity):
+    """Diagnostic sensor entity for Navirec vehicle metadata."""
+
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_entity_registry_enabled_default = False
+
+    def __init__(
+        self,
+        coordinator: NavirecCoordinator,
+        config_entry: NavirecConfigEntry,
+        vehicle_id: str,
+        vehicle: Vehicle,
+        sensor_key: str,
+        translation_key: str,
+    ) -> None:
+        """Initialize the diagnostic sensor."""
+        super().__init__(
+            coordinator=coordinator,
+            config_entry=config_entry,
+            vehicle_id=vehicle_id,
+            vehicle=vehicle,
+        )
+        self._sensor_key = sensor_key
+        self._attr_unique_id = f"{vehicle_id}_{sensor_key}"
+        self._attr_translation_key = translation_key
+
+    @property
+    def native_value(self) -> datetime | None:
+        """Return the native value of the sensor."""
+        state = self.vehicle_state
+        if not state:
+            return None
+        return getattr(state, self._sensor_key, None)
 
     @callback
     def _handle_coordinator_update(self) -> None:
