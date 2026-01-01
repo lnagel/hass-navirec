@@ -12,7 +12,7 @@ import re
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from .models import Interpretation, Sensor, Vehicle, VehicleState
+from .models import Action, Interpretation, Sensor, Vehicle, VehicleState
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -57,6 +57,13 @@ def get_vehicle_id_from_state(state: VehicleState) -> str | None:
     """Extract vehicle ID from state's vehicle URL."""
     if state.vehicle:
         return extract_uuid_from_url(str(state.vehicle))
+    return None
+
+
+def get_vehicle_id_from_action(action: Action) -> str | None:
+    """Extract vehicle ID from action's vehicle URL."""
+    if action.vehicle:
+        return extract_uuid_from_url(str(action.vehicle))
     return None
 
 
@@ -147,10 +154,12 @@ class NavirecData:
     sensors: dict[str, Sensor] = field(default_factory=dict)
     sensors_by_vehicle: dict[str, list[Sensor]] = field(default_factory=dict)
     interpretations: dict[str, Interpretation] = field(default_factory=dict)
+    actions_by_vehicle: dict[str, list[Action]] = field(default_factory=dict)
 
 
 # Re-export for convenience
 __all__ = [
+    "Action",
     "Interpretation",
     "NavirecConfigEntry",
     "NavirecData",
@@ -162,6 +171,7 @@ __all__ = [
     "get_coordinates_from_state",
     "get_interpretation_choice_options",
     "get_sensor_value_from_state",
+    "get_vehicle_id_from_action",
     "get_vehicle_id_from_sensor",
     "get_vehicle_id_from_state",
 ]

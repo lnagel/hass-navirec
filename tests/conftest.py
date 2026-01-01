@@ -67,11 +67,19 @@ def interpretations_fixture(fixtures_path: Path) -> list[dict[str, Any]]:
 
 
 @pytest.fixture
+def actions_fixture(fixtures_path: Path) -> list[dict[str, Any]]:
+    """Load actions fixture."""
+    with (fixtures_path / "actions.json").open() as f:
+        return json.load(f)
+
+
+@pytest.fixture
 def mock_api_client(
     accounts_fixture: list[dict[str, Any]],
     vehicles_fixture: list[dict[str, Any]],
     sensors_fixture: list[dict[str, Any]],
     interpretations_fixture: list[dict[str, Any]],
+    actions_fixture: list[dict[str, Any]],
 ) -> MagicMock:
     """Create a mock API client."""
     client = MagicMock()
@@ -79,6 +87,7 @@ def mock_api_client(
     client.async_get_vehicles = AsyncMock(return_value=vehicles_fixture)
     client.async_get_sensors = AsyncMock(return_value=sensors_fixture)
     client.async_get_interpretations = AsyncMock(return_value=interpretations_fixture)
+    client.async_get_actions = AsyncMock(return_value=actions_fixture)
     client.async_validate_token = AsyncMock(return_value=True)
     return client
 

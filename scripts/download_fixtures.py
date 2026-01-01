@@ -48,6 +48,7 @@ ENDPOINTS = [
     Endpoint("accounts.json", "/accounts/"),
     Endpoint("interpretations.json", "/interpretations/"),
     Endpoint("vehicles.json", "/vehicles/", per_account=True),
+    Endpoint("actions.json", "/actions/", per_account=True),
     Endpoint("sensors.json", "/sensors/", per_account=True),
     Endpoint("drivers.json", "/drivers/", per_account=True),
     Endpoint(
