@@ -1,6 +1,6 @@
 {
-    "name": "Navirec",
-    "homeassistant": "2025.10.0",
-    "hacs": "2.0.5",
-    "render_readme": true
+  "name": "Navirec",
+  "homeassistant": "2025.10.0",
+  "hacs": "2.0.5",
+  "render_readme": true
 }
