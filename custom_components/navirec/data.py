@@ -12,7 +12,7 @@ import re
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from .models import Sensor, Vehicle, VehicleState
+from .models import Interpretation, Sensor, Vehicle, VehicleState
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -114,6 +114,24 @@ def get_activity_from_state(state: VehicleState) -> str | None:
     return None
 
 
+def get_interpretation_choice_options(interpretation: Interpretation) -> list[str]:
+    """
+    Get list of choice options for ENUM sensors.
+
+    Args:
+        interpretation: Interpretation object with choices field
+
+    Returns:
+        List of choice value strings for use as sensor options.
+
+    """
+    if not interpretation.choices:
+        return []
+    # choices is a list of [value, label] pairs
+    # For HA enum sensors, options should be the raw values (as strings)
+    return [str(choice[0]) for choice in interpretation.choices]
+
+
 @dataclass
 class NavirecData:
     """
@@ -131,10 +149,12 @@ class NavirecData:
     vehicles: dict[str, Vehicle] = field(default_factory=dict)
     sensors: dict[str, Sensor] = field(default_factory=dict)
     sensors_by_vehicle: dict[str, list[Sensor]] = field(default_factory=dict)
+    interpretations: dict[str, Interpretation] = field(default_factory=dict)
 
 
 # Re-export for convenience
 __all__ = [
+    "Interpretation",
     "NavirecConfigEntry",
     "NavirecData",
     "Sensor",
@@ -143,6 +163,7 @@ __all__ = [
     "extract_uuid_from_url",
     "get_activity_from_state",
     "get_coordinates_from_state",
+    "get_interpretation_choice_options",
     "get_sensor_value_from_state",
     "get_vehicle_id_from_sensor",
     "get_vehicle_id_from_state",

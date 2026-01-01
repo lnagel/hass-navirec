@@ -245,6 +245,7 @@ async def test_setup_account_name_fallback(
     accounts_fixture: list[dict[str, Any]],
     vehicles_fixture: list[dict[str, Any]],
     sensors_fixture: list[dict[str, Any]],
+    interpretations_fixture: list[dict[str, Any]],
     enable_custom_integrations: None,
 ) -> None:
     """Test that account ID is used as fallback when name is missing."""
@@ -256,6 +257,9 @@ async def test_setup_account_name_fallback(
     mock_api_client.async_get_accounts = AsyncMock(return_value=[account_without_name])
     mock_api_client.async_get_vehicles = AsyncMock(return_value=vehicles_fixture)
     mock_api_client.async_get_sensors = AsyncMock(return_value=sensors_fixture)
+    mock_api_client.async_get_interpretations = AsyncMock(
+        return_value=interpretations_fixture
+    )
 
     with (
         patch(
@@ -287,6 +291,7 @@ async def test_setup_account_not_found_uses_id_as_name(
     mock_config_entry_data: dict[str, Any],
     vehicles_fixture: list[dict[str, Any]],
     sensors_fixture: list[dict[str, Any]],
+    interpretations_fixture: list[dict[str, Any]],
     enable_custom_integrations: None,
 ) -> None:
     """Test that account ID is used as name when account not in response."""
@@ -298,6 +303,9 @@ async def test_setup_account_not_found_uses_id_as_name(
     mock_api_client.async_get_accounts = AsyncMock(return_value=[different_account])
     mock_api_client.async_get_vehicles = AsyncMock(return_value=vehicles_fixture)
     mock_api_client.async_get_sensors = AsyncMock(return_value=sensors_fixture)
+    mock_api_client.async_get_interpretations = AsyncMock(
+        return_value=interpretations_fixture
+    )
 
     with (
         patch(

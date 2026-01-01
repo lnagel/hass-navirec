@@ -11,10 +11,10 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import BINARY_SENSOR_INTERPRETATIONS, LOGGER
+from .const import LOGGER
 from .data import get_sensor_value_from_state
 from .entity import NavirecEntity
-from .models import Sensor, Vehicle
+from .models import Interpretation, Sensor, Vehicle
 
 if TYPE_CHECKING:
     from .coordinator import NavirecCoordinator
@@ -57,6 +57,7 @@ async def async_setup_entry(
     """Set up Navirec binary sensors from a config entry."""
     data = entry.runtime_data
     coordinator = data.coordinator
+    interpretations = data.interpretations
 
     entities: list[NavirecBinarySensor] = []
 
@@ -66,21 +67,29 @@ async def async_setup_entry(
         vehicle_sensors = data.sensors_by_vehicle.get(vehicle_id, [])
 
         for sensor_def in vehicle_sensors:
-            # Get interpretation - handle RootModel wrapper
-            interpretation = ""
+            # Get interpretation key - handle RootModel wrapper
+            interpretation_key = ""
             if sensor_def.interpretation:
-                interpretation = (
+                interpretation_key = (
                     sensor_def.interpretation.root.value
                     if hasattr(sensor_def.interpretation, "root")
                     else str(sensor_def.interpretation)
                 )
 
-            # Only handle binary sensor interpretations
-            if interpretation not in BINARY_SENSOR_INTERPRETATIONS:
+            # Get interpretation data
+            interpretation = interpretations.get(interpretation_key)
+            if not interpretation:
+                continue
+
+            # Only handle binary sensor interpretations (data_type == "boolean")
+            data_type = interpretation.data_type
+            if hasattr(data_type, "value"):
+                data_type = data_type.value
+            if data_type != "boolean":
                 continue
 
             # Get device class for this interpretation
-            device_class = BINARY_SENSOR_DEVICE_CLASSES.get(interpretation)
+            device_class = BINARY_SENSOR_DEVICE_CLASSES.get(interpretation_key)
 
             entities.append(
                 NavirecBinarySensor(
@@ -108,7 +117,7 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         vehicle_id: str,
         vehicle: Vehicle,
         sensor_def: Sensor,
-        interpretation: str,
+        interpretation: Interpretation,
         device_class: BinarySensorDeviceClass | None,
     ) -> None:
         """Initialize the binary sensor."""
@@ -120,11 +129,12 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         )
         self._sensor_def = sensor_def
         self._interpretation = interpretation
+        self._interpretation_key = interpretation.key or ""
 
         # Entity attributes
         sensor_id = str(sensor_def.id) if sensor_def.id else ""
         self._attr_unique_id = f"{vehicle_id}_{sensor_id}"
-        self._attr_name = sensor_def.name_display or interpretation
+        self._attr_name = sensor_def.name_display or self._interpretation_key
 
         # Use show_in_map to determine if entity is enabled by default
         self._attr_entity_registry_enabled_default = sensor_def.show_in_map
@@ -138,7 +148,7 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         """Return true if the binary sensor is on."""
         state = self.vehicle_state
         if state:
-            value = get_sensor_value_from_state(state, self._interpretation)
+            value = get_sensor_value_from_state(state, self._interpretation_key)
             if value is not None:
                 return bool(value)
         return None

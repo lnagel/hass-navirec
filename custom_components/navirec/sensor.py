@@ -9,90 +9,98 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import (
-    DEGREE,
-    UnitOfElectricPotential,
-    UnitOfLength,
-    UnitOfSpeed,
-    UnitOfTime,
-    UnitOfVolume,
-)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import BINARY_SENSOR_INTERPRETATIONS, LOGGER
-from .data import get_sensor_value_from_state
+from .const import API_UNIT_TO_HA_UNIT, INTERPRETATIONS_TOTAL_INCREASING, LOGGER
+from .data import get_interpretation_choice_options, get_sensor_value_from_state
 from .entity import NavirecEntity
-from .models import Sensor, Vehicle
+from .models import Interpretation, Sensor, Vehicle
 
 if TYPE_CHECKING:
     from .coordinator import NavirecCoordinator
     from .data import NavirecConfigEntry
 
 
-# Mapping of sensor interpretations to HA device class and units
-SENSOR_MAPPINGS: dict[
-    str, tuple[SensorDeviceClass | None, str | None, SensorStateClass | None]
-] = {
-    # Speed and movement
-    "speed": (
-        SensorDeviceClass.SPEED,
-        UnitOfSpeed.KILOMETERS_PER_HOUR,
-        SensorStateClass.MEASUREMENT,
-    ),
-    "heading": (None, DEGREE, SensorStateClass.MEASUREMENT),
-    "altitude": (None, UnitOfLength.METERS, SensorStateClass.MEASUREMENT),
-    # Fuel
-    "fuel_level": (None, UnitOfVolume.LITERS, SensorStateClass.MEASUREMENT),
-    "total_fuel_used": (None, UnitOfVolume.LITERS, SensorStateClass.TOTAL_INCREASING),
-    # Voltage
-    "supply_voltage": (
-        SensorDeviceClass.VOLTAGE,
-        UnitOfElectricPotential.VOLT,
-        SensorStateClass.MEASUREMENT,
-    ),
-    "battery_voltage": (
-        SensorDeviceClass.VOLTAGE,
-        UnitOfElectricPotential.VOLT,
-        SensorStateClass.MEASUREMENT,
-    ),
-    # Distance and time
-    "total_distance": (
-        SensorDeviceClass.DISTANCE,
-        UnitOfLength.METERS,
-        SensorStateClass.TOTAL_INCREASING,
-    ),
-    "total_engine_time": (
-        SensorDeviceClass.DURATION,
-        UnitOfTime.SECONDS,
-        SensorStateClass.TOTAL_INCREASING,
-    ),
-    "accumulated_distance": (
-        SensorDeviceClass.DISTANCE,
-        UnitOfLength.METERS,
-        SensorStateClass.TOTAL_INCREASING,
-    ),
-    "accumulated_engine_time": (
-        SensorDeviceClass.DURATION,
-        UnitOfTime.SECONDS,
-        SensorStateClass.TOTAL_INCREASING,
-    ),
-    # Activity and status
-    "activity": (SensorDeviceClass.ENUM, None, None),
-    "eco_score": (None, None, SensorStateClass.MEASUREMENT),
-    # Satellites
-    "satellites": (None, None, SensorStateClass.MEASUREMENT),
-    # Driver information
-    "driver_1_card_id": (None, None, None),
-    "driver_2_card_id": (None, None, None),
-    "driver_1_ibutton_id": (None, None, None),
-    "driver_1_rfid_id": (None, None, None),
-    "driver_1_working_state": (SensorDeviceClass.ENUM, None, None),
-    "driver_2_working_state": (SensorDeviceClass.ENUM, None, None),
-    # Timestamps
-    "tacho_current_time": (SensorDeviceClass.TIMESTAMP, None, None),
-    "timezone_offset": (None, UnitOfTime.SECONDS, None),
-}
+def _get_device_class(interpretation: Interpretation) -> SensorDeviceClass | None:
+    """Determine HA device class from interpretation data."""
+    # If has choices, it's an ENUM
+    if interpretation.choices:
+        return SensorDeviceClass.ENUM
+
+    # Infer from unit
+    unit = interpretation.unit
+    if hasattr(unit, "value"):
+        unit = unit.value
+
+    device_class = None
+    if unit in ("V", "mV"):
+        device_class = SensorDeviceClass.VOLTAGE
+    elif unit == "A":
+        device_class = SensorDeviceClass.CURRENT
+    elif unit == "c":
+        device_class = SensorDeviceClass.TEMPERATURE
+    elif unit == "m":
+        device_class = SensorDeviceClass.DISTANCE
+    elif unit == "s":
+        device_class = SensorDeviceClass.DURATION
+    elif unit == "km__hr":
+        device_class = SensorDeviceClass.SPEED
+
+    if device_class:
+        return device_class
+
+    # Infer from data_type for timestamp
+    data_type = interpretation.data_type
+    if hasattr(data_type, "value"):
+        data_type = data_type.value
+    if data_type == "datetime":
+        return SensorDeviceClass.TIMESTAMP
+
+    return None
+
+
+def _get_state_class(
+    interpretation: Interpretation, device_class: SensorDeviceClass | None
+) -> SensorStateClass | None:
+    """Determine HA state class from interpretation data."""
+    # ENUMs and timestamps don't have state class
+    if device_class in (SensorDeviceClass.ENUM, SensorDeviceClass.TIMESTAMP):
+        return None
+
+    # Total/accumulated values
+    key = interpretation.key or ""
+    if key in INTERPRETATIONS_TOTAL_INCREASING:
+        return SensorStateClass.TOTAL_INCREASING
+
+    # Most numeric sensors are measurements
+    data_type = interpretation.data_type
+    if hasattr(data_type, "value"):
+        data_type = data_type.value
+    if data_type in ("int", "long", "float", "double", "duration"):
+        return SensorStateClass.MEASUREMENT
+
+    return None
+
+
+def _get_native_unit(interpretation: Interpretation) -> str | None:
+    """Get HA native unit from interpretation data."""
+    unit = interpretation.unit
+    if hasattr(unit, "value"):
+        unit = unit.value
+    if not unit:
+        return None
+    return API_UNIT_TO_HA_UNIT.get(unit)
+
+
+def _get_suggested_unit(interpretation: Interpretation) -> str | None:
+    """Get HA suggested display unit from interpretation data."""
+    unit_conversion = interpretation.unit_conversion
+    if hasattr(unit_conversion, "value"):
+        unit_conversion = unit_conversion.value
+    if not unit_conversion:
+        return None
+    return API_UNIT_TO_HA_UNIT.get(unit_conversion)
 
 
 async def async_setup_entry(
@@ -103,6 +111,7 @@ async def async_setup_entry(
     """Set up Navirec sensors from a config entry."""
     data = entry.runtime_data
     coordinator = data.coordinator
+    interpretations = data.interpretations
 
     entities: list[NavirecSensor] = []
 
@@ -112,21 +121,47 @@ async def async_setup_entry(
         vehicle_sensors = data.sensors_by_vehicle.get(vehicle_id, [])
 
         for sensor_def in vehicle_sensors:
-            # Get interpretation - handle RootModel wrapper
-            interpretation = ""
+            # Get interpretation key - handle RootModel wrapper
+            interpretation_key = ""
             if sensor_def.interpretation:
-                interpretation = (
+                interpretation_key = (
                     sensor_def.interpretation.root.value
                     if hasattr(sensor_def.interpretation, "root")
                     else str(sensor_def.interpretation)
                 )
 
-            # Skip binary sensor interpretations - they're handled in binary_sensor.py
-            if interpretation in BINARY_SENSOR_INTERPRETATIONS:
+            # Get interpretation data
+            interpretation = interpretations.get(interpretation_key)
+            if not interpretation:
+                LOGGER.warning(
+                    "Skipping sensor %s: interpretation %s not found",
+                    sensor_def.id,
+                    interpretation_key,
+                )
                 continue
 
-            # Get mapping for this interpretation
-            mapping = SENSOR_MAPPINGS.get(interpretation)
+            # Skip binary sensor interpretations - they're handled in binary_sensor.py
+            data_type = interpretation.data_type
+            if hasattr(data_type, "value"):
+                data_type = data_type.value
+            if data_type == "boolean":
+                continue
+
+            # Derive sensor configuration from interpretation
+            device_class = _get_device_class(interpretation)
+            state_class = _get_state_class(interpretation, device_class)
+            native_unit = _get_native_unit(interpretation)
+            suggested_unit = _get_suggested_unit(interpretation)
+
+            # Determine decimal precision: use explicit value, or 0 for integers, longs
+            decimal_precision = interpretation.decimal_places
+            if decimal_precision is None and data_type in {"int", "long"}:
+                decimal_precision = 0
+
+            # Get options for enum sensors
+            options = None
+            if device_class == SensorDeviceClass.ENUM:
+                options = get_interpretation_choice_options(interpretation)
 
             entities.append(
                 NavirecSensor(
@@ -136,9 +171,12 @@ async def async_setup_entry(
                     vehicle=vehicle,
                     sensor_def=sensor_def,
                     interpretation=interpretation,
-                    device_class=mapping[0] if mapping else None,
-                    unit=mapping[1] if mapping else None,
-                    state_class=mapping[2] if mapping else None,
+                    device_class=device_class,
+                    native_unit=native_unit,
+                    suggested_unit=suggested_unit,
+                    state_class=state_class,
+                    options=options,
+                    decimal_precision=decimal_precision,
                 )
             )
 
@@ -156,10 +194,13 @@ class NavirecSensor(NavirecEntity, SensorEntity):
         vehicle_id: str,
         vehicle: Vehicle,
         sensor_def: Sensor,
-        interpretation: str,
+        interpretation: Interpretation,
         device_class: SensorDeviceClass | None,
-        unit: str | None,
+        native_unit: str | None,
+        suggested_unit: str | None,
         state_class: SensorStateClass | None,
+        options: list[str] | None,
+        decimal_precision: int | None,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(
@@ -170,11 +211,12 @@ class NavirecSensor(NavirecEntity, SensorEntity):
         )
         self._sensor_def = sensor_def
         self._interpretation = interpretation
+        self._interpretation_key = interpretation.key or ""
 
         # Entity attributes
         sensor_id = str(sensor_def.id) if sensor_def.id else ""
         self._attr_unique_id = f"{vehicle_id}_{sensor_id}"
-        self._attr_name = sensor_def.name_display or interpretation
+        self._attr_name = sensor_def.name_display or self._interpretation_key
 
         # Use show_in_map to determine if entity is enabled by default
         self._attr_entity_registry_enabled_default = sensor_def.show_in_map
@@ -182,49 +224,46 @@ class NavirecSensor(NavirecEntity, SensorEntity):
         # Sensor-specific attributes
         if device_class:
             self._attr_device_class = device_class
-        if unit:
-            self._attr_native_unit_of_measurement = unit
+        if native_unit:
+            self._attr_native_unit_of_measurement = native_unit
+        if suggested_unit:
+            self._attr_suggested_unit_of_measurement = suggested_unit
         if state_class:
             self._attr_state_class = state_class
+        if decimal_precision is not None:
+            self._attr_suggested_display_precision = decimal_precision
 
-        # Handle enum sensors
-        if device_class == SensorDeviceClass.ENUM:
-            if self._interpretation == "activity":
-                # All possible activity values from Activity3b5Enum
-                self._attr_options = [
-                    "offline",
-                    "parking",
-                    "towing",
-                    "idling",
-                    "driving",
-                ]
-            elif self._interpretation in (
-                "driver_1_working_state",
-                "driver_2_working_state",
-            ):
-                # Working state codes: 0=rest, 1=availability, 2=work, 3=driving
-                self._attr_options = ["0", "1", "2", "3"]
+        # Handle enum sensors with options from interpretation choices
+        if device_class == SensorDeviceClass.ENUM and options:
+            self._attr_options = options
 
     @property
     def native_value(self) -> Any:
         """Return the native value of the sensor."""
         state = self.vehicle_state
-        if state:
-            value = get_sensor_value_from_state(state, self._interpretation)
-            if value is None:
-                return None
-            # Handle Pydantic RootModel types (like Activity)
-            if hasattr(value, "root"):
-                # RootModel wraps an enum, get the enum value
-                root_value = value.root
-                if hasattr(root_value, "value"):
-                    return root_value.value
-                return str(root_value)
-            # Handle regular enum types
-            if hasattr(value, "value"):
-                return value.value
-            return value
-        return None
+        if not state:
+            return None
+
+        value = get_sensor_value_from_state(state, self._interpretation_key)
+        if value is None:
+            return None
+
+        # Handle Pydantic RootModel types (like Activity)
+        if hasattr(value, "root"):
+            # RootModel wraps an enum, get the enum value
+            root_value = value.root
+            if hasattr(root_value, "value"):
+                value = root_value.value
+            else:
+                value = str(root_value)
+        # Handle regular enum types
+        elif hasattr(value, "value"):
+            value = value.value
+
+        # For enum sensors, convert value to string to match options
+        if self.device_class == SensorDeviceClass.ENUM:
+            return str(value)
+        return value
 
     @callback
     def _handle_coordinator_update(self) -> None:

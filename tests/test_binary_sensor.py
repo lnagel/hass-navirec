@@ -12,7 +12,12 @@ from custom_components.navirec.binary_sensor import (
     BINARY_SENSOR_DEVICE_CLASSES,
     NavirecBinarySensor,
 )
-from custom_components.navirec.models import Sensor, Vehicle, VehicleState
+from custom_components.navirec.models import (
+    Interpretation,
+    Sensor,
+    Vehicle,
+    VehicleState,
+)
 
 
 def find_sensor_by_interpretation(
@@ -32,6 +37,16 @@ def find_vehicle_by_id(
     for vehicle in vehicles:
         if vehicle.get("id") == vehicle_id:
             return vehicle
+    return None
+
+
+def find_interpretation_by_key(
+    interpretations: list[dict[str, Any]], key: str
+) -> dict[str, Any] | None:
+    """Find an interpretation by key from fixture data."""
+    for interp in interpretations:
+        if interp.get("key") == key:
+            return interp
     return None
 
 
@@ -55,6 +70,7 @@ class TestNavirecBinarySensor:
         vehicles_fixture: list[dict[str, Any]],
         sensors_fixture: list[dict[str, Any]],
         vehicle_states_fixture: list[dict[str, Any]],
+        interpretations_fixture: list[dict[str, Any]],
     ) -> None:
         """Test ignition sensor has correct device class."""
         ignition_sensor_data = find_sensor_by_interpretation(
@@ -66,8 +82,16 @@ class TestNavirecBinarySensor:
         vehicle_data = find_vehicle_by_id(vehicles_fixture, vehicle_id)
         assert vehicle_data is not None, f"No vehicle {vehicle_id} in fixtures"
 
+        ignition_interp_data = find_interpretation_by_key(
+            interpretations_fixture, "ignition"
+        )
+        assert ignition_interp_data is not None, (
+            "No ignition interpretation in fixtures"
+        )
+
         ignition_sensor = Sensor.model_validate(ignition_sensor_data)
         vehicle = Vehicle.model_validate(vehicle_data)
+        interpretation = Interpretation.model_validate(ignition_interp_data)
 
         # Find matching state
         state_data = next(
@@ -84,7 +108,7 @@ class TestNavirecBinarySensor:
             vehicle_id=vehicle_id,
             vehicle=vehicle,
             sensor_def=ignition_sensor,
-            interpretation="ignition",
+            interpretation=interpretation,
             device_class=BINARY_SENSOR_DEVICE_CLASSES.get("ignition"),
         )
 
@@ -96,6 +120,7 @@ class TestNavirecBinarySensor:
         vehicles_fixture: list[dict[str, Any]],
         sensors_fixture: list[dict[str, Any]],
         vehicle_states_fixture: list[dict[str, Any]],
+        interpretations_fixture: list[dict[str, Any]],
     ) -> None:
         """Test ignition sensor returns correct boolean value."""
         ignition_sensor_data = find_sensor_by_interpretation(
@@ -107,8 +132,14 @@ class TestNavirecBinarySensor:
         vehicle_data = find_vehicle_by_id(vehicles_fixture, vehicle_id)
         assert vehicle_data is not None
 
+        ignition_interp_data = find_interpretation_by_key(
+            interpretations_fixture, "ignition"
+        )
+        assert ignition_interp_data is not None
+
         ignition_sensor = Sensor.model_validate(ignition_sensor_data)
         vehicle = Vehicle.model_validate(vehicle_data)
+        interpretation = Interpretation.model_validate(ignition_interp_data)
 
         # Find matching state with ignition
         state_data = next(
@@ -126,7 +157,7 @@ class TestNavirecBinarySensor:
             vehicle_id=vehicle_id,
             vehicle=vehicle,
             sensor_def=ignition_sensor,
-            interpretation="ignition",
+            interpretation=interpretation,
             device_class=BINARY_SENSOR_DEVICE_CLASSES.get("ignition"),
         )
 
@@ -140,6 +171,7 @@ class TestNavirecBinarySensor:
         mock_config_entry: MagicMock,
         vehicles_fixture: list[dict[str, Any]],
         sensors_fixture: list[dict[str, Any]],
+        interpretations_fixture: list[dict[str, Any]],
     ) -> None:
         """Test binary sensor unique ID generation."""
         ignition_sensor_data = find_sensor_by_interpretation(
@@ -151,8 +183,14 @@ class TestNavirecBinarySensor:
         vehicle_data = find_vehicle_by_id(vehicles_fixture, vehicle_id)
         assert vehicle_data is not None
 
+        ignition_interp_data = find_interpretation_by_key(
+            interpretations_fixture, "ignition"
+        )
+        assert ignition_interp_data is not None
+
         ignition_sensor = Sensor.model_validate(ignition_sensor_data)
         vehicle = Vehicle.model_validate(vehicle_data)
+        interpretation = Interpretation.model_validate(ignition_interp_data)
 
         coordinator = MagicMock()
         coordinator.get_vehicle_state.return_value = None
@@ -163,7 +201,7 @@ class TestNavirecBinarySensor:
             vehicle_id=vehicle_id,
             vehicle=vehicle,
             sensor_def=ignition_sensor,
-            interpretation="ignition",
+            interpretation=interpretation,
             device_class=BINARY_SENSOR_DEVICE_CLASSES.get("ignition"),
         )
 
@@ -174,6 +212,7 @@ class TestNavirecBinarySensor:
         mock_config_entry: MagicMock,
         vehicles_fixture: list[dict[str, Any]],
         sensors_fixture: list[dict[str, Any]],
+        interpretations_fixture: list[dict[str, Any]],
     ) -> None:
         """Test sensor enabled by default based on show_in_map."""
         # Find an ignition sensor with show_in_map attribute
@@ -186,8 +225,14 @@ class TestNavirecBinarySensor:
         vehicle_data = find_vehicle_by_id(vehicles_fixture, vehicle_id)
         assert vehicle_data is not None
 
+        ignition_interp_data = find_interpretation_by_key(
+            interpretations_fixture, "ignition"
+        )
+        assert ignition_interp_data is not None
+
         ignition_sensor = Sensor.model_validate(ignition_sensor_data)
         vehicle = Vehicle.model_validate(vehicle_data)
+        interpretation = Interpretation.model_validate(ignition_interp_data)
 
         coordinator = MagicMock()
         coordinator.get_vehicle_state.return_value = None
@@ -198,7 +243,7 @@ class TestNavirecBinarySensor:
             vehicle_id=vehicle_id,
             vehicle=vehicle,
             sensor_def=ignition_sensor,
-            interpretation="ignition",
+            interpretation=interpretation,
             device_class=BINARY_SENSOR_DEVICE_CLASSES.get("ignition"),
         )
 
@@ -211,6 +256,7 @@ class TestNavirecBinarySensor:
         mock_config_entry: MagicMock,
         vehicles_fixture: list[dict[str, Any]],
         sensors_fixture: list[dict[str, Any]],
+        interpretations_fixture: list[dict[str, Any]],
     ) -> None:
         """Test sensor returns None when no state available."""
         ignition_sensor_data = find_sensor_by_interpretation(
@@ -222,8 +268,14 @@ class TestNavirecBinarySensor:
         vehicle_data = find_vehicle_by_id(vehicles_fixture, vehicle_id)
         assert vehicle_data is not None
 
+        ignition_interp_data = find_interpretation_by_key(
+            interpretations_fixture, "ignition"
+        )
+        assert ignition_interp_data is not None
+
         ignition_sensor = Sensor.model_validate(ignition_sensor_data)
         vehicle = Vehicle.model_validate(vehicle_data)
+        interpretation = Interpretation.model_validate(ignition_interp_data)
 
         coordinator = MagicMock()
         coordinator.get_vehicle_state.return_value = None
@@ -234,7 +286,7 @@ class TestNavirecBinarySensor:
             vehicle_id=vehicle_id,
             vehicle=vehicle,
             sensor_def=ignition_sensor,
-            interpretation="ignition",
+            interpretation=interpretation,
             device_class=BINARY_SENSOR_DEVICE_CLASSES.get("ignition"),
         )
 

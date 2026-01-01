@@ -20,7 +20,7 @@ from .const import CONF_ACCOUNT_ID, CONF_API_TOKEN, CONF_API_URL, LOGGER
 from .const import DOMAIN as DOMAIN
 from .coordinator import NavirecCoordinator
 from .data import NavirecData, get_vehicle_id_from_sensor
-from .models import Sensor, Vehicle
+from .models import Interpretation, Sensor, Vehicle
 
 if TYPE_CHECKING:
     from .data import NavirecConfigEntry
@@ -66,6 +66,9 @@ async def async_setup_entry(
     LOGGER.debug("Fetching sensors for account %s", account_id)
     sensors_data = await client.async_get_sensors(account_id=account_id)
 
+    LOGGER.debug("Fetching interpretations")
+    interpretations_data = await client.async_get_interpretations()
+
     # Build lookup dictionaries with Pydantic models
     vehicles: dict[str, Vehicle] = {}
     for v in vehicles_data:
@@ -84,11 +87,18 @@ async def async_setup_entry(
             if vehicle_id and vehicle_id in vehicles:
                 sensors_by_vehicle[vehicle_id].append(sensor)
 
+    interpretations: dict[str, Interpretation] = {}
+    for i in interpretations_data:
+        interpretation = Interpretation.model_validate(i)
+        if interpretation.key:
+            interpretations[interpretation.key] = interpretation
+
     LOGGER.info(
-        "Account %s: found %d vehicles, %d sensors",
+        "Account %s: found %d vehicles, %d sensors, %d interpretations",
         account_name,
         len(vehicles),
         len(sensors),
+        len(interpretations),
     )
 
     # Create single coordinator for this account
@@ -110,6 +120,7 @@ async def async_setup_entry(
         vehicles=vehicles,
         sensors=sensors,
         sensors_by_vehicle=dict(sensors_by_vehicle),
+        interpretations=interpretations,
     )
 
     # Set up platforms

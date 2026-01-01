@@ -2,6 +2,19 @@
 
 from logging import Logger, getLogger
 
+from homeassistant.const import (
+    PERCENTAGE,
+    REVOLUTIONS_PER_MINUTE,
+    UnitOfElectricCurrent,
+    UnitOfElectricPotential,
+    UnitOfLength,
+    UnitOfMass,
+    UnitOfSpeed,
+    UnitOfTemperature,
+    UnitOfTime,
+    UnitOfVolume,
+)
+
 LOGGER: Logger = getLogger(__package__)
 
 DOMAIN = "navirec"
@@ -22,31 +35,37 @@ STREAM_RECONNECT_MIN_DELAY = 1  # seconds
 STREAM_RECONNECT_MAX_DELAY = 60  # seconds
 STREAM_RECONNECT_MULTIPLIER = 2
 
-# Binary sensor interpretations (boolean values in VehicleState)
-BINARY_SENSOR_INTERPRETATIONS = frozenset(
+# Mapping from Navirec API unit codes to Home Assistant unit constants
+API_UNIT_TO_HA_UNIT: dict[str, str] = {
+    "A": UnitOfElectricCurrent.AMPERE,
+    "V": UnitOfElectricPotential.VOLT,
+    "mV": UnitOfElectricPotential.MILLIVOLT,
+    "c": UnitOfTemperature.CELSIUS,
+    "kg": UnitOfMass.KILOGRAMS,
+    "km__hr": UnitOfSpeed.KILOMETERS_PER_HOUR,
+    "l": UnitOfVolume.LITERS,
+    "m": UnitOfLength.METERS,
+    "km": UnitOfLength.KILOMETERS,
+    "percent": PERCENTAGE,
+    "rpm": REVOLUTIONS_PER_MINUTE,
+    "s": UnitOfTime.SECONDS,
+    "hr": UnitOfTime.HOURS,
+}
+
+# Interpretation keys that represent cumulative/total values
+INTERPRETATIONS_TOTAL_INCREASING: frozenset[str] = frozenset(
     {
-        "ignition",
-        "alarm",
-        "digital_input_1",
-        "digital_input_2",
-        "digital_input_3",
-        "digital_input_4",
-        "digital_input_5",
-        "digital_input_6",
-        "digital_input_7",
-        "digital_input_8",
-        "digital_output_1",
-        "digital_output_2",
-        "digital_output_3",
-        "digital_output_4",
-        "driver_1_card_present",
-        "driver_2_card_present",
-        "panic",
-        "notification",
-        "starter_blocked",
-        "vehicle_locked",
-        "hv_battery_charging",
-        "scooter_charging",
-        "scooter_buzzer",
+        "accumulated_distance",
+        "accumulated_engine_time",
+        "elect_odometer",
+        "engine_total_fuel_used",
+        "total_din1_time",
+        "total_din2_time",
+        "total_din3_time",
+        "total_din4_time",
+        "total_distance",
+        "total_engine_time",
+        "total_fuel_used",
+        "total_gps_distance",
     }
 )

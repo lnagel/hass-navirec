@@ -123,6 +123,11 @@ class NavirecApiClient:
             url = f"{url}?account={account_id}"
         return await self._async_get_paginated(url)
 
+    async def async_get_interpretations(self) -> list[dict[str, Any]]:
+        """Get all interpretations (sensor metadata)."""
+        url = f"{self._api_url}/interpretations/"
+        return await self._async_get_paginated(url)
+
     async def _async_get_paginated(self, url: str) -> list[dict[str, Any]]:
         """Fetch all pages of a paginated endpoint."""
         results: list[dict[str, Any]] = []

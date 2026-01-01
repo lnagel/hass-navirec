@@ -30,6 +30,7 @@ REQUIRED_SCHEMAS = {
     "Vehicle",
     "Sensor",
     "VehicleState",
+    "Interpretation",  # Full interpretation object with unit, decimal_places, choices, etc.
     # Enums and types used by core models
     "DefaultLanguageEnum",
     "TimezoneEnum",
