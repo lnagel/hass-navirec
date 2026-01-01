@@ -239,10 +239,11 @@ class NavirecStreamClient:
         LOGGER.debug("Connecting to stream: %s", url)
 
         try:
+            # Heartbeats are sent every 30 seconds, so 35s timeout is appropriate
             self._response = await self._session.get(
                 url,
                 headers=self._headers,
-                timeout=aiohttp.ClientTimeout(total=None, sock_read=90),
+                timeout=aiohttp.ClientTimeout(total=None, sock_read=35),
             )
 
             if self._response.status in (401, 403):
