@@ -13,27 +13,7 @@ from custom_components.navirec.api import (
     NavirecApiClientAuthenticationError,
     NavirecApiClientRateLimitError,
     NavirecStreamClient,
-    _extract_uuid_from_url,
 )
-
-
-class TestExtractUuidFromUrl:
-    """Test UUID extraction from URLs."""
-
-    def test_extract_uuid_from_vehicle_url(self) -> None:
-        """Test extracting UUID from a vehicle URL."""
-        url = "https://api.navirec.com/vehicles/924da156-1a68-4fce-8da1-a196c9bf22be/"
-        assert _extract_uuid_from_url(url) == "924da156-1a68-4fce-8da1-a196c9bf22be"
-
-    def test_extract_uuid_from_account_url(self) -> None:
-        """Test extracting UUID from an account URL."""
-        url = "https://api.navirec.com/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/"
-        assert _extract_uuid_from_url(url) == "89ea89c8-bffb-444a-9876-c54a865e4d67"
-
-    def test_extract_uuid_invalid_url(self) -> None:
-        """Test extracting UUID from invalid URL raises ValueError."""
-        with pytest.raises(ValueError, match="Could not extract UUID"):
-            _extract_uuid_from_url("https://api.navirec.com/invalid/")
 
 
 def create_mock_response(

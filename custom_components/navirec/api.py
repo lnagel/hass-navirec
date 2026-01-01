@@ -44,18 +44,6 @@ class NavirecApiClientRateLimitError(NavirecApiClientError):
         self.retry_after = retry_after
 
 
-def _extract_uuid_from_url(url: str) -> str:
-    """Extract UUID from a Navirec API URL."""
-    # URL format: https://api.navirec.com/vehicles/924da156-1a68-4fce-8da1-a196c9bf22be/
-    match = re.search(
-        r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", url
-    )
-    if match:
-        return match.group(0)
-    msg = f"Could not extract UUID from URL: {url}"
-    raise ValueError(msg)
-
-
 class NavirecApiClient:
     """Navirec API Client for REST endpoints."""
 
