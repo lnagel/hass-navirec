@@ -152,11 +152,13 @@ def main() -> int:
             "--use-union-operator",
             # Skip field constraints to be more flexible with API responses
             # "--field-constraints",
-            "--capitalise-enum-members",
+            "--ignore-enum-constraints",
             "--collapse-root-models",
-            "--use-annotated",
-            "--use-field-description",
+            # "--use-annotated",  # decimal validations fail due to pattern=.. values
+            # "--use-field-description",  # long descriptions generated inline are unnecessary
             "--use-default",
+            "--formatters",
+            "ruff-format",
         ]
 
         result = subprocess.run(cmd, check=False, capture_output=True, text=True)

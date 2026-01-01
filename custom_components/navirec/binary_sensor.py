@@ -67,17 +67,8 @@ async def async_setup_entry(
         vehicle_sensors = data.sensors_by_vehicle.get(vehicle_id, [])
 
         for sensor_def in vehicle_sensors:
-            # Get interpretation key - handle RootModel wrapper
-            interpretation_key = ""
-            if sensor_def.interpretation:
-                interpretation_key = (
-                    sensor_def.interpretation.root.value
-                    if hasattr(sensor_def.interpretation, "root")
-                    else str(sensor_def.interpretation)
-                )
-
             # Get interpretation data
-            interpretation = interpretations.get(interpretation_key)
+            interpretation = interpretations.get(sensor_def.interpretation)
             if not interpretation:
                 continue
 
@@ -89,7 +80,7 @@ async def async_setup_entry(
                 continue
 
             # Get device class for this interpretation
-            device_class = BINARY_SENSOR_DEVICE_CLASSES.get(interpretation_key)
+            device_class = BINARY_SENSOR_DEVICE_CLASSES.get(interpretation.key)
 
             entities.append(
                 NavirecBinarySensor(

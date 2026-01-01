@@ -108,10 +108,7 @@ def get_activity_from_state(state: VehicleState) -> str | None:
         Activity string (e.g., 'driving', 'parking') or None.
 
     """
-    if state.activity:
-        # Activity is a RootModel wrapping the enum
-        return state.activity.root.value
-    return None
+    return state.activity
 
 
 def get_interpretation_choice_options(interpretation: Interpretation) -> list[str]:
