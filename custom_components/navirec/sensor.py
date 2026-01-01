@@ -279,6 +279,15 @@ class NavirecSensor(NavirecEntity, SensorEntity):
         # For enum sensors, convert value to string to match options
         if self.device_class == SensorDeviceClass.ENUM:
             return str(value)
+
+        # For timestamp sensors, parse string to datetime
+        if self.device_class == SensorDeviceClass.TIMESTAMP and isinstance(value, str):
+            try:
+                return datetime.fromisoformat(value)
+            except ValueError:
+                LOGGER.warning("Failed to parse datetime: %s", value)
+                return None
+
         return value
 
     @callback
@@ -320,7 +329,17 @@ class NavirecDiagnosticSensor(NavirecEntity, SensorEntity):
         state = self.vehicle_state
         if not state:
             return None
-        return getattr(state, self._sensor_key, None)
+        value = getattr(state, self._sensor_key, None)
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            return value
+        if isinstance(value, str):
+            try:
+                return datetime.fromisoformat(value)
+            except ValueError:
+                LOGGER.warning("Failed to parse datetime: %s", value)
+        return None
 
     @callback
     def _handle_coordinator_update(self) -> None:
