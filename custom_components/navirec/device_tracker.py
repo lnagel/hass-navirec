@@ -92,7 +92,10 @@ class NavirecDeviceTracker(NavirecEntity, TrackerEntity):
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return extra state attributes."""
-        attrs: dict[str, Any] = {}
+        attrs: dict[str, Any] = {
+            "name_display": self._vehicle.name_display,
+            "registration": self._vehicle.registration,
+        }
         state = self.vehicle_state
 
         if state:

@@ -138,6 +138,8 @@ class TestNavirecDeviceTracker:
 
         attrs = tracker.extra_state_attributes
 
+        assert attrs["name_display"] == "TEST-1"
+        assert attrs["registration"] == "TEST-1"
         assert attrs["speed"] == sample_vehicle_state["speed"]
         assert attrs["heading"] == sample_vehicle_state["heading"]
         assert attrs["altitude"] == sample_vehicle_state["altitude"]
@@ -172,4 +174,8 @@ class TestNavirecDeviceTracker:
 
         assert tracker.latitude is None
         assert tracker.longitude is None
-        assert tracker.extra_state_attributes == {}
+        # Label is always present (from vehicle data, not state)
+        assert tracker.extra_state_attributes == {
+            "name_display": "TEST-1",
+            "registration": "TEST-1",
+        }
