@@ -81,15 +81,16 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
         """Stop the streaming connection."""
         self._should_stop = True
 
-        if self._stream_client:
-            await self._stream_client.async_disconnect()
+        try:
+            if self._stream_client:
+                await self._stream_client.async_disconnect()
+        finally:
             self._stream_client = None
-
-        if self._stream_task:
-            self._stream_task.cancel()
-            with contextlib.suppress(asyncio.CancelledError):
-                await self._stream_task
-            self._stream_task = None
+            if self._stream_task:
+                self._stream_task.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await self._stream_task
+                self._stream_task = None
 
         LOGGER.info("Stopped streaming task for account %s", self._account_name)
 

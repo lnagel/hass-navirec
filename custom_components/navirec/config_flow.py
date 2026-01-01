@@ -25,6 +25,11 @@ from .const import (
 )
 
 
+def _normalize_account_id(user_input: dict[str, Any]) -> str | None:
+    """Normalize account_id from user input, returning None for empty strings."""
+    return user_input.get(CONF_ACCOUNT_ID, "").strip() or None
+
+
 class NavirecFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Navirec."""
 
@@ -40,8 +45,7 @@ class NavirecFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             api_url = user_input[CONF_API_URL].rstrip("/")
             api_token = user_input[CONF_API_TOKEN]
-            # Optional account_id - if empty string, treat as None
-            user_account_id = user_input.get(CONF_ACCOUNT_ID, "").strip() or None
+            user_account_id = _normalize_account_id(user_input)
 
             try:
                 account = await self._validate_and_get_account(
@@ -114,7 +118,7 @@ class NavirecFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             api_url = user_input[CONF_API_URL].rstrip("/")
             api_token = user_input[CONF_API_TOKEN]
-            user_account_id = user_input.get(CONF_ACCOUNT_ID, "").strip() or None
+            user_account_id = _normalize_account_id(user_input)
 
             try:
                 account = await self._validate_and_get_account(
