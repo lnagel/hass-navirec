@@ -17,12 +17,12 @@ import json
 import os
 import re
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 import aiohttp
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
 # Configuration
@@ -30,46 +30,41 @@ API_URL = os.environ.get("NAVIREC_API_URL", "https://api.navirec.com/")
 API_TOKEN = os.environ.get("NAVIREC_API_TOKEN", "")
 API_VERSION = "1.45.0"
 USER_AGENT = "hass-navirec/fixtures-downloader"
-
-# Stream configuration
 STREAM_DURATION_SECONDS = 10
-
-# Output directory
 FIXTURES_DIR = Path(__file__).parent.parent / "tests" / "fixtures"
 
-# Endpoints to download without account filter (paginated)
-ENDPOINTS = {
-    "accounts.json": "/accounts/",
-    "interpretations.json": "/interpretations/",
-}
 
-# Endpoints to download per-account with pagination
-PER_ACCOUNT_PAGINATED_ENDPOINTS = {
-    "vehicles.json": "/vehicles/",
-    "sensors.json": "/sensors/",
-    "drivers.json": "/drivers/",
-}
+@dataclass
+class Endpoint:
+    """Configuration for an API endpoint."""
 
-# Endpoints that require per-account fetching (no pagination)
-PER_ACCOUNT_ENDPOINTS = {
-    "last_vehicle_states.json": "/last_vehicle_states/",
-}
+    filename: str
+    path: str
+    per_account: bool = False
+    paginated: bool = True
 
 
-def get_headers() -> dict[str, str]:
-    """Get common headers for API requests."""
+ENDPOINTS = [
+    Endpoint("accounts.json", "/accounts/"),
+    Endpoint("interpretations.json", "/interpretations/"),
+    Endpoint("vehicles.json", "/vehicles/", per_account=True),
+    Endpoint("sensors.json", "/sensors/", per_account=True),
+    Endpoint("drivers.json", "/drivers/", per_account=True),
+    Endpoint(
+        "last_vehicle_states.json",
+        "/last_vehicle_states/",
+        per_account=True,
+        paginated=False,
+    ),
+]
+
+
+def get_headers(stream: bool = False) -> dict[str, str]:
+    """Get headers for API requests."""
+    accept = "application/x-ndjson" if stream else "application/json"
     return {
         "Authorization": f"Token {API_TOKEN}",
-        "Accept": f"application/json; version={API_VERSION}",
-        "User-Agent": USER_AGENT,
-    }
-
-
-def get_stream_headers() -> dict[str, str]:
-    """Get headers for stream requests."""
-    return {
-        "Authorization": f"Token {API_TOKEN}",
-        "Accept": f"application/x-ndjson; version={API_VERSION}",
+        "Accept": f"{accept}; version={API_VERSION}",
         "User-Agent": USER_AGENT,
     }
 
@@ -77,25 +72,21 @@ def get_stream_headers() -> dict[str, str]:
 def parse_link_header(link_header: str) -> dict[str, str]:
     """Parse Link header into a dict of rel -> url."""
     links = {}
-    if not link_header:
-        return links
-
     for part in link_header.split(","):
-        match = re.match(r'<([^>]+)>;\s*rel="([^"]+)"', part.strip())
-        if match:
+        if match := re.match(r'<([^>]+)>;\s*rel="([^"]+)"', part.strip()):
             url, rel = match.groups()
             links[rel] = url
-
     return links
 
 
-async def fetch_all_pages(
+async def fetch_json(
     session: aiohttp.ClientSession,
     url: str,
+    paginated: bool = True,
 ) -> list[dict]:
-    """Fetch all pages of a paginated endpoint and concatenate results."""
+    """Fetch JSON data from a URL, handling pagination and rate limits."""
     all_results = []
-    current_url = url
+    current_url: str | None = url
     page = 1
 
     while current_url:
@@ -104,148 +95,76 @@ async def fetch_all_pages(
                 raise ValueError("Authentication failed. Check your API token.")
             if response.status == 429:
                 retry_after = int(response.headers.get("Retry-After", "60"))
-                print(f"  Rate limited. Waiting {retry_after} seconds...")
+                print(f"  Rate limited. Waiting {retry_after}s...")
                 await asyncio.sleep(retry_after)
                 continue
 
             response.raise_for_status()
             data = await response.json()
 
-            # Concatenate results from this page
             if isinstance(data, list):
                 all_results.extend(data)
-                print(
-                    f"  Page {page}: fetched {len(data)} items (total: {len(all_results)})"
-                )
+                print(f"  Page {page}: {len(data)} items (total: {len(all_results)})")
             else:
-                # Some endpoints return a single object or dict
                 all_results.append(data)
-                print(f"  Page {page}: fetched 1 item")
+                print(f"  Page {page}: 1 item")
 
-            # Check for next page via Link header
+            if not paginated:
+                break
+
             link_header = response.headers.get("Link", "")
-            links = parse_link_header(link_header)
-            current_url = links.get("next")
+            current_url = parse_link_header(link_header).get("next")
             page += 1
 
     return all_results
 
 
+def save_json(path: Path, data: list[dict]) -> None:
+    """Save data as JSON to a file."""
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+
+
 async def download_endpoint(
     session: aiohttp.ClientSession,
-    filename: str,
-    endpoint: str,
+    endpoint: Endpoint,
+    account_ids: list[str] | None = None,
 ) -> None:
     """Download data from an endpoint and save to file."""
-    url = f"{API_URL.rstrip('/')}{endpoint}"
-    print(f"Downloading {filename} from {endpoint}...")
+    print(f"Downloading {endpoint.filename} from {endpoint.path}...")
 
     try:
-        data = await fetch_all_pages(session, url)
-        output_path = FIXTURES_DIR / filename
+        all_results = []
 
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-            f.write("\n")  # Ensure file ends with newline
+        if endpoint.per_account and account_ids:
+            for account_id in account_ids:
+                url = f"{API_URL.rstrip('/')}{endpoint.path}?account={account_id}"
+                data = await fetch_json(session, url, endpoint.paginated)
+                all_results.extend(data)
+                print(f"  Account {account_id}: {len(data)} items")
+        else:
+            url = f"{API_URL.rstrip('/')}{endpoint.path}"
+            all_results = await fetch_json(session, url, endpoint.paginated)
 
-        print(f"  Saved {len(data)} items to {filename}")
+        if all_results:
+            save_json(FIXTURES_DIR / endpoint.filename, all_results)
+            print(f"  Saved {len(all_results)} items to {endpoint.filename}")
 
     except aiohttp.ClientError as e:
-        print(f"  Error downloading {endpoint}: {e}")
+        print(f"  Error: {e}")
     except ValueError as e:
         print(f"  Error: {e}")
 
 
-async def fetch_single_page(
-    session: aiohttp.ClientSession,
-    url: str,
-) -> list[dict]:
-    """Fetch a single page (no pagination)."""
-    async with session.get(url, headers=get_headers()) as response:
-        if response.status == 401:
-            raise ValueError("Authentication failed. Check your API token.")
-        if response.status == 429:
-            retry_after = int(response.headers.get("Retry-After", "60"))
-            print(f"  Rate limited. Waiting {retry_after} seconds...")
-            await asyncio.sleep(retry_after)
-            return await fetch_single_page(session, url)
-
-        response.raise_for_status()
-        data = await response.json()
-
-        if isinstance(data, list):
-            return data
-        return [data]
-
-
-async def download_per_account_paginated_endpoint(
-    session: aiohttp.ClientSession,
-    filename: str,
-    endpoint: str,
-    account_ids: list[str],
-) -> None:
-    """Download data from a paginated endpoint with account filter."""
-    print(f"Downloading {filename} from {endpoint} (per account, paginated)...")
-
-    all_results = []
-    for account_id in account_ids:
-        url = f"{API_URL.rstrip('/')}{endpoint}?account={account_id}"
-        try:
-            data = await fetch_all_pages(session, url)
-            all_results.extend(data)
-            print(f"  Account {account_id}: fetched {len(data)} items")
-        except aiohttp.ClientError as e:
-            print(f"  Error fetching account {account_id}: {e}")
-        except ValueError as e:
-            print(f"  Error: {e}")
-
-    if all_results:
-        output_path = FIXTURES_DIR / filename
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(all_results, f, indent=2, ensure_ascii=False)
-            f.write("\n")
-        print(f"  Saved {len(all_results)} items to {filename}")
-
-
-async def download_per_account_endpoint(
-    session: aiohttp.ClientSession,
-    filename: str,
-    endpoint: str,
-    account_ids: list[str],
-) -> None:
-    """Download data from an endpoint that requires per-account fetching (no pagination)."""
-    print(f"Downloading {filename} from {endpoint} (per account)...")
-
-    all_results = []
-    for account_id in account_ids:
-        url = f"{API_URL.rstrip('/')}{endpoint}?account={account_id}"
-        try:
-            data = await fetch_single_page(session, url)
-            all_results.extend(data)
-            print(f"  Account {account_id}: fetched {len(data)} items")
-        except aiohttp.ClientError as e:
-            print(f"  Error fetching account {account_id}: {e}")
-
-    if all_results:
-        output_path = FIXTURES_DIR / filename
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(all_results, f, indent=2, ensure_ascii=False)
-            f.write("\n")
-        print(f"  Saved {len(all_results)} items to {filename}")
-
-
 async def download_stream_events(
     session: aiohttp.ClientSession,
-    filename: str,
     account_ids: list[str],
-    duration_seconds: int = STREAM_DURATION_SECONDS,
+    duration: int = STREAM_DURATION_SECONDS,
 ) -> None:
-    """Download stream events for a specified duration.
-
-    Connects to the vehicle states stream and collects events for the
-    specified duration, then saves them to an ndjson file.
-    """
-    print(f"Downloading {filename} from stream (running for {duration_seconds}s)...")
+    """Download stream events for a specified duration."""
+    filename = "stream_events.ndjson"
+    print(f"Downloading {filename} from stream ({duration}s)...")
 
     all_events: list[str] = []
 
@@ -254,123 +173,91 @@ async def download_stream_events(
         print(f"  Connecting to stream for account {account_id}...")
 
         try:
+            timeout = aiohttp.ClientTimeout(total=None, sock_read=duration + 5)
             async with session.get(
-                url,
-                headers=get_stream_headers(),
-                timeout=aiohttp.ClientTimeout(
-                    total=None, sock_read=duration_seconds + 5
-                ),
+                url, headers=get_headers(stream=True), timeout=timeout
             ) as response:
                 if response.status == 401:
                     print(f"  Authentication failed for account {account_id}")
                     continue
                 if response.status == 429:
                     retry_after = int(response.headers.get("Retry-After", "60"))
-                    print(f"  Rate limited. Waiting {retry_after} seconds...")
+                    print(f"  Rate limited. Waiting {retry_after}s...")
                     await asyncio.sleep(retry_after)
                     continue
 
                 response.raise_for_status()
-
-                # Read stream for the specified duration
                 start_time = asyncio.get_event_loop().time()
                 event_count = 0
 
                 async for line in response.content:
-                    # Check if we've exceeded the duration
-                    elapsed = asyncio.get_event_loop().time() - start_time
-                    if elapsed >= duration_seconds:
-                        print(
-                            f"  Duration reached ({duration_seconds}s), stopping stream..."
-                        )
+                    if asyncio.get_event_loop().time() - start_time >= duration:
+                        print(f"  Duration reached ({duration}s), stopping...")
                         break
 
-                    # Decode and store the line
-                    line_text = line.decode("utf-8").strip()
-                    if line_text:
+                    if line_text := line.decode("utf-8").strip():
                         all_events.append(line_text)
                         event_count += 1
-
-                        # Parse to show event type
                         try:
-                            event_data = json.loads(line_text)
-                            event_type = event_data.get("event", "unknown")
+                            event_type = json.loads(line_text).get("event", "unknown")
                             print(f"    Event {event_count}: {event_type}")
                         except json.JSONDecodeError:
                             print(f"    Event {event_count}: (invalid JSON)")
 
-                print(f"  Account {account_id}: collected {event_count} events")
+                print(f"  Account {account_id}: {event_count} events")
 
         except TimeoutError:
-            print(
-                f"  Stream timeout for account {account_id} (expected after {duration_seconds}s)"
-            )
+            print(f"  Stream timeout for account {account_id}")
         except aiohttp.ClientError as e:
             print(f"  Error streaming account {account_id}: {e}")
 
     if all_events:
-        output_path = FIXTURES_DIR / filename
-        with open(output_path, "w", encoding="utf-8") as f:
+        with open(FIXTURES_DIR / filename, "w", encoding="utf-8") as f:
             f.writelines(event + "\n" for event in all_events)
         print(f"  Saved {len(all_events)} events to {filename}")
     else:
-        print(f"  No events collected for {filename}")
+        print("  No events collected")
 
 
 async def main() -> int:
     """Download all fixtures."""
     if not API_TOKEN:
-        print("Error: NAVIREC_API_TOKEN environment variable not set.")
-        print("Create a .env file with:")
+        print("Error: NAVIREC_API_TOKEN not set. Create a .env file with:")
         print("  NAVIREC_API_URL=https://api.navirec.com/")
         print("  NAVIREC_API_TOKEN=your-api-token")
         return 1
 
-    print(f"Using API URL: {API_URL}")
-    print(f"Saving fixtures to: {FIXTURES_DIR}")
-    print()
-
-    # Ensure fixtures directory exists
+    print(f"API: {API_URL}")
+    print(f"Output: {FIXTURES_DIR}\n")
     FIXTURES_DIR.mkdir(parents=True, exist_ok=True)
 
     async with aiohttp.ClientSession() as session:
-        # First download paginated endpoints (including accounts)
-        for filename, endpoint in ENDPOINTS.items():
-            await download_endpoint(session, filename, endpoint)
+        # Download endpoints without account filter first (to get account IDs)
+        for endpoint in ENDPOINTS:
+            if not endpoint.per_account:
+                await download_endpoint(session, endpoint)
 
-        # Load accounts to get account IDs for per-account endpoints
+        # Load account IDs
         accounts_file = FIXTURES_DIR / "accounts.json"
-        account_ids: list[str] = []
+        if not accounts_file.exists():
+            print("No accounts.json found, skipping per-account endpoints")
+            return 0
 
-        if accounts_file.exists():
-            with open(accounts_file, encoding="utf-8") as f:
-                accounts = json.load(f)
-            account_ids = [acc["id"] for acc in accounts if "id" in acc]
-            print(f"\nFound {len(account_ids)} accounts for per-account endpoints\n")
+        with open(accounts_file, encoding="utf-8") as f:
+            accounts = json.load(f)
+        account_ids = [acc["id"] for acc in accounts if "id" in acc]
+        print(f"\nFound {len(account_ids)} accounts\n")
 
-            # Download per-account paginated endpoints
-            for filename, endpoint in PER_ACCOUNT_PAGINATED_ENDPOINTS.items():
-                await download_per_account_paginated_endpoint(
-                    session, filename, endpoint, account_ids
-                )
+        # Download per-account endpoints
+        for endpoint in ENDPOINTS:
+            if endpoint.per_account:
+                await download_endpoint(session, endpoint, account_ids)
 
-            # Download per-account non-paginated endpoints
-            for filename, endpoint in PER_ACCOUNT_ENDPOINTS.items():
-                await download_per_account_endpoint(
-                    session, filename, endpoint, account_ids
-                )
+        # Download stream events
+        print()
+        await download_stream_events(session, account_ids)
 
-            # Download stream events
-            print()
-            await download_stream_events(
-                session,
-                "stream_events.ndjson",
-                account_ids,
-                duration_seconds=STREAM_DURATION_SECONDS,
-            )
-
-    print()
-    print("Done!")
+    print("\nDone!")
     return 0
 
 
