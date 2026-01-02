@@ -45453,7 +45453,8 @@
                     "vehicle": {
                         "type": "string",
                         "format": "uri",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "time": {
                         "type": "string",
@@ -45462,11 +45463,13 @@
                     },
                     "device_code": {
                         "type": "string",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "driver_code": {
                         "type": "string",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "location": {
                         "type": "object",
@@ -45500,22 +45503,26 @@
                     "eco_score": {
                         "type": "number",
                         "format": "double",
+                        "readOnly": true,
                         "nullable": true
                     },
                     "received_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "updated_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "streamed_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "accelerator": {
                         "type": "number",
@@ -46244,10 +46251,7 @@
                         "format": "double",
                         "nullable": true
                     }
-                },
-                "required": [
-                    "eco_score"
-                ]
+                }
             },
             "DriverUserGroupPermissions": {
                 "type": "object",
@@ -69254,20 +69258,26 @@
                     "eco_score": {
                         "type": "number",
                         "format": "double",
+                        "readOnly": true,
                         "nullable": true
                     },
                     "activity": {
-                        "allOf": [
+                        "readOnly": true,
+                        "nullable": true,
+                        "oneOf": [
                             {
                                 "$ref": "#/components/schemas/Activity3b5Enum"
+                            },
+                            {
+                                "$ref": "#/components/schemas/NullEnum"
                             }
-                        ],
-                        "readOnly": true
+                        ]
                     },
                     "activity_started_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "activity_distance": {
                         "type": "number",
@@ -69284,22 +69294,26 @@
                     "received_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "updated_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "interpolated_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "streamed_at": {
                         "type": "string",
                         "format": "date-time",
-                        "readOnly": true
+                        "readOnly": true,
+                        "nullable": true
                     },
                     "accelerator": {
                         "type": "number",
@@ -70024,10 +70038,7 @@
                         "format": "double",
                         "nullable": true
                     }
-                },
-                "required": [
-                    "eco_score"
-                ]
+                }
             },
             "VehicleTransfer": {
                 "type": "object",
