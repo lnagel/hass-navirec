@@ -35,6 +35,10 @@ STREAM_RECONNECT_MIN_DELAY = 1  # seconds
 STREAM_RECONNECT_MAX_DELAY = 60  # seconds
 STREAM_RECONNECT_MULTIPLIER = 2
 
+# Storage settings
+STORAGE_VERSION = 1
+STORAGE_KEY = "navirec_stream_watermarks"
+
 # Mapping from Navirec API unit codes to Home Assistant unit constants
 API_UNIT_TO_HA_UNIT: dict[str, str] = {
     "A": UnitOfElectricCurrent.AMPERE,

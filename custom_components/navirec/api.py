@@ -197,6 +197,7 @@ class NavirecStreamClient:
         api_token: str,
         session: aiohttp.ClientSession,
         account_id: str,
+        initial_watermark: str | None = None,
     ) -> None:
         """Initialize the stream client."""
         self._api_url = api_url.rstrip("/")
@@ -205,7 +206,7 @@ class NavirecStreamClient:
         self._account_id = account_id
         self._response: aiohttp.ClientResponse | None = None
         self._connected = False
-        self._last_updated_at: str | None = None
+        self._last_updated_at: str | None = initial_watermark
         self._reconnect_delay = STREAM_RECONNECT_MIN_DELAY
         self._should_stop = False
 
