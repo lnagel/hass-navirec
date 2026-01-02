@@ -37,7 +37,7 @@ STREAM_RECONNECT_MULTIPLIER = 2
 
 # Storage settings
 STORAGE_VERSION = 1
-STORAGE_KEY = "navirec_stream_watermarks"
+STORAGE_KEY = "navirec_stream_state"
 
 # Mapping from Navirec API unit codes to Home Assistant unit constants
 API_UNIT_TO_HA_UNIT: dict[str, str] = {

@@ -56,7 +56,7 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
         # Vehicle states keyed by vehicle_id
         self.data: dict[str, VehicleState] = {}
 
-        # Persistent storage for watermarks
+        # Persistent storage for stream state
         self._store: Store[dict[str, Any]] = Store(
             hass,
             STORAGE_VERSION,
@@ -79,8 +79,8 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
         if self._stream_task is not None:
             return
 
-        # Load watermark from persistent storage
-        await self._async_load_watermark()
+        # Load stream state from persistent storage
+        await self._async_load_stream_state()
 
         self._should_stop = False
         self._stream_task = self.hass.async_create_background_task(
@@ -114,7 +114,7 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
 
         while not self._should_stop:
             try:
-                # Create stream client with watermark for resume
+                # Create stream client with stream state for resume
                 self._stream_client = NavirecStreamClient(
                     api_url=self._api_url,
                     api_token=self._api_token,
@@ -196,9 +196,9 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
                     self.data[vehicle_id] = state
                     self._async_notify_listeners()
 
-                # Update and persist watermark
+                # Update and persist stream state
                 if "updated_at" in data:
-                    await self._async_update_watermark(data["updated_at"])
+                    await self._async_update_stream_state(data["updated_at"])
 
         elif event_type == "initial_state_sent":
             self._initial_state_received = True
@@ -235,21 +235,21 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
         """Get the current state for a vehicle."""
         return self.data.get(vehicle_id)
 
-    async def _async_load_watermark(self) -> None:
-        """Load the watermark from persistent storage."""
+    async def _async_load_stream_state(self) -> None:
+        """Load the stream state from persistent storage."""
         data = await self._store.async_load()
         if data and "last_updated_at" in data:
             self._last_updated_at = data["last_updated_at"]
             LOGGER.debug(
-                "Loaded watermark for account %s: %s",
+                "Loaded stream state for account %s: %s",
                 self._account_name,
                 self._last_updated_at,
             )
         else:
-            LOGGER.debug("No watermark found for account %s", self._account_name)
+            LOGGER.debug("No stream state found for account %s", self._account_name)
 
-    async def _async_update_watermark(self, updated_at: str) -> None:
-        """Update and persist the watermark."""
+    async def _async_update_stream_state(self, updated_at: str) -> None:
+        """Update and persist the stream state."""
         if self._last_updated_at != updated_at:
             self._last_updated_at = updated_at
             await self._store.async_save({"last_updated_at": updated_at})

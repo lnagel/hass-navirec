@@ -315,3 +315,71 @@ class TestNavirecStreamClient:
         # Should be back to initial
         delay = stream_client.get_reconnect_delay()
         assert delay == 1
+
+    def test_initial_watermark_none(self, mock_session: MagicMock) -> None:
+        """Test stream client initializes with no watermark by default."""
+        client = NavirecStreamClient(
+            api_url="https://api.navirec.test/",
+            api_token="test-token",
+            session=mock_session,
+            account_id="test-account-id",
+        )
+
+        assert client.last_updated_at is None
+
+    def test_initial_watermark_provided(self, mock_session: MagicMock) -> None:
+        """Test stream client initializes with provided watermark."""
+        watermark = "2025-12-31T19:09:24.796730Z"
+        client = NavirecStreamClient(
+            api_url="https://api.navirec.test/",
+            api_token="test-token",
+            session=mock_session,
+            account_id="test-account-id",
+            initial_watermark=watermark,
+        )
+
+        assert client.last_updated_at == watermark
+
+    @pytest.mark.asyncio
+    async def test_connect_without_watermark(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test connection URL without watermark parameter."""
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await stream_client.async_connect()
+
+        # Verify URL doesn't include updated_at__gt parameter
+        call_args = mock_session.get.call_args
+        url = call_args.args[0]
+        assert "updated_at__gt" not in url
+        assert url.endswith("?account=test-account-id")
+
+    @pytest.mark.asyncio
+    async def test_connect_with_watermark(self, mock_session: MagicMock) -> None:
+        """Test connection URL includes watermark parameter when provided."""
+        watermark = "2025-12-31T19:09:24.796730Z"
+        client = NavirecStreamClient(
+            api_url="https://api.navirec.test/",
+            api_token="test-token",
+            session=mock_session,
+            account_id="test-account-id",
+            initial_watermark=watermark,
+        )
+
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await client.async_connect()
+
+        # Verify URL includes updated_at__gt parameter
+        call_args = mock_session.get.call_args
+        url = call_args.args[0]
+        assert "updated_at__gt=" in url
+        assert watermark in url
+        assert "account=test-account-id" in url

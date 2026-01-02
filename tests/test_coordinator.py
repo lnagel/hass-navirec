@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -218,3 +219,291 @@ class TestStreamEventHandling:
         event = {"event": "disconnected"}
         # Should not raise - just logs
         await coordinator._async_handle_event(event)
+
+
+class TestStreamStatePersistence:
+    """Tests for stream state persistence."""
+
+    @pytest.mark.asyncio
+    async def test_load_stream_state_no_existing_data(
+        self, hass: HomeAssistant, enable_custom_integrations: None
+    ) -> None:
+        """Test loading stream state when no persisted data exists."""
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+        # Mock Store to return None (no existing data)
+        with patch.object(coordinator._store, "async_load", return_value=None):
+            await coordinator._async_load_stream_state()
+
+        assert coordinator._last_updated_at is None
+
+    @pytest.mark.asyncio
+    async def test_load_stream_state_with_existing_data(
+        self, hass: HomeAssistant, enable_custom_integrations: None
+    ) -> None:
+        """Test loading stream state from persisted storage."""
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+        # Mock Store to return existing watermark
+        existing_timestamp = "2025-12-31T19:09:24.796730Z"
+        with patch.object(
+            coordinator._store,
+            "async_load",
+            return_value={"last_updated_at": existing_timestamp},
+        ):
+            await coordinator._async_load_stream_state()
+
+        assert coordinator._last_updated_at == existing_timestamp
+
+    @pytest.mark.asyncio
+    async def test_load_stream_state_with_invalid_data(
+        self, hass: HomeAssistant, enable_custom_integrations: None
+    ) -> None:
+        """Test loading stream state when storage has invalid data."""
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+        # Mock Store to return data without last_updated_at key
+        with patch.object(
+            coordinator._store, "async_load", return_value={"other_key": "value"}
+        ):
+            await coordinator._async_load_stream_state()
+
+        assert coordinator._last_updated_at is None
+
+    @pytest.mark.asyncio
+    async def test_update_stream_state_saves_new_value(
+        self, hass: HomeAssistant, enable_custom_integrations: None
+    ) -> None:
+        """Test that updating stream state saves to storage."""
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+        new_timestamp = "2025-12-31T19:09:24.796730Z"
+
+        with patch.object(coordinator._store, "async_save") as mock_save:
+            await coordinator._async_update_stream_state(new_timestamp)
+
+        assert coordinator._last_updated_at == new_timestamp
+        mock_save.assert_called_once_with({"last_updated_at": new_timestamp})
+
+    @pytest.mark.asyncio
+    async def test_update_stream_state_skips_duplicate(
+        self, hass: HomeAssistant, enable_custom_integrations: None
+    ) -> None:
+        """Test that updating stream state with same value doesn't save."""
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+        timestamp = "2025-12-31T19:09:24.796730Z"
+        coordinator._last_updated_at = timestamp
+
+        with patch.object(coordinator._store, "async_save") as mock_save:
+            await coordinator._async_update_stream_state(timestamp)
+
+        # Should not save if value hasn't changed
+        mock_save.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_vehicle_state_event_persists_updated_at(
+        self,
+        hass: HomeAssistant,
+        enable_custom_integrations: None,
+        vehicle_states_fixture: list[dict[str, Any]],
+    ) -> None:
+        """Test that vehicle_state event triggers stream state persistence."""
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+        sample_state = vehicle_states_fixture[0]
+        expected_timestamp = sample_state["updated_at"]
+
+        event = {
+            "event": "vehicle_state",
+            "data": sample_state,
+        }
+
+        with (
+            patch.object(coordinator, "_async_notify_listeners"),
+            patch.object(coordinator._store, "async_save") as mock_save,
+        ):
+            await coordinator._async_handle_event(event)
+
+        assert coordinator._last_updated_at == expected_timestamp
+        mock_save.assert_called_once_with({"last_updated_at": expected_timestamp})
+
+    @pytest.mark.asyncio
+    async def test_vehicle_state_event_without_updated_at(
+        self,
+        hass: HomeAssistant,
+        enable_custom_integrations: None,
+    ) -> None:
+        """Test that vehicle_state event without updated_at doesn't crash."""
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+        # Event data without updated_at field
+        event = {
+            "event": "vehicle_state",
+            "data": {
+                "vehicle": "https://api.navirec.com/vehicles/test-id/",
+                "speed": 50,
+            },
+        }
+
+        with (
+            patch.object(coordinator, "_async_notify_listeners"),
+            patch.object(coordinator._store, "async_save") as mock_save,
+        ):
+            await coordinator._async_handle_event(event)
+
+        # Should not save if no updated_at in data
+        mock_save.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_stream_state_loaded_on_start_streaming(
+        self, hass: HomeAssistant, enable_custom_integrations: None
+    ) -> None:
+        """Test that stream state is loaded when streaming starts."""
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+        existing_timestamp = "2025-12-31T19:09:24.796730Z"
+
+        with (
+            patch.object(
+                coordinator._store,
+                "async_load",
+                return_value={"last_updated_at": existing_timestamp},
+            ),
+            patch.object(
+                coordinator, "_async_stream_loop", new_callable=AsyncMock
+            ) as mock_loop,
+        ):
+            # Create a proper awaitable future
+            future = asyncio.Future()
+            future.set_result(None)
+            mock_loop.return_value = future
+
+            await coordinator.async_start_streaming()
+
+        assert coordinator._last_updated_at == existing_timestamp
+
+    @pytest.mark.asyncio
+    async def test_stream_client_receives_initial_watermark(
+        self, hass: HomeAssistant, enable_custom_integrations: None
+    ) -> None:
+        """Test that stream client is created with persisted watermark."""
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+        existing_timestamp = "2025-12-31T19:09:24.796730Z"
+        coordinator._last_updated_at = existing_timestamp
+
+        # Mock the stream client creation
+        with (
+            patch(
+                "custom_components.navirec.coordinator.NavirecStreamClient"
+            ) as mock_stream_client_class,
+            patch("custom_components.navirec.coordinator.async_get_clientsession"),
+        ):
+            mock_client = MagicMock()
+            mock_client.async_connect = AsyncMock()
+            mock_client.reset_reconnect_delay = MagicMock()
+            mock_client.async_iter_events = AsyncMock(
+                return_value=iter([])  # Empty iterator to exit loop
+            )
+            mock_client.async_disconnect = AsyncMock()
+            mock_stream_client_class.return_value = mock_client
+
+            # Start the stream loop
+            coordinator._should_stop = False
+            with contextlib.suppress(TimeoutError, StopAsyncIteration):
+                # Run one iteration of the loop
+                await asyncio.wait_for(coordinator._async_stream_loop(), timeout=1)
+
+        # Verify stream client was created with the watermark
+        mock_stream_client_class.assert_called_once()
+        call_kwargs = mock_stream_client_class.call_args.kwargs
+        assert call_kwargs["initial_watermark"] == existing_timestamp
+
+    @pytest.mark.asyncio
+    async def test_stream_state_persists_across_multiple_events(
+        self,
+        hass: HomeAssistant,
+        enable_custom_integrations: None,
+        vehicle_states_fixture: list[dict[str, Any]],
+    ) -> None:
+        """Test that stream state is updated with latest timestamp from multiple events."""
+        coordinator = NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+        # Process multiple events
+        with (
+            patch.object(coordinator, "_async_notify_listeners"),
+            patch.object(coordinator._store, "async_save") as mock_save,
+        ):
+            for state in vehicle_states_fixture[:3]:
+                event = {
+                    "event": "vehicle_state",
+                    "data": state,
+                }
+                await coordinator._async_handle_event(event)
+
+        # Should have the last timestamp
+        last_timestamp = vehicle_states_fixture[2]["updated_at"]
+        assert coordinator._last_updated_at == last_timestamp
+        # Should have been called 3 times (once per event with different timestamp)
+        assert mock_save.call_count == 3
