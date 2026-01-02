@@ -383,6 +383,7 @@ class TestStreamStatePersistence:
             "event": "vehicle_state",
             "data": {
                 "vehicle": "https://api.navirec.com/vehicles/test-id/",
+                "eco_score": 0.5,  # Required field
                 "speed": 50,
             },
         }
