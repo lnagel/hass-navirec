@@ -161,7 +161,7 @@ class VehicleState(BaseModel):
     """
     Geojson geometry object format
     """
-    eco_score: float
+    eco_score: float | None = None
     activity: str | None = None
     activity_started_at: AwareDatetime | None = None
     activity_distance: float | None = None
