@@ -315,3 +315,71 @@ class TestNavirecStreamClient:
         # Should be back to initial
         delay = stream_client.get_reconnect_delay()
         assert delay == 1
+
+    def test_initial_last_updated_at_none(self, mock_session: MagicMock) -> None:
+        """Test stream client initializes with no last_updated_at by default."""
+        client = NavirecStreamClient(
+            api_url="https://api.navirec.test/",
+            api_token="test-token",
+            session=mock_session,
+            account_id="test-account-id",
+        )
+
+        assert client.last_updated_at is None
+
+    def test_initial_last_updated_at_provided(self, mock_session: MagicMock) -> None:
+        """Test stream client initializes with provided last_updated_at."""
+        last_updated_at = "2025-12-31T19:09:24.796730Z"
+        client = NavirecStreamClient(
+            api_url="https://api.navirec.test/",
+            api_token="test-token",
+            session=mock_session,
+            account_id="test-account-id",
+            last_updated_at=last_updated_at,
+        )
+
+        assert client.last_updated_at == last_updated_at
+
+    @pytest.mark.asyncio
+    async def test_connect_without_last_updated_at(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test connection URL without last_updated_at parameter."""
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await stream_client.async_connect()
+
+        # Verify URL doesn't include updated_at__gt parameter
+        call_args = mock_session.get.call_args
+        url = call_args.args[0]
+        assert "updated_at__gt" not in url
+        assert url.endswith("?account=test-account-id")
+
+    @pytest.mark.asyncio
+    async def test_connect_with_last_updated_at(self, mock_session: MagicMock) -> None:
+        """Test connection URL includes last_updated_at parameter when provided."""
+        last_updated_at = "2025-12-31T19:09:24.796730Z"
+        client = NavirecStreamClient(
+            api_url="https://api.navirec.test/",
+            api_token="test-token",
+            session=mock_session,
+            account_id="test-account-id",
+            last_updated_at=last_updated_at,
+        )
+
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await client.async_connect()
+
+        # Verify URL includes updated_at__gt parameter
+        call_args = mock_session.get.call_args
+        url = call_args.args[0]
+        assert "updated_at__gt=" in url
+        assert last_updated_at in url
+        assert "account=test-account-id" in url

@@ -7,6 +7,7 @@ import contextlib
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .api import (
@@ -15,7 +16,7 @@ from .api import (
     NavirecApiClientRateLimitError,
     NavirecStreamClient,
 )
-from .const import LOGGER
+from .const import LOGGER, STORAGE_KEY, STORAGE_VERSION
 from .data import VehicleState, get_vehicle_id_from_state
 
 if TYPE_CHECKING:
@@ -55,6 +56,14 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
         # Vehicle states keyed by vehicle_id
         self.data: dict[str, VehicleState] = {}
 
+        # Persistent storage for stream state
+        self._store: Store[dict[str, Any]] = Store(
+            hass,
+            STORAGE_VERSION,
+            f"{STORAGE_KEY}_{account_id}",
+        )
+        self._last_updated_at: str | None = None
+
     @property
     def account_id(self) -> str:
         """Return the account ID."""
@@ -69,6 +78,9 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
         """Start the streaming connection."""
         if self._stream_task is not None:
             return
+
+        # Load stream state from persistent storage
+        await self._async_load_stream_state()
 
         self._should_stop = False
         self._stream_task = self.hass.async_create_background_task(
@@ -102,12 +114,13 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
 
         while not self._should_stop:
             try:
-                # Create stream client
+                # Create stream client with stream state for resume
                 self._stream_client = NavirecStreamClient(
                     api_url=self._api_url,
                     api_token=self._api_token,
                     session=session,
                     account_id=self._account_id,
+                    last_updated_at=self._last_updated_at,
                 )
 
                 # Connect to stream
@@ -183,6 +196,10 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
                     self.data[vehicle_id] = state
                     self._async_notify_listeners()
 
+                # Update and persist stream state
+                if "updated_at" in data:
+                    await self._async_update_stream_state(data["updated_at"])
+
         elif event_type == "initial_state_sent":
             self._initial_state_received = True
             LOGGER.debug(
@@ -217,3 +234,22 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
     def get_vehicle_state(self, vehicle_id: str) -> VehicleState | None:
         """Get the current state for a vehicle."""
         return self.data.get(vehicle_id)
+
+    async def _async_load_stream_state(self) -> None:
+        """Load the stream state from persistent storage."""
+        data = await self._store.async_load()
+        if data and "last_updated_at" in data:
+            self._last_updated_at = data["last_updated_at"]
+            LOGGER.debug(
+                "Loaded stream state for account %s: %s",
+                self._account_name,
+                self._last_updated_at,
+            )
+        else:
+            LOGGER.debug("No stream state found for account %s", self._account_name)
+
+    async def _async_update_stream_state(self, updated_at: str) -> None:
+        """Update and persist the stream state."""
+        if self._last_updated_at != updated_at:
+            self._last_updated_at = updated_at
+            await self._store.async_save({"last_updated_at": updated_at})
