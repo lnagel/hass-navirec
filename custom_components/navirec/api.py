@@ -197,7 +197,7 @@ class NavirecStreamClient:
         api_token: str,
         session: aiohttp.ClientSession,
         account_id: str,
-        initial_watermark: str | None = None,
+        initial_last_updated_at: str | None = None,
     ) -> None:
         """Initialize the stream client."""
         self._api_url = api_url.rstrip("/")
@@ -206,7 +206,7 @@ class NavirecStreamClient:
         self._account_id = account_id
         self._response: aiohttp.ClientResponse | None = None
         self._connected = False
-        self._last_updated_at: str | None = initial_watermark
+        self._last_updated_at: str | None = initial_last_updated_at
         self._reconnect_delay = STREAM_RECONNECT_MIN_DELAY
         self._should_stop = False
 
@@ -226,14 +226,14 @@ class NavirecStreamClient:
 
     @property
     def last_updated_at(self) -> str | None:
-        """Return the last updated_at timestamp for resume."""
+        """Return the last updated_at value for resume."""
         return self._last_updated_at
 
     async def async_connect(self) -> None:
         """Connect to the vehicle states stream."""
         url = f"{self._api_url}/streams/vehicle_states/?account={self._account_id}"
 
-        # Add updated_at__gt for resume if we have a previous timestamp
+        # Add updated_at__gt for resume if we have a previous last_updated_at
         if self._last_updated_at:
             url = f"{url}&updated_at__gt={self._last_updated_at}"
 

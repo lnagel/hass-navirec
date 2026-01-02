@@ -255,16 +255,16 @@ class TestStreamStatePersistence:
             account_name="Test Account",
         )
 
-        # Mock Store to return existing watermark
-        existing_timestamp = "2025-12-31T19:09:24.796730Z"
+        # Mock Store to return existing last_updated_at
+        existing_last_updated_at = "2025-12-31T19:09:24.796730Z"
         with patch.object(
             coordinator._store,
             "async_load",
-            return_value={"last_updated_at": existing_timestamp},
+            return_value={"last_updated_at": existing_last_updated_at},
         ):
             await coordinator._async_load_stream_state()
 
-        assert coordinator._last_updated_at == existing_timestamp
+        assert coordinator._last_updated_at == existing_last_updated_at
 
     @pytest.mark.asyncio
     async def test_load_stream_state_with_invalid_data(
@@ -300,13 +300,13 @@ class TestStreamStatePersistence:
             account_name="Test Account",
         )
 
-        new_timestamp = "2025-12-31T19:09:24.796730Z"
+        new_last_updated_at = "2025-12-31T19:09:24.796730Z"
 
         with patch.object(coordinator._store, "async_save") as mock_save:
-            await coordinator._async_update_stream_state(new_timestamp)
+            await coordinator._async_update_stream_state(new_last_updated_at)
 
-        assert coordinator._last_updated_at == new_timestamp
-        mock_save.assert_called_once_with({"last_updated_at": new_timestamp})
+        assert coordinator._last_updated_at == new_last_updated_at
+        mock_save.assert_called_once_with({"last_updated_at": new_last_updated_at})
 
     @pytest.mark.asyncio
     async def test_update_stream_state_skips_duplicate(
@@ -321,11 +321,11 @@ class TestStreamStatePersistence:
             account_name="Test Account",
         )
 
-        timestamp = "2025-12-31T19:09:24.796730Z"
-        coordinator._last_updated_at = timestamp
+        last_updated_at = "2025-12-31T19:09:24.796730Z"
+        coordinator._last_updated_at = last_updated_at
 
         with patch.object(coordinator._store, "async_save") as mock_save:
-            await coordinator._async_update_stream_state(timestamp)
+            await coordinator._async_update_stream_state(last_updated_at)
 
         # Should not save if value hasn't changed
         mock_save.assert_not_called()
@@ -347,7 +347,7 @@ class TestStreamStatePersistence:
         )
 
         sample_state = vehicle_states_fixture[0]
-        expected_timestamp = sample_state["updated_at"]
+        expected_last_updated_at = sample_state["updated_at"]
 
         event = {
             "event": "vehicle_state",
@@ -360,8 +360,8 @@ class TestStreamStatePersistence:
         ):
             await coordinator._async_handle_event(event)
 
-        assert coordinator._last_updated_at == expected_timestamp
-        mock_save.assert_called_once_with({"last_updated_at": expected_timestamp})
+        assert coordinator._last_updated_at == expected_last_updated_at
+        mock_save.assert_called_once_with({"last_updated_at": expected_last_updated_at})
 
     @pytest.mark.asyncio
     async def test_vehicle_state_event_without_updated_at(
@@ -409,13 +409,13 @@ class TestStreamStatePersistence:
             account_name="Test Account",
         )
 
-        existing_timestamp = "2025-12-31T19:09:24.796730Z"
+        existing_last_updated_at = "2025-12-31T19:09:24.796730Z"
 
         with (
             patch.object(
                 coordinator._store,
                 "async_load",
-                return_value={"last_updated_at": existing_timestamp},
+                return_value={"last_updated_at": existing_last_updated_at},
             ),
             patch.object(
                 coordinator, "_async_stream_loop", new_callable=AsyncMock
@@ -428,13 +428,13 @@ class TestStreamStatePersistence:
 
             await coordinator.async_start_streaming()
 
-        assert coordinator._last_updated_at == existing_timestamp
+        assert coordinator._last_updated_at == existing_last_updated_at
 
     @pytest.mark.asyncio
-    async def test_stream_client_receives_initial_watermark(
+    async def test_stream_client_receives_initial_last_updated_at(
         self, hass: HomeAssistant, enable_custom_integrations: None
     ) -> None:
-        """Test that stream client is created with persisted watermark."""
+        """Test that stream client is created with persisted last_updated_at."""
         from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
         coordinator = NavirecCoordinator(
@@ -445,8 +445,8 @@ class TestStreamStatePersistence:
             account_name="Test Account",
         )
 
-        existing_timestamp = "2025-12-31T19:09:24.796730Z"
-        coordinator._last_updated_at = existing_timestamp
+        existing_last_updated_at = "2025-12-31T19:09:24.796730Z"
+        coordinator._last_updated_at = existing_last_updated_at
 
         # Test the actual instantiation without mocking
         session = async_get_clientsession(hass)
@@ -458,12 +458,12 @@ class TestStreamStatePersistence:
             api_token=coordinator._api_token,
             session=session,
             account_id=coordinator._account_id,
-            initial_watermark=coordinator._last_updated_at,
+            initial_last_updated_at=coordinator._last_updated_at,
         )
 
-        # Verify the watermark was passed correctly
-        assert client._last_updated_at == existing_timestamp
-        assert client.last_updated_at == existing_timestamp
+        # Verify the last_updated_at was passed correctly
+        assert client._last_updated_at == existing_last_updated_at
+        assert client.last_updated_at == existing_last_updated_at
 
     @pytest.mark.asyncio
     async def test_stream_state_persists_across_multiple_events(
@@ -472,7 +472,7 @@ class TestStreamStatePersistence:
         enable_custom_integrations: None,
         vehicle_states_fixture: list[dict[str, Any]],
     ) -> None:
-        """Test that stream state is updated with latest timestamp from multiple events."""
+        """Test that stream state is updated with latest last_updated_at from multiple events."""
         coordinator = NavirecCoordinator(
             hass=hass,
             api_url="https://api.navirec.com",
@@ -493,8 +493,8 @@ class TestStreamStatePersistence:
                 }
                 await coordinator._async_handle_event(event)
 
-        # Should have the last timestamp
-        last_timestamp = vehicle_states_fixture[2]["updated_at"]
-        assert coordinator._last_updated_at == last_timestamp
-        # Should have been called 3 times (once per event with different timestamp)
+        # Should have the last updated_at value
+        final_last_updated_at = vehicle_states_fixture[2]["updated_at"]
+        assert coordinator._last_updated_at == final_last_updated_at
+        # Should have been called 3 times (once per event with different last_updated_at)
         assert mock_save.call_count == 3
