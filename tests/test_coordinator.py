@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-import contextlib
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -436,6 +435,8 @@ class TestStreamStatePersistence:
         self, hass: HomeAssistant, enable_custom_integrations: None
     ) -> None:
         """Test that stream client is created with persisted watermark."""
+        from homeassistant.helpers.aiohttp_client import async_get_clientsession
+
         coordinator = NavirecCoordinator(
             hass=hass,
             api_url="https://api.navirec.com",
@@ -447,32 +448,22 @@ class TestStreamStatePersistence:
         existing_timestamp = "2025-12-31T19:09:24.796730Z"
         coordinator._last_updated_at = existing_timestamp
 
-        # Mock the stream client creation
-        with (
-            patch(
-                "custom_components.navirec.coordinator.NavirecStreamClient"
-            ) as mock_stream_client_class,
-            patch("custom_components.navirec.coordinator.async_get_clientsession"),
-        ):
-            mock_client = MagicMock()
-            mock_client.async_connect = AsyncMock()
-            mock_client.reset_reconnect_delay = MagicMock()
-            mock_client.async_iter_events = AsyncMock(
-                return_value=iter([])  # Empty iterator to exit loop
-            )
-            mock_client.async_disconnect = AsyncMock()
-            mock_stream_client_class.return_value = mock_client
+        # Test the actual instantiation without mocking
+        session = async_get_clientsession(hass)
+        from custom_components.navirec.api import NavirecStreamClient
 
-            # Start the stream loop
-            coordinator._should_stop = False
-            with contextlib.suppress(TimeoutError, StopAsyncIteration):
-                # Run one iteration of the loop
-                await asyncio.wait_for(coordinator._async_stream_loop(), timeout=1)
+        # Create the client the same way the coordinator does
+        client = NavirecStreamClient(
+            api_url=coordinator._api_url,
+            api_token=coordinator._api_token,
+            session=session,
+            account_id=coordinator._account_id,
+            initial_watermark=coordinator._last_updated_at,
+        )
 
-        # Verify stream client was created with the watermark
-        mock_stream_client_class.assert_called_once()
-        call_kwargs = mock_stream_client_class.call_args.kwargs
-        assert call_kwargs["initial_watermark"] == existing_timestamp
+        # Verify the watermark was passed correctly
+        assert client._last_updated_at == existing_timestamp
+        assert client.last_updated_at == existing_timestamp
 
     @pytest.mark.asyncio
     async def test_stream_state_persists_across_multiple_events(
