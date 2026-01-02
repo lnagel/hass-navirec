@@ -120,7 +120,7 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
                     api_token=self._api_token,
                     session=session,
                     account_id=self._account_id,
-                    initial_last_updated_at=self._last_updated_at,
+                    last_updated_at=self._last_updated_at,
                 )
 
                 # Connect to stream

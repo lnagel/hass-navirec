@@ -335,7 +335,7 @@ class TestNavirecStreamClient:
             api_token="test-token",
             session=mock_session,
             account_id="test-account-id",
-            initial_last_updated_at=last_updated_at,
+            last_updated_at=last_updated_at,
         )
 
         assert client.last_updated_at == last_updated_at
@@ -367,7 +367,7 @@ class TestNavirecStreamClient:
             api_token="test-token",
             session=mock_session,
             account_id="test-account-id",
-            initial_last_updated_at=last_updated_at,
+            last_updated_at=last_updated_at,
         )
 
         mock_response = AsyncMock(spec=aiohttp.ClientResponse)

@@ -458,7 +458,7 @@ class TestStreamStatePersistence:
             api_token=coordinator._api_token,
             session=session,
             account_id=coordinator._account_id,
-            initial_last_updated_at=coordinator._last_updated_at,
+            last_updated_at=coordinator._last_updated_at,
         )
 
         # Verify the last_updated_at was passed correctly
