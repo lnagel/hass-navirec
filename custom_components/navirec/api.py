@@ -116,6 +116,49 @@ class NavirecApiClient:
         url = f"{self._api_url}/interpretations/"
         return await self._async_get_paginated(url)
 
+    async def async_get_actions(
+        self, account_id: str | None = None
+    ) -> list[dict[str, Any]]:
+        """Get actions, optionally filtered by account."""
+        url = f"{self._api_url}/actions/"
+        if account_id:
+            url = f"{url}?account={account_id}"
+        return await self._async_get_paginated(url)
+
+    async def async_create_device_command(
+        self,
+        vehicle_id: str,
+        action_id: str,
+    ) -> dict[str, Any]:
+        """
+        Create a device command to execute an action.
+
+        Args:
+            vehicle_id: The UUID of the target vehicle.
+            action_id: The UUID of the action to execute.
+
+        Returns:
+            The created DeviceCommand object from the API.
+
+        """
+        vehicle_url = f"{self._api_url}/vehicles/{vehicle_id}/"
+        action_url = f"{self._api_url}/actions/{action_id}/"
+
+        response = await self._async_request(
+            "POST",
+            f"{self._api_url}/device_commands/",
+            json={"vehicle": vehicle_url, "action": action_url},
+        )
+        return await response.json()
+
+    async def async_get_device_command(self, command_id: str) -> dict[str, Any]:
+        """Get a device command by ID."""
+        response = await self._async_request(
+            "GET",
+            f"{self._api_url}/device_commands/{command_id}/",
+        )
+        return await response.json()
+
     async def _async_get_paginated(self, url: str) -> list[dict[str, Any]]:
         """Fetch all pages of a paginated endpoint."""
         results: list[dict[str, Any]] = []

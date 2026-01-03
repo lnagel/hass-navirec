@@ -78,6 +78,57 @@
             "alarm": {
                 "name": "Alarm"
             }
+        },
+        "button": {
+            "update_location": {
+                "name": "Update location"
+            },
+            "block_starter": {
+                "name": "Block starter"
+            },
+            "unblock_starter": {
+                "name": "Unblock starter"
+            },
+            "lock_doors": {
+                "name": "Lock doors"
+            },
+            "unlock_doors": {
+                "name": "Unlock doors"
+            },
+            "unlock_trunk": {
+                "name": "Unlock trunk"
+            },
+            "flash_lights": {
+                "name": "Flash lights"
+            },
+            "get_fault_codes": {
+                "name": "Get fault codes"
+            },
+            "clear_fault_codes": {
+                "name": "Clear fault codes"
+            },
+            "start_alarm": {
+                "name": "Start alarm"
+            },
+            "stop_alarm": {
+                "name": "Stop alarm"
+            }
+        }
+    },
+    "services": {
+        "execute_action": {
+            "name": "Execute action",
+            "description": "Execute a vehicle action such as locking doors or blocking the starter.",
+            "fields": {
+                "vehicle_id": {
+                    "name": "Vehicle ID",
+                    "description": "The UUID of the target vehicle."
+                },
+                "action_id": {
+                    "name": "Action ID",
+                    "description": "The UUID of the action to execute."
+                }
+            }
         }
     }
 }

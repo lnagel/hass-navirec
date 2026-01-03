@@ -17,16 +17,17 @@ from homeassistant.helpers.device_registry import async_get as async_get_device_
 from homeassistant.loader import async_get_loaded_integration
 
 from .api import NavirecApiClient
-from .const import CONF_ACCOUNT_ID, CONF_API_TOKEN, CONF_API_URL, LOGGER
-from .const import DOMAIN as DOMAIN
+from .const import CONF_ACCOUNT_ID, CONF_API_TOKEN, CONF_API_URL, DOMAIN, LOGGER
 from .coordinator import NavirecCoordinator
-from .data import NavirecData, get_vehicle_id_from_sensor
-from .models import Interpretation, Sensor, Vehicle
+from .data import NavirecData, get_vehicle_id_from_action, get_vehicle_id_from_sensor
+from .models import Action, Interpretation, Sensor, Vehicle
+from .services import async_setup_services, async_unload_services
 
 if TYPE_CHECKING:
     from .data import NavirecConfigEntry
 
 PLATFORMS: list[Platform] = [
+    Platform.BUTTON,
     Platform.DEVICE_TRACKER,
     Platform.SENSOR,
     Platform.BINARY_SENSOR,
@@ -70,6 +71,9 @@ async def async_setup_entry(
     LOGGER.debug("Fetching interpretations")
     interpretations_data = await client.async_get_interpretations()
 
+    LOGGER.debug("Fetching actions for account %s", account_id)
+    actions_data = await client.async_get_actions(account_id=account_id)
+
     # Build lookup dictionaries with Pydantic models
     vehicles: dict[str, Vehicle] = {}
     for v in vehicles_data:
@@ -94,12 +98,23 @@ async def async_setup_entry(
         if interpretation.key:
             interpretations[interpretation.key] = interpretation
 
+    actions_by_vehicle: dict[str, list[Action]] = defaultdict(list)
+    for a in actions_data:
+        action = Action.model_validate(a)
+        vehicle_id = get_vehicle_id_from_action(action)
+        if vehicle_id and vehicle_id in vehicles:
+            actions_by_vehicle[vehicle_id].append(action)
+
+    # Count total actions across all vehicles
+    total_actions = sum(len(actions) for actions in actions_by_vehicle.values())
+
     LOGGER.info(
-        "Account %s: found %d vehicles, %d sensors, %d interpretations",
+        "Account %s: found %d vehicles, %d sensors, %d interpretations, %d actions",
         account_name,
         len(vehicles),
         len(sensors),
         len(interpretations),
+        total_actions,
     )
 
     # Create single coordinator for this account
@@ -122,6 +137,7 @@ async def async_setup_entry(
         sensors=sensors,
         sensors_by_vehicle=dict(sensors_by_vehicle),
         interpretations=interpretations,
+        actions_by_vehicle=dict(actions_by_vehicle),
     )
 
     # Register account device first, so vehicle devices can reference it via via_device
@@ -136,6 +152,10 @@ async def async_setup_entry(
 
     # Set up platforms
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    # Register services (only once, when first entry is set up)
+    if not hass.services.has_service(DOMAIN, "execute_action"):
+        await async_setup_services(hass)
 
     # Start streaming
     await coordinator.async_start_streaming()
@@ -153,4 +173,12 @@ async def async_unload_entry(
         await entry.runtime_data.coordinator.async_stop_streaming()
 
     # Unload platforms
-    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+    # Unload services if this is the last entry
+    if unload_ok:
+        remaining_entries = hass.config_entries.async_entries(DOMAIN)
+        if len(remaining_entries) == 1:  # This entry is the last one being unloaded
+            await async_unload_services(hass)
+
+    return unload_ok

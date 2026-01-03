@@ -39,6 +39,17 @@ STREAM_RECONNECT_MULTIPLIER = 2
 STORAGE_VERSION = 1
 STORAGE_KEY = "navirec_stream_state"
 
+# Command polling settings
+COMMAND_POLL_INITIAL_DELAY = 2  # seconds
+COMMAND_POLL_MAX_DELAY = 900  # 15 minutes
+COMMAND_POLL_BACKOFF_FACTOR = 1.5
+
+# Terminal command states
+COMMAND_TERMINAL_STATES = frozenset({"acknowledged", "failed", "expired"})
+
+# Event name for command results
+EVENT_COMMAND_RESULT = "navirec_command_result"
+
 # Mapping from Navirec API unit codes to Home Assistant unit constants
 API_UNIT_TO_HA_UNIT: dict[str, str] = {
     "A": UnitOfElectricCurrent.AMPERE,

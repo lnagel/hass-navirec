@@ -1,0 +1,30 @@
+[
+  {
+    "id": "c51b85de-e4d3-4d6c-9ca4-d556f7d8559c",
+    "url": "https://api.navirec.namespace.ee/actions/c51b85de-e4d3-4d6c-9ca4-d556f7d8559c/",
+    "vehicle": "https://api.navirec.namespace.ee/vehicles/4283ab53-69c7-4e32-9b38-c0e96296abb3/",
+    "type": "start_alarm",
+    "name": "",
+    "name_display": "Start alarm",
+    "slug": "start_alarm",
+    "icon": "https://api.navirec.namespace.ee/icons/4b114137-db78-4e6f-94cc-8938dafcbad1/",
+    "icon_template_vars": {},
+    "command_definition": "https://api.navirec.namespace.ee/command_definitions/b857ad93-57f1-43fe-a8f2-a5cc201ce69f/",
+    "arguments": "",
+    "sort_order": 9
+  },
+  {
+    "id": "e5f346c6-b0cc-4180-b3f7-a88f9d19cf37",
+    "url": "https://api.navirec.namespace.ee/actions/e5f346c6-b0cc-4180-b3f7-a88f9d19cf37/",
+    "vehicle": "https://api.navirec.namespace.ee/vehicles/4283ab53-69c7-4e32-9b38-c0e96296abb3/",
+    "type": "stop_alarm",
+    "name": "",
+    "name_display": "Stop alarm",
+    "slug": "stop_alarm",
+    "icon": "https://api.navirec.namespace.ee/icons/1607dc4a-902c-4b09-a7ca-afc38e150b2a/",
+    "icon_template_vars": {},
+    "command_definition": "https://api.navirec.namespace.ee/command_definitions/2d754fb0-c0a2-4290-af2b-00c5e077d902/",
+    "arguments": "",
+    "sort_order": 10
+  }
+]

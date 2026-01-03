@@ -1,0 +1,18 @@
+execute_action:
+  name: Execute Action
+  description: Execute a vehicle action (e.g., lock doors, block starter, flash lights).
+  fields:
+    vehicle_id:
+      name: Vehicle ID
+      description: The UUID of the target vehicle.
+      required: true
+      example: "4283ab53-69c7-4e32-9b38-c0e96296abb3"
+      selector:
+        text:
+    action_id:
+      name: Action ID
+      description: The UUID of the action to execute.
+      required: true
+      example: "e5f346c6-b0cc-4180-b3f7-a88f9d19cf37"
+      selector:
+        text:
