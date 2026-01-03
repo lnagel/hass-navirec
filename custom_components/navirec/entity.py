@@ -35,16 +35,12 @@ class NavirecEntity(CoordinatorEntity[NavirecCoordinator]):
         self._vehicle = vehicle
 
         # Device info for the vehicle
-        # Use account_id from runtime_data as the via_device
-        account_id = config_entry.runtime_data.account_id
-
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, vehicle_id)},
             name=vehicle.name_display or vehicle.registration or "",
             manufacturer=vehicle.make,
             model=vehicle.model,
             serial_number=vehicle.registration,
-            via_device=(DOMAIN, account_id),
         )
 
     @property

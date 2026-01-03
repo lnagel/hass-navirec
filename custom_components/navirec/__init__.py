@@ -13,7 +13,6 @@ from typing import TYPE_CHECKING
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.device_registry import async_get as async_get_device_registry
 from homeassistant.loader import async_get_loaded_integration
 
 from .api import NavirecApiClient
@@ -138,16 +137,6 @@ async def async_setup_entry(
         sensors_by_vehicle=dict(sensors_by_vehicle),
         interpretations=interpretations,
         actions_by_vehicle=dict(actions_by_vehicle),
-    )
-
-    # Register account device first, so vehicle devices can reference it via via_device
-    device_registry = async_get_device_registry(hass)
-    device_registry.async_get_or_create(
-        config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, account_id)},
-        name=f"Navirec {account_name}",
-        manufacturer="Navirec",
-        model="Fleet Account",
     )
 
     # Set up platforms
