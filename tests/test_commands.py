@@ -141,7 +141,6 @@ class TestCreateNotification:
             mock_create.assert_called_once()
             call_args = mock_create.call_args
             assert "succeeded" in call_args.kwargs["title"]
-            assert "completed successfully" in call_args.kwargs["message"]
             assert "Doors locked" in call_args.kwargs["message"]
 
     def test_failed_notification(self, mock_hass) -> None:
@@ -174,5 +173,4 @@ class TestCreateNotification:
 
             mock_create.assert_called_once()
             call_args = mock_create.call_args
-            assert "expired" in call_args.kwargs["title"]
-            assert "timed out" in call_args.kwargs["message"]
+            assert "timed out" in call_args.kwargs["title"]
