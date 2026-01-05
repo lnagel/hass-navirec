@@ -1,6 +1,6 @@
 [project]
 name = "hass-navirec"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Home Assistant integration for Navirec"
 readme = "README.md"
 requires-python = ">=3.13.2"
@@ -60,7 +60,7 @@ target-version = "py313"
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "C4", "UP"]
 ignore = [
-    "E501",  # Line too long - handled by formatter
+    "E501", # Line too long - handled by formatter
 ]
 
 [tool.ruff.lint.isort]
@@ -69,7 +69,7 @@ combine-as-imports = true
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = [
-    "S101",   # Allow assert in tests
-    "S106",   # Allow hardcoded passwords in tests
+    "S101", # Allow assert in tests
+    "S106", # Allow hardcoded passwords in tests
     "ARG001", # Allow unused arguments in fixtures
 ]
