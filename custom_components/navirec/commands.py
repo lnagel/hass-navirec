@@ -204,13 +204,13 @@ def _create_notification(
 ) -> None:
     """Create a persistent notification for command result."""
     if state == "acknowledged":
-        title = f"Navirec: {action_name} for {vehicle_name} succeeded"
+        title = f"{action_name} for {vehicle_name} succeeded"
         notification_message = f"Response: {response or '-'}"
     elif state == "expired":
-        title = f"Navirec: {action_name} for {vehicle_name} timed out"
+        title = f"{action_name} for {vehicle_name} timed out"
         notification_message = ""
     else:
-        title = f"Navirec: {action_name} for {vehicle_name} failed"
+        title = f"{action_name} for {vehicle_name} failed"
         notification_message = f"Errors: {errors or '-'}"
 
     async_create(
