@@ -170,7 +170,14 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
             except asyncio.CancelledError:
                 break
 
-            except Exception:
+            except Exception as err:
+                # Session closed indicates HA shutdown - exit gracefully
+                if isinstance(err, RuntimeError) and "Session is closed" in str(err):
+                    LOGGER.debug(
+                        "Session closed for account %s, stopping stream",
+                        self._account_name,
+                    )
+                    break
                 LOGGER.exception(
                     "Unexpected error in stream for account %s", self._account_name
                 )
