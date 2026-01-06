@@ -48,6 +48,18 @@ BINARY_SENSOR_DEVICE_CLASSES: dict[str, BinarySensorDeviceClass | None] = {
     "scooter_buzzer": BinarySensorDeviceClass.SOUND,
 }
 
+# Binary sensors that need their values inverted
+# The LOCK device class in Home Assistant has inverted semantics:
+# - is_on=True means "unlocked" (open/insecure)
+# - is_on=False means "locked" (closed/secure)
+# However, the Navirec API uses standard boolean semantics:
+# - true means "locked", false means "unlocked"
+# Sensors in this list will have their boolean values inverted.
+BINARY_SENSOR_INVERTED: list[str] = [
+    "starter_blocked",
+    "vehicle_locked",
+]
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -141,7 +153,11 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         if state:
             value = get_sensor_value_from_state(state, self._interpretation_key)
             if value is not None:
-                return bool(value)
+                bool_value = bool(value)
+                # Invert value for sensors in the inversion list
+                if self._interpretation_key in BINARY_SENSOR_INVERTED:
+                    return not bool_value
+                return bool_value
         return None
 
     @callback
