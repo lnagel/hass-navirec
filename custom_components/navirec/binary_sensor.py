@@ -80,6 +80,8 @@ async def async_setup_entry(
 
         for sensor_def in vehicle_sensors:
             # Get interpretation data
+            if not sensor_def.interpretation:
+                continue
             interpretation = interpretations.get(sensor_def.interpretation)
             if not interpretation:
                 continue
@@ -92,7 +94,12 @@ async def async_setup_entry(
                 continue
 
             # Get device class for this interpretation
-            device_class = BINARY_SENSOR_DEVICE_CLASSES.get(interpretation.key)
+            interpretation_key = interpretation.key
+            device_class = (
+                BINARY_SENSOR_DEVICE_CLASSES.get(interpretation_key)
+                if interpretation_key
+                else None
+            )
 
             entities.append(
                 NavirecBinarySensor(

@@ -21,6 +21,7 @@ test = [
 ]
 dev = [
     "ruff>=0.14.5",
+    "ty>=0.0.1a11",
     "datamodel-code-generator>=0.26.0",
     "python-dotenv>=1.0.0",
 ]
@@ -73,3 +74,14 @@ combine-as-imports = true
     "S106", # Allow hardcoded passwords in tests
     "ARG001", # Allow unused arguments in fixtures
 ]
+
+[tool.ty.environment]
+python-version = "3.13"
+
+[[tool.ty.overrides]]
+# Auto-generated models use Pydantic constrained types (constr, conint)
+# which are function calls and not valid static type expressions
+include = ["custom_components/navirec/models.py"]
+
+[tool.ty.overrides.rules]
+"invalid-type-form" = "ignore"

@@ -11,6 +11,7 @@ from homeassistant.helpers import config_validation as cv
 
 from .commands import execute_action
 from .const import DOMAIN, LOGGER
+from .models import Action, Vehicle
 
 if TYPE_CHECKING:
     from .data import NavirecConfigEntry
@@ -70,7 +71,7 @@ def _find_vehicle_and_action(
     hass: HomeAssistant,
     vehicle_id: str,
     action_id: str,
-) -> tuple[NavirecConfigEntry | None, object, object]:
+) -> tuple[NavirecConfigEntry | None, Vehicle | None, Action | None]:
     """Find vehicle and action by their IDs across all config entries."""
     entries: list[NavirecConfigEntry] = hass.config_entries.async_entries(DOMAIN)
 
