@@ -90,7 +90,7 @@ def _get_native_unit(interpretation: Interpretation) -> str | None:
     unit = interpretation.unit
     if hasattr(unit, "value"):
         unit = unit.value
-    if not unit:
+    if not isinstance(unit, str) or not unit:
         return None
     return API_UNIT_TO_HA_UNIT.get(unit)
 
@@ -100,7 +100,7 @@ def _get_suggested_unit(interpretation: Interpretation) -> str | None:
     unit_conversion = interpretation.unit_conversion
     if hasattr(unit_conversion, "value"):
         unit_conversion = unit_conversion.value
-    if not unit_conversion:
+    if not isinstance(unit_conversion, str) or not unit_conversion:
         return None
     return API_UNIT_TO_HA_UNIT.get(unit_conversion)
 
@@ -124,6 +124,8 @@ async def async_setup_entry(
 
         for sensor_def in vehicle_sensors:
             # Get interpretation data
+            if not sensor_def.interpretation:
+                continue
             interpretation = interpretations.get(sensor_def.interpretation)
             if not interpretation:
                 LOGGER.warning(
