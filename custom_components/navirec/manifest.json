@@ -9,6 +9,6 @@
   "integration_type": "hub",
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/lnagel/hass-navirec/issues",
-  "requirements": [],
+  "requirements": ["aiohttp>=3.9.0"],
   "version": "0.1.3"
 }
