@@ -179,3 +179,21 @@ class TestNavirecDeviceTracker:
             "name_display": "TEST-1",
             "registration": "TEST-1",
         }
+
+    def test_entity_category_is_not_diagnostic(
+        self, mock_coordinator, mock_config_entry, mock_vehicle, vehicle_id
+    ) -> None:
+        """Test that entity category is None (primary), not diagnostic.
+
+        Home Assistant's BaseTrackerEntity defaults to EntityCategory.DIAGNOSTIC.
+        We override this to None so the device tracker appears as a primary entity.
+        """
+        tracker = NavirecDeviceTracker(
+            coordinator=mock_coordinator,
+            config_entry=mock_config_entry,
+            vehicle_id=vehicle_id,
+            vehicle=mock_vehicle,
+        )
+
+        # Explicitly None, not EntityCategory.DIAGNOSTIC
+        assert tracker.entity_category is None

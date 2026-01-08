@@ -47,6 +47,7 @@ async def async_setup_entry(
 class NavirecDeviceTracker(NavirecEntity, TrackerEntity):
     """Device tracker for a Navirec vehicle."""
 
+    _attr_entity_category = None
     _attr_translation_key = "vehicle"
 
     def __init__(
