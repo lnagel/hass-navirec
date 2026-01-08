@@ -24,6 +24,7 @@ dev = [
     "ty>=0.0.1a11",
     "datamodel-code-generator>=0.26.0",
     "python-dotenv>=1.0.0",
+    "bump-my-version>=1.1.0",
 ]
 
 [project.urls]
@@ -101,3 +102,21 @@ include = ["custom_components/navirec/models.py"]
 
 [tool.ty.overrides.rules]
 "invalid-type-form" = "ignore"
+
+[tool.bumpversion]
+current_version = "0.1.3"
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
+serialize = ["{major}.{minor}.{patch}"]
+commit = true
+tag = true
+tag_name = "v{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "custom_components/navirec/manifest.json"
+search = '"version": "{current_version}"'
+replace = '"version": "{new_version}"'
