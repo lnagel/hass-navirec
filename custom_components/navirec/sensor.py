@@ -42,7 +42,7 @@ def _get_device_class(interpretation: Interpretation) -> SensorDeviceClass | Non
         device_class = SensorDeviceClass.CURRENT
     elif unit == "c":
         device_class = SensorDeviceClass.TEMPERATURE
-    elif unit == "m":
+    elif unit in ("m", "km"):
         device_class = SensorDeviceClass.DISTANCE
     elif unit == "s":
         device_class = SensorDeviceClass.DURATION
