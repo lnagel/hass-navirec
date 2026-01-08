@@ -54,14 +54,29 @@ testpaths = ["tests"]
 norecursedirs = [".git", "testing_config"]
 asyncio_default_fixture_loop_scope = "function"
 
+[tool.coverage.run]
+source = ["custom_components/navirec"]
+omit = ["custom_components/navirec/models.py"]
+
+[tool.coverage.report]
+fail_under = 80
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+]
+
 [tool.ruff]
 line-length = 88
 target-version = "py313"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "C4", "UP"]
+select = ["ALL"]
 ignore = [
-    "E501", # Line too long - handled by formatter
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
+    "D203", # no-blank-line-before-class (incompatible with formatter)
+    "D212", # multi-line-summary-first-line (incompatible with formatter)
+    "COM812", # incompatible with formatter
+    "ISC001", # incompatible with formatter
 ]
 
 [tool.ruff.lint.isort]
@@ -73,6 +88,7 @@ combine-as-imports = true
     "S101", # Allow assert in tests
     "S106", # Allow hardcoded passwords in tests
     "ARG001", # Allow unused arguments in fixtures
+    "PLR2004", # Allow magic values in tests
 ]
 
 [tool.ty.environment]
