@@ -6,7 +6,7 @@
   ],
   "config_flow": true,
   "documentation": "https://github.com/lnagel/hass-navirec",
-  "integration_type": "hub",
+  "integration_type": "service",
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/lnagel/hass-navirec/issues",
   "requirements": [],
