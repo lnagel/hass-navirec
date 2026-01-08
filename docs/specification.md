@@ -98,6 +98,8 @@ Created only for interpretations with `data_type="boolean"`.
 
 Execute remote vehicle actions (lock doors, block starter, etc.).
 
+**Availability:** Always available regardless of stream connection or vehicle state. This allows users to trigger commands (e.g., GPS location update) before the initial state is received, which can take up to 20 minutes.
+
 ## Command Execution
 
 ### Flow

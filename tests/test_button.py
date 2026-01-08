@@ -134,3 +134,44 @@ class TestNavirecActionButton:
             call_args = mock_execute.call_args
             assert call_args.kwargs["vehicle_id"] == vehicle_id
             assert call_args.kwargs["action_id"] == str(mock_action.id)
+
+    def test_available_without_vehicle_state(
+        self, mock_coordinator, mock_config_entry, mock_vehicle, mock_action, vehicle_id
+    ) -> None:
+        """Test that button is available even without vehicle state.
+
+        Buttons should be available before receiving initial state from the stream,
+        since commands can be sent to the API regardless of vehicle state.
+        This enables users to trigger GPS location updates before state arrives.
+        """
+        # Simulate no vehicle state and disconnected stream
+        mock_coordinator.connected = False
+        mock_coordinator.get_vehicle_state.return_value = None
+
+        button = NavirecActionButton(
+            coordinator=mock_coordinator,
+            config_entry=mock_config_entry,
+            vehicle_id=vehicle_id,
+            vehicle=mock_vehicle,
+            action=mock_action,
+        )
+
+        # Button should still be available
+        assert button.available is True
+
+    def test_available_when_connected(
+        self, mock_coordinator, mock_config_entry, mock_vehicle, mock_action, vehicle_id
+    ) -> None:
+        """Test that button is available when stream is connected."""
+        mock_coordinator.connected = True
+        mock_coordinator.get_vehicle_state.return_value = None
+
+        button = NavirecActionButton(
+            coordinator=mock_coordinator,
+            config_entry=mock_config_entry,
+            vehicle_id=vehicle_id,
+            vehicle=mock_vehicle,
+            action=mock_action,
+        )
+
+        assert button.available is True

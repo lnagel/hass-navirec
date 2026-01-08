@@ -67,6 +67,17 @@ class NavirecActionButton(NavirecEntity, ButtonEntity):
         # Actions are enabled by default (unlike diagnostic sensors)
         self._attr_entity_registry_enabled_default = True
 
+    @property
+    def available(self) -> bool:
+        """
+        Return if entity is available.
+
+        Buttons are always available since commands can be sent to the API
+        regardless of vehicle state. This allows users to trigger GPS location
+        updates before the initial state is received from the stream.
+        """
+        return True
+
     async def async_press(self) -> None:
         """Handle button press - execute the action."""
         vehicle_name = (
