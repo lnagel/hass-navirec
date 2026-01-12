@@ -4,6 +4,7 @@
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
 [![hacs][hacsbadge]][hacs]
+[![codecov](https://codecov.io/gh/lnagel/hass-navirec/branch/main/graph/badge.svg)](https://codecov.io/gh/lnagel/hass-navirec)
 
 A Home Assistant custom integration for [Navirec](https://www.navirec.com/) fleet management platform. Track your
 vehicles in real-time with GPS location, sensor data, and vehicle state monitoring.

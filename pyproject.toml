@@ -58,9 +58,11 @@ asyncio_default_fixture_loop_scope = "function"
 [tool.coverage.run]
 source = ["custom_components/navirec"]
 omit = ["custom_components/navirec/models.py"]
+branch = true
 
 [tool.coverage.report]
-fail_under = 80
+fail_under = 78
+show_missing = true
 exclude_lines = [
     "pragma: no cover",
     "if TYPE_CHECKING:",
