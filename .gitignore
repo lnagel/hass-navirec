@@ -8,6 +8,8 @@ __pycache__
 
 # misc
 .coverage
+.coverage.*
+htmlcov/
 .vscode
 coverage.xml
 .ruff_cache
