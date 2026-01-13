@@ -1,10 +1,9 @@
 # Navirec
 
-[![GitHub Release][releases-shield]][releases]
-[![GitHub Activity][commits-shield]][commits]
-[![License][license-shield]](LICENSE)
-[![hacs][hacsbadge]][hacs]
-[![CI][ci-shield]][ci]
+[![GitHub Release](https://img.shields.io/github/v/release/lnagel/hass-navirec?style=flat-square)](https://github.com/lnagel/hass-navirec/releases)
+[![License](https://img.shields.io/github/license/lnagel/hass-navirec?style=flat-square)](LICENSE)
+[![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=flat-square)](https://hacs.xyz/)
+[![CI](https://img.shields.io/github/actions/workflow/status/lnagel/hass-navirec/checks.yml?branch=main&style=flat-square&label=tests)](https://github.com/lnagel/hass-navirec/actions)
 [![codecov](https://codecov.io/gh/lnagel/hass-navirec/branch/main/graph/badge.svg)](https://codecov.io/gh/lnagel/hass-navirec)
 
 A Home Assistant custom integration for [Navirec](https://www.navirec.com/) fleet management platform. Track your
@@ -204,24 +203,3 @@ Contributions are welcome! Please read the [Contribution guidelines](CONTRIBUTIN
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
-
-[navirec]: https://www.navirec.com/
-
-[commits-shield]: https://img.shields.io/github/commit-activity/y/lnagel/hass-navirec.svg?style=for-the-badge
-
-[commits]: https://github.com/lnagel/hass-navirec/commits/main
-
-[hacs]: https://github.com/hacs/integration
-
-[hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
-
-[license-shield]: https://img.shields.io/github/license/lnagel/hass-navirec.svg?style=for-the-badge
-
-[releases-shield]: https://img.shields.io/github/release/lnagel/hass-navirec.svg?style=for-the-badge
-
-[releases]: https://github.com/lnagel/hass-navirec/releases
-
-[ci-shield]: https://img.shields.io/github/actions/workflow/status/lnagel/hass-navirec/checks.yml?branch=main&style=for-the-badge&label=tests
-
-[ci]: https://github.com/lnagel/hass-navirec/actions
