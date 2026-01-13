@@ -15,7 +15,7 @@ from custom_components.navirec.models import (
     Vehicle,
     VehicleState,
 )
-from custom_components.navirec.sensor import NavirecSensor
+from custom_components.navirec.sensor import NavirecDiagnosticSensor, NavirecSensor
 
 
 def find_sensor_by_interpretation(
@@ -519,3 +519,122 @@ class TestNavirecSensor:
         # Should return the value without raising AttributeError
         value = sensor.native_value
         assert value is not None
+
+
+class TestNavirecDiagnosticSensor:
+    """Tests for NavirecDiagnosticSensor."""
+
+    def test_diagnostic_sensor_with_datetime_value(
+        self,
+        mock_config_entry: MagicMock,
+        vehicles_fixture: list[dict[str, Any]],
+        vehicle_states_fixture: list[dict[str, Any]],
+    ) -> None:
+        """Test diagnostic sensor returns datetime value."""
+        from datetime import datetime
+
+        vehicle_data = vehicles_fixture[0]
+        vehicle = Vehicle.model_validate(vehicle_data)
+        vehicle_id = vehicle_data["id"]
+
+        # Create a state with a datetime updated_at
+        state_data = vehicle_states_fixture[0]
+        vehicle_state = VehicleState.model_validate(state_data)
+
+        coordinator = MagicMock()
+        coordinator.get_vehicle_state.return_value = vehicle_state
+        coordinator.connected = True
+
+        sensor = NavirecDiagnosticSensor(
+            coordinator=coordinator,
+            config_entry=mock_config_entry,
+            vehicle_id=vehicle_id,
+            vehicle=vehicle,
+            sensor_key="updated_at",
+            translation_key="updated_at",
+        )
+
+        value = sensor.native_value
+        assert value is not None
+        assert isinstance(value, datetime)
+
+    def test_diagnostic_sensor_no_state(
+        self,
+        mock_config_entry: MagicMock,
+        vehicles_fixture: list[dict[str, Any]],
+    ) -> None:
+        """Test diagnostic sensor returns None when no state."""
+        vehicle_data = vehicles_fixture[0]
+        vehicle = Vehicle.model_validate(vehicle_data)
+        vehicle_id = vehicle_data["id"]
+
+        coordinator = MagicMock()
+        coordinator.get_vehicle_state.return_value = None
+
+        sensor = NavirecDiagnosticSensor(
+            coordinator=coordinator,
+            config_entry=mock_config_entry,
+            vehicle_id=vehicle_id,
+            vehicle=vehicle,
+            sensor_key="updated_at",
+            translation_key="updated_at",
+        )
+
+        assert sensor.native_value is None
+
+    def test_diagnostic_sensor_missing_attribute(
+        self,
+        mock_config_entry: MagicMock,
+        vehicles_fixture: list[dict[str, Any]],
+        vehicle_states_fixture: list[dict[str, Any]],
+    ) -> None:
+        """Test diagnostic sensor returns None for missing attribute."""
+        vehicle_data = vehicles_fixture[0]
+        vehicle = Vehicle.model_validate(vehicle_data)
+        vehicle_id = vehicle_data["id"]
+
+        state_data = vehicle_states_fixture[0]
+        vehicle_state = VehicleState.model_validate(state_data)
+
+        coordinator = MagicMock()
+        coordinator.get_vehicle_state.return_value = vehicle_state
+
+        sensor = NavirecDiagnosticSensor(
+            coordinator=coordinator,
+            config_entry=mock_config_entry,
+            vehicle_id=vehicle_id,
+            vehicle=vehicle,
+            sensor_key="nonexistent_key",
+            translation_key="nonexistent_key",
+        )
+
+        assert sensor.native_value is None
+
+    def test_diagnostic_sensor_invalid_datetime_string(
+        self,
+        mock_config_entry: MagicMock,
+        vehicles_fixture: list[dict[str, Any]],
+    ) -> None:
+        """Test diagnostic sensor handles invalid datetime string."""
+        vehicle_data = vehicles_fixture[0]
+        vehicle = Vehicle.model_validate(vehicle_data)
+        vehicle_id = vehicle_data["id"]
+
+        # Create a mock state with invalid datetime string
+        mock_state = MagicMock()
+        mock_state.updated_at = "not-a-valid-datetime"
+
+        coordinator = MagicMock()
+        coordinator.get_vehicle_state.return_value = mock_state
+
+        sensor = NavirecDiagnosticSensor(
+            coordinator=coordinator,
+            config_entry=mock_config_entry,
+            vehicle_id=vehicle_id,
+            vehicle=vehicle,
+            sensor_key="updated_at",
+            translation_key="updated_at",
+        )
+
+        # Should return None and log warning for invalid datetime
+        assert sensor.native_value is None

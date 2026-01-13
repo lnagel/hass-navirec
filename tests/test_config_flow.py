@@ -307,3 +307,116 @@ async def test_reconfigure_auth_error(
 
     assert result["type"] == FlowResultType.FORM
     assert result["errors"] == {"base": "auth"}
+
+
+@pytest.mark.asyncio
+async def test_form_unknown_error(
+    hass: HomeAssistant,
+    mock_setup_entry: AsyncMock,
+    enable_custom_integrations: None,
+) -> None:
+    """Test config flow with unknown error."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+
+    with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
+        from custom_components.navirec.api import NavirecApiClientError
+
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.async_get_accounts = AsyncMock(
+            side_effect=NavirecApiClientError("Unknown error")
+        )
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                CONF_API_URL: "https://api.navirec.com/",
+                CONF_API_TOKEN: "test-token",
+            },
+        )
+
+    assert result["type"] == FlowResultType.FORM
+    assert result["errors"] == {"base": "unknown"}
+
+
+@pytest.mark.asyncio
+async def test_reconfigure_connection_error(
+    hass: HomeAssistant,
+    enable_custom_integrations: None,
+) -> None:
+    """Test reconfiguration with connection error."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        title="Test Account",
+        data={
+            CONF_API_URL: "https://api.navirec.com",
+            CONF_API_TOKEN: "old-token",
+            CONF_ACCOUNT_ID: "test-account-id",
+        },
+        unique_id="test-account-id",
+    )
+    entry.add_to_hass(hass)
+
+    result = await entry.start_reconfigure_flow(hass)
+
+    with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
+        from custom_components.navirec.api import NavirecApiClientCommunicationError
+
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.async_get_accounts = AsyncMock(
+            side_effect=NavirecApiClientCommunicationError("Connection failed")
+        )
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                CONF_API_URL: "https://api.navirec.invalid/",
+                CONF_API_TOKEN: "test-token",
+                CONF_ACCOUNT_ID: "test-account-id",
+            },
+        )
+
+    assert result["type"] == FlowResultType.FORM
+    assert result["errors"] == {"base": "connection"}
+
+
+@pytest.mark.asyncio
+async def test_reconfigure_unknown_error(
+    hass: HomeAssistant,
+    enable_custom_integrations: None,
+) -> None:
+    """Test reconfiguration with unknown error."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        title="Test Account",
+        data={
+            CONF_API_URL: "https://api.navirec.com",
+            CONF_API_TOKEN: "old-token",
+            CONF_ACCOUNT_ID: "test-account-id",
+        },
+        unique_id="test-account-id",
+    )
+    entry.add_to_hass(hass)
+
+    result = await entry.start_reconfigure_flow(hass)
+
+    with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
+        from custom_components.navirec.api import NavirecApiClientError
+
+        mock_client_instance = mock_client.return_value
+        mock_client_instance.async_get_accounts = AsyncMock(
+            side_effect=NavirecApiClientError("Unknown error")
+        )
+
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                CONF_API_URL: "https://api.navirec.com/",
+                CONF_API_TOKEN: "test-token",
+                CONF_ACCOUNT_ID: "test-account-id",
+            },
+        )
+
+    assert result["type"] == FlowResultType.FORM
+    assert result["errors"] == {"base": "unknown"}
