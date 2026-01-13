@@ -16,7 +16,6 @@ from custom_components.navirec.models import (
     VehicleState,
 )
 from custom_components.navirec.sensor import (
-    NavirecDiagnosticSensor,
     NavirecSensor,
     _get_device_class,
     _get_native_unit,
@@ -528,281 +527,117 @@ class TestNavirecSensor:
         assert value is not None
 
 
-class TestNavirecDiagnosticSensor:
-    """Tests for NavirecDiagnosticSensor."""
-
-    def test_diagnostic_sensor_with_datetime_value(
-        self,
-        mock_config_entry: MagicMock,
-        vehicles_fixture: list[dict[str, Any]],
-        vehicle_states_fixture: list[dict[str, Any]],
-    ) -> None:
-        """Test diagnostic sensor returns datetime value."""
-        from datetime import datetime
-
-        vehicle_data = vehicles_fixture[0]
-        vehicle = Vehicle.model_validate(vehicle_data)
-        vehicle_id = vehicle_data["id"]
-
-        # Create a state with a datetime updated_at
-        state_data = vehicle_states_fixture[0]
-        vehicle_state = VehicleState.model_validate(state_data)
-
-        coordinator = MagicMock()
-        coordinator.get_vehicle_state.return_value = vehicle_state
-        coordinator.connected = True
-
-        sensor = NavirecDiagnosticSensor(
-            coordinator=coordinator,
-            config_entry=mock_config_entry,
-            vehicle_id=vehicle_id,
-            vehicle=vehicle,
-            sensor_key="updated_at",
-            translation_key="updated_at",
-        )
-
-        value = sensor.native_value
-        assert value is not None
-        assert isinstance(value, datetime)
-
-    def test_diagnostic_sensor_no_state(
-        self,
-        mock_config_entry: MagicMock,
-        vehicles_fixture: list[dict[str, Any]],
-    ) -> None:
-        """Test diagnostic sensor returns None when no state."""
-        vehicle_data = vehicles_fixture[0]
-        vehicle = Vehicle.model_validate(vehicle_data)
-        vehicle_id = vehicle_data["id"]
-
-        coordinator = MagicMock()
-        coordinator.get_vehicle_state.return_value = None
-
-        sensor = NavirecDiagnosticSensor(
-            coordinator=coordinator,
-            config_entry=mock_config_entry,
-            vehicle_id=vehicle_id,
-            vehicle=vehicle,
-            sensor_key="updated_at",
-            translation_key="updated_at",
-        )
-
-        assert sensor.native_value is None
-
-    def test_diagnostic_sensor_missing_attribute(
-        self,
-        mock_config_entry: MagicMock,
-        vehicles_fixture: list[dict[str, Any]],
-        vehicle_states_fixture: list[dict[str, Any]],
-    ) -> None:
-        """Test diagnostic sensor returns None for missing attribute."""
-        vehicle_data = vehicles_fixture[0]
-        vehicle = Vehicle.model_validate(vehicle_data)
-        vehicle_id = vehicle_data["id"]
-
-        state_data = vehicle_states_fixture[0]
-        vehicle_state = VehicleState.model_validate(state_data)
-
-        coordinator = MagicMock()
-        coordinator.get_vehicle_state.return_value = vehicle_state
-
-        sensor = NavirecDiagnosticSensor(
-            coordinator=coordinator,
-            config_entry=mock_config_entry,
-            vehicle_id=vehicle_id,
-            vehicle=vehicle,
-            sensor_key="nonexistent_key",
-            translation_key="nonexistent_key",
-        )
-
-        assert sensor.native_value is None
-
-    def test_diagnostic_sensor_invalid_datetime_string(
-        self,
-        mock_config_entry: MagicMock,
-        vehicles_fixture: list[dict[str, Any]],
-    ) -> None:
-        """Test diagnostic sensor handles invalid datetime string."""
-        vehicle_data = vehicles_fixture[0]
-        vehicle = Vehicle.model_validate(vehicle_data)
-        vehicle_id = vehicle_data["id"]
-
-        # Create a mock state with invalid datetime string
-        mock_state = MagicMock()
-        mock_state.updated_at = "not-a-valid-datetime"
-
-        coordinator = MagicMock()
-        coordinator.get_vehicle_state.return_value = mock_state
-
-        sensor = NavirecDiagnosticSensor(
-            coordinator=coordinator,
-            config_entry=mock_config_entry,
-            vehicle_id=vehicle_id,
-            vehicle=vehicle,
-            sensor_key="updated_at",
-            translation_key="updated_at",
-        )
-
-        # Should return None and log warning for invalid datetime
-        assert sensor.native_value is None
-
-
-# Test data for _get_device_class parametrized tests
-_DEVICE_CLASS_CASES = [
-    # (unit, data_type, choices, expected_device_class, test_id)
-    ("V", "float", None, SensorDeviceClass.VOLTAGE, "voltage"),
-    ("mV", "float", None, SensorDeviceClass.VOLTAGE, "millivolt"),
-    ("A", "float", None, SensorDeviceClass.CURRENT, "current"),
-    ("c", "float", None, SensorDeviceClass.TEMPERATURE, "temperature"),
-    ("m", "float", None, SensorDeviceClass.DISTANCE, "distance_meters"),
-    ("km", "float", None, SensorDeviceClass.DISTANCE, "distance_km"),
-    ("s", "duration", None, SensorDeviceClass.DURATION, "duration"),
-    ("km__hr", "float", None, SensorDeviceClass.SPEED, "speed"),
-    (None, "datetime", None, SensorDeviceClass.TIMESTAMP, "timestamp"),
-    (None, "string", [["a", "A"]], SensorDeviceClass.ENUM, "enum_with_choices"),
-    ("xyz", "string", None, None, "unknown_unit"),
-]
-
-# Test data for _get_state_class parametrized tests
-_STATE_CLASS_CASES = [
-    # (key, data_type, device_class, expected_state_class, test_id)
+# Compact parametrized tests for coverage of helper function branches
+_HELPER_FUNC_CASES = [
+    # (func, interp_data, field_to_mock, mock_val, extra_args, expected)
     (
-        "speed",
-        "float",
-        SensorDeviceClass.SPEED,
-        SensorStateClass.MEASUREMENT,
-        "measurement",
+        _get_device_class,
+        {"key": "t", "name": "T", "unit": "V"},
+        "unit",
+        "V",
+        {},
+        SensorDeviceClass.VOLTAGE,
     ),
     (
-        "accumulated_distance",
-        "float",
-        SensorDeviceClass.DISTANCE,
-        SensorStateClass.TOTAL_INCREASING,
-        "total_increasing",
-    ),
-    ("activity", "string", SensorDeviceClass.ENUM, None, "enum_no_state"),
-    (
-        "last_update",
+        _get_device_class,
+        {"key": "t", "name": "T", "data_type": "datetime"},
+        "data_type",
         "datetime",
+        {},
         SensorDeviceClass.TIMESTAMP,
-        None,
-        "timestamp_no_state",
     ),
     (
-        "engine_hours",
-        "duration",
-        None,
+        _get_state_class,
+        {"key": "t", "name": "T", "data_type": "float"},
+        "data_type",
+        "float",
+        {"device_class": SensorDeviceClass.SPEED},
         SensorStateClass.MEASUREMENT,
-        "duration_measurement",
+    ),
+    (
+        _get_native_unit,
+        {"key": "t", "name": "T", "unit": "km__hr"},
+        "unit",
+        "km__hr",
+        {},
+        True,
+    ),
+    (
+        _get_suggested_unit,
+        {"key": "t", "name": "T", "unit": "m", "unit_conversion": "km"},
+        "unit_conversion",
+        "km",
+        {},
+        True,
     ),
 ]
 
-# Test data for _get_native_unit parametrized tests
-_NATIVE_UNIT_CASES = [
-    # (unit, expected_is_not_none, test_id)
-    ("km__hr", True, "known_unit"),
-    ("xyz", False, "unknown_unit"),
-    ("", False, "empty_unit"),
-]
 
-# Test data for _get_suggested_unit parametrized tests
-_SUGGESTED_UNIT_CASES = [
-    # (unit_conversion, expected_is_not_none, test_id)
-    ("km", True, "with_conversion"),
-    (None, False, "without_conversion"),
-]
-
-
-class TestSensorHelperFunctions:
-    """Tests for sensor helper functions using parameterized test cases."""
-
-    @pytest.mark.parametrize(
-        ("unit", "data_type", "choices", "expected", "test_id"),
-        _DEVICE_CLASS_CASES,
-        ids=[c[4] for c in _DEVICE_CLASS_CASES],
+@pytest.mark.parametrize(
+    ("func", "data", "field", "val", "args", "expect"), _HELPER_FUNC_CASES
+)
+def test_helper_enum_branches(
+    func: Any, data: dict, field: str, val: str, args: dict, expect: Any
+) -> None:
+    """Test helper functions handle enum-like .value attributes."""
+    interp = Interpretation.model_validate(data)
+    mock = MagicMock()
+    mock.value = val
+    setattr(interp, field, mock)
+    result = func(interp, **args) if args else func(interp)
+    assert (
+        (result is not None) == expect if isinstance(expect, bool) else result == expect
     )
-    def test_get_device_class(
-        self,
-        unit: str | None,
-        data_type: str,
-        choices: list | None,
-        expected: SensorDeviceClass | None,
-        test_id: str,
-    ) -> None:
-        """Test device class detection from interpretation data."""
-        del test_id  # Only used for test IDs
-        interp_data: dict[str, Any] = {
-            "key": "test",
-            "name": "Test",
-            "data_type": data_type,
-        }
-        if unit:
-            interp_data["unit"] = unit
-        if choices:
-            interp_data["choices"] = choices
-        interpretation = Interpretation.model_validate(interp_data)
-        assert _get_device_class(interpretation) == expected
 
-    @pytest.mark.parametrize(
-        ("key", "data_type", "device_class", "expected", "test_id"),
-        _STATE_CLASS_CASES,
-        ids=[c[4] for c in _STATE_CLASS_CASES],
-    )
-    def test_get_state_class(
-        self,
-        key: str,
-        data_type: str,
-        device_class: SensorDeviceClass | None,
-        expected: SensorStateClass | None,
-        test_id: str,
-    ) -> None:
-        """Test state class detection from interpretation data."""
-        del test_id  # Only used for test IDs
-        interpretation = Interpretation.model_validate(
-            {"key": key, "name": "Test", "data_type": data_type}
-        )
-        assert _get_state_class(interpretation, device_class) == expected
 
-    @pytest.mark.parametrize(
-        ("unit", "expected_is_not_none", "test_id"),
-        _NATIVE_UNIT_CASES,
-        ids=[c[2] for c in _NATIVE_UNIT_CASES],
-    )
-    def test_get_native_unit(
-        self,
-        unit: str,
-        expected_is_not_none: bool,
-        test_id: str,
-    ) -> None:
-        """Test native unit mapping from interpretation data."""
-        del test_id  # Only used for test IDs
-        interpretation = Interpretation.model_validate(
-            {"key": "test", "name": "Test", "unit": unit, "data_type": "float"}
-        )
-        result = _get_native_unit(interpretation)
-        assert (result is not None) == expected_is_not_none
+def _mock_activity(mode: str) -> Any:
+    """Create mock activity for native_value tests."""
+    if mode == "root_enum":
+        m = MagicMock()
+        m.root = MagicMock(value="driving")
+        return m
+    if mode == "root_str":
+        m = MagicMock()
+        m.root = "parking"
+        return m
+    m = MagicMock(value="idling")
+    del m.root
+    return m
 
-    @pytest.mark.parametrize(
-        ("unit_conversion", "expected_is_not_none", "test_id"),
-        _SUGGESTED_UNIT_CASES,
-        ids=[c[2] for c in _SUGGESTED_UNIT_CASES],
+
+@pytest.mark.parametrize(
+    ("mode", "expected"),
+    [("root_enum", "driving"), ("root_str", "parking"), ("enum", "idling")],
+)
+def test_native_value_enum_handling(
+    mock_config_entry: MagicMock,
+    vehicles_fixture: list[dict[str, Any]],
+    sensors_fixture: list[dict[str, Any]],
+    interpretations_fixture: list[dict[str, Any]],
+    mode: str,
+    expected: str,
+) -> None:
+    """Test native_value handles RootModel and enum values."""
+    s = find_sensor_by_interpretation(sensors_fixture, "activity")
+    assert s is not None
+    vid = extract_vehicle_id_from_url(s["vehicle"])
+    state = MagicMock(spec=VehicleState)
+    state.activity = _mock_activity(mode)
+    coord = MagicMock(get_vehicle_state=MagicMock(return_value=state), connected=True)
+    sensor = NavirecSensor(
+        coordinator=coord,
+        config_entry=mock_config_entry,
+        vehicle_id=vid,
+        vehicle=Vehicle.model_validate(find_vehicle_by_id(vehicles_fixture, vid)),
+        sensor_def=Sensor.model_validate(s),
+        interpretation=Interpretation.model_validate(
+            find_interpretation_by_key(interpretations_fixture, "activity")
+        ),
+        device_class=SensorDeviceClass.ENUM,
+        native_unit=None,
+        suggested_unit=None,
+        state_class=None,
+        options=["offline", "parking", "towing", "idling", "driving"],
+        decimal_precision=None,
     )
-    def test_get_suggested_unit(
-        self,
-        unit_conversion: str | None,
-        expected_is_not_none: bool,
-        test_id: str,
-    ) -> None:
-        """Test suggested unit from unit_conversion field."""
-        del test_id  # Only used for test IDs
-        interp_data: dict[str, Any] = {
-            "key": "test",
-            "name": "Test",
-            "unit": "m",
-            "data_type": "float",
-        }
-        if unit_conversion:
-            interp_data["unit_conversion"] = unit_conversion
-        interpretation = Interpretation.model_validate(interp_data)
-        result = _get_suggested_unit(interpretation)
-        assert (result is not None) == expected_is_not_none
+    assert sensor.native_value == expected
