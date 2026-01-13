@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from homeassistant.exceptions import HomeAssistantError
 
 from custom_components.navirec.models import Action, Vehicle
 from custom_components.navirec.services import (
@@ -140,3 +141,130 @@ class TestFindVehicleAndAction:
         assert entry is None
         assert vehicle is None
         assert action is None
+
+    def test_skips_entry_without_runtime_data(
+        self, mock_hass, sample_vehicle, sample_action
+    ) -> None:
+        """Test that entries without runtime_data are skipped."""
+        vehicle_id = sample_vehicle["id"]
+        action_id = sample_action["id"]
+
+        # Create entry without runtime_data attribute
+        mock_entry_no_data = MagicMock(spec=[])  # No runtime_data attribute
+
+        # Create entry with runtime_data but without vehicles
+        mock_entry_with_data = MagicMock()
+        mock_entry_with_data.runtime_data = MagicMock()
+        mock_entry_with_data.runtime_data.vehicles = {}  # Empty vehicles
+
+        mock_hass.config_entries.async_entries = MagicMock(
+            return_value=[mock_entry_no_data, mock_entry_with_data]
+        )
+
+        entry, vehicle, action = _find_vehicle_and_action(
+            mock_hass, vehicle_id, action_id
+        )
+
+        # Should return None since no entry has the vehicle
+        assert entry is None
+        assert vehicle is None
+        assert action is None
+
+
+class TestExecuteActionService:
+    """Tests for the execute_action service call handler."""
+
+    @pytest.fixture
+    def service_hass(
+        self, mock_vehicle, mock_action, sample_vehicle, sample_action
+    ) -> MagicMock:
+        """Create a mock Home Assistant with services that can be invoked."""
+        hass = MagicMock()
+        hass.bus = MagicMock()
+        hass.bus.async_fire = MagicMock()
+
+        # Store the service handler when registered
+        service_handler = None
+
+        def capture_register(domain, service, handler, schema=None):
+            nonlocal service_handler
+            service_handler = handler
+
+        hass.services = MagicMock()
+        hass.services.async_register = MagicMock(side_effect=capture_register)
+        hass.services.async_remove = MagicMock()
+
+        # Attach reference to get handler later
+        hass._get_service_handler = lambda: service_handler
+
+        # Create mock config entry
+        vehicle_id = sample_vehicle["id"]
+
+        mock_entry = MagicMock()
+        mock_entry.runtime_data = MagicMock()
+        mock_entry.runtime_data.client = MagicMock()
+        mock_entry.runtime_data.vehicles = {vehicle_id: mock_vehicle}
+        mock_entry.runtime_data.actions_by_vehicle = {vehicle_id: [mock_action]}
+
+        hass.config_entries = MagicMock()
+        hass.config_entries.async_entries = MagicMock(return_value=[mock_entry])
+
+        return hass
+
+    @pytest.mark.asyncio
+    @patch("custom_components.navirec.services.execute_action", new_callable=AsyncMock)
+    async def test_service_call_executes_action(
+        self,
+        mock_execute: AsyncMock,
+        service_hass: MagicMock,
+        sample_vehicle: dict,
+        sample_action: dict,
+    ) -> None:
+        """Test successful service call execution."""
+        # Register the service
+        await async_setup_services(service_hass)
+
+        # Get the registered handler
+        handler = service_hass._get_service_handler()
+        assert handler is not None
+
+        # Create mock service call
+        mock_call = MagicMock()
+        mock_call.data = {
+            "vehicle_id": sample_vehicle["id"],
+            "action_id": sample_action["id"],
+        }
+
+        # Invoke the handler
+        await handler(mock_call)
+
+        # Verify execute_action was called with correct parameters
+        mock_execute.assert_called_once()
+        call_kwargs = mock_execute.call_args.kwargs
+        assert call_kwargs["hass"] == service_hass
+        assert call_kwargs["vehicle_id"] == sample_vehicle["id"]
+        assert call_kwargs["action_id"] == sample_action["id"]
+
+    @pytest.mark.asyncio
+    async def test_service_call_raises_for_nonexistent_vehicle(
+        self, service_hass: MagicMock
+    ) -> None:
+        """Test service call raises HomeAssistantError for nonexistent vehicle."""
+        # Register the service
+        await async_setup_services(service_hass)
+
+        # Get the registered handler
+        handler = service_hass._get_service_handler()
+
+        # Create mock service call with nonexistent vehicle
+        mock_call = MagicMock()
+        mock_call.data = {
+            "vehicle_id": "nonexistent-vehicle-id",
+            "action_id": "nonexistent-action-id",
+        }
+
+        # Should raise HomeAssistantError
+        with pytest.raises(HomeAssistantError) as exc_info:
+            await handler(mock_call)
+
+        assert "not found" in str(exc_info.value)
