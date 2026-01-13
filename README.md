@@ -4,6 +4,7 @@
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
 [![hacs][hacsbadge]][hacs]
+[![CI][ci-shield]][ci]
 [![codecov](https://codecov.io/gh/lnagel/hass-navirec/branch/main/graph/badge.svg)](https://codecov.io/gh/lnagel/hass-navirec)
 
 A Home Assistant custom integration for [Navirec](https://www.navirec.com/) fleet management platform. Track your
@@ -160,12 +161,6 @@ cd hass-navirec
 
 # Install dependencies with uv
 uv sync --all-extras
-
-# Run linting
-./scripts/lint
-
-# Start Home Assistant for development
-./scripts/develop
 ```
 
 ### Running Tests
@@ -179,15 +174,25 @@ uv run pytest
 This project uses:
 
 - **Ruff** for linting and formatting
+- **ty** for type checking
 - **pytest** with async support for testing
 - **Pydantic** models auto-generated from OpenAPI spec
 
+```bash
+# Format code
+uv run ruff format .
+
+# Lint and auto-fix
+uv run ruff check . --fix
+
+# Type check
+uv run ty check
+```
+
 ### Development Scripts
 
-| Script                                       | Description                                      |
+| Command                                      | Description                                      |
 |----------------------------------------------|--------------------------------------------------|
-| `./scripts/lint`                             | Format and lint code with Ruff                   |
-| `./scripts/develop`                          | Start Home Assistant with the integration loaded |
 | `uv run python scripts/generate_models.py`   | Regenerate Pydantic models from OpenAPI spec     |
 | `uv run python scripts/download_fixtures.py` | Download fresh test fixtures from the API        |
 
@@ -216,3 +221,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [releases-shield]: https://img.shields.io/github/release/lnagel/hass-navirec.svg?style=for-the-badge
 
 [releases]: https://github.com/lnagel/hass-navirec/releases
+
+[ci-shield]: https://img.shields.io/github/actions/workflow/status/lnagel/hass-navirec/checks.yml?branch=main&style=for-the-badge&label=tests
+
+[ci]: https://github.com/lnagel/hass-navirec/actions
