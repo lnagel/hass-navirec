@@ -9,6 +9,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from homeassistant.core import HomeAssistant
 
+from custom_components.navirec.api import (
+    NavirecApiClientAuthenticationError,
+    NavirecApiClientCommunicationError,
+    NavirecApiClientRateLimitError,
+)
 from custom_components.navirec.coordinator import NavirecCoordinator
 
 
@@ -498,3 +503,244 @@ class TestStreamStatePersistence:
         assert coordinator._last_updated_at == final_last_updated_at
         # Should have been called 3 times (once per event with different last_updated_at)
         assert mock_save.call_count == 3
+
+
+class TestStreamLoopErrorHandling:
+    """Tests for _async_stream_loop error handling paths."""
+
+    @pytest.fixture
+    def coordinator(self, hass: HomeAssistant) -> NavirecCoordinator:
+        """Create a coordinator instance for testing."""
+        return NavirecCoordinator(
+            hass=hass,
+            api_url="https://api.navirec.com",
+            api_token="test-token",
+            account_id="test-account-id",
+            account_name="Test Account",
+        )
+
+    @pytest.mark.asyncio
+    async def test_stream_loop_auth_error(
+        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+    ) -> None:
+        """Test auth error triggers long wait and retry."""
+        call_count = 0
+
+        async def mock_connect():
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise NavirecApiClientAuthenticationError("Auth failed")
+            # On second call, set should_stop to exit loop
+            coordinator._should_stop = True
+
+        mock_stream_client = MagicMock()
+        mock_stream_client.async_connect = AsyncMock(side_effect=mock_connect)
+        mock_stream_client.async_disconnect = AsyncMock()
+        mock_stream_client.reset_reconnect_delay = MagicMock()
+
+        with (
+            patch(
+                "custom_components.navirec.coordinator.NavirecStreamClient",
+                return_value=mock_stream_client,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep,
+        ):
+            await coordinator._async_stream_loop()
+
+        # Should have slept for 300 seconds (5 minutes) on auth error
+        mock_sleep.assert_called_with(300)
+
+    @pytest.mark.asyncio
+    async def test_stream_loop_rate_limit_error(
+        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+    ) -> None:
+        """Test rate limit error waits retry_after seconds."""
+        call_count = 0
+
+        async def mock_connect():
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise NavirecApiClientRateLimitError("Rate limited", retry_after=45)
+            coordinator._should_stop = True
+
+        mock_stream_client = MagicMock()
+        mock_stream_client.async_connect = AsyncMock(side_effect=mock_connect)
+        mock_stream_client.async_disconnect = AsyncMock()
+        mock_stream_client.reset_reconnect_delay = MagicMock()
+
+        with (
+            patch(
+                "custom_components.navirec.coordinator.NavirecStreamClient",
+                return_value=mock_stream_client,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep,
+        ):
+            await coordinator._async_stream_loop()
+
+        # Should have slept for retry_after seconds
+        mock_sleep.assert_called_with(45)
+
+    @pytest.mark.asyncio
+    async def test_stream_loop_communication_error(
+        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+    ) -> None:
+        """Test communication error triggers reconnect with backoff."""
+        call_count = 0
+
+        async def mock_connect():
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise NavirecApiClientCommunicationError("Connection failed")
+            coordinator._should_stop = True
+
+        mock_stream_client = MagicMock()
+        mock_stream_client.async_connect = AsyncMock(side_effect=mock_connect)
+        mock_stream_client.async_disconnect = AsyncMock()
+        mock_stream_client.reset_reconnect_delay = MagicMock()
+        mock_stream_client.get_reconnect_delay = MagicMock(return_value=5)
+
+        with (
+            patch(
+                "custom_components.navirec.coordinator.NavirecStreamClient",
+                return_value=mock_stream_client,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep,
+        ):
+            await coordinator._async_stream_loop()
+
+        # Should have slept for backoff delay
+        mock_sleep.assert_called_with(5)
+        mock_stream_client.get_reconnect_delay.assert_called()
+
+    @pytest.mark.asyncio
+    async def test_stream_loop_session_closed_error(
+        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+    ) -> None:
+        """Test session closed error exits gracefully."""
+
+        async def mock_connect():
+            raise RuntimeError("Session is closed")
+
+        mock_stream_client = MagicMock()
+        mock_stream_client.async_connect = AsyncMock(side_effect=mock_connect)
+        mock_stream_client.async_disconnect = AsyncMock()
+
+        with patch(
+            "custom_components.navirec.coordinator.NavirecStreamClient",
+            return_value=mock_stream_client,
+        ):
+            # Should exit without error
+            await coordinator._async_stream_loop()
+
+    @pytest.mark.asyncio
+    async def test_stream_loop_unexpected_error(
+        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+    ) -> None:
+        """Test unexpected error logs and retries with default delay."""
+        call_count = 0
+
+        async def mock_connect():
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise ValueError("Unexpected error")
+            coordinator._should_stop = True
+
+        mock_stream_client = MagicMock()
+        mock_stream_client.async_connect = AsyncMock(side_effect=mock_connect)
+        mock_stream_client.async_disconnect = AsyncMock()
+
+        with (
+            patch(
+                "custom_components.navirec.coordinator.NavirecStreamClient",
+                return_value=mock_stream_client,
+            ),
+            patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep,
+        ):
+            await coordinator._async_stream_loop()
+
+        # Should have slept for 30 seconds on unexpected error
+        mock_sleep.assert_called_with(30)
+
+    @pytest.mark.asyncio
+    async def test_stream_loop_successful_connection(
+        self,
+        hass: HomeAssistant,
+        enable_custom_integrations: None,
+        coordinator,
+        vehicle_states_fixture: list[dict[str, Any]],
+    ) -> None:
+        """Test successful stream loop processes events."""
+
+        async def mock_iter_events():
+            for state in vehicle_states_fixture[:2]:
+                yield {"event": "vehicle_state", "data": state}
+            coordinator._should_stop = True
+
+        mock_stream_client = MagicMock()
+        mock_stream_client.async_connect = AsyncMock()
+        mock_stream_client.async_disconnect = AsyncMock()
+        mock_stream_client.reset_reconnect_delay = MagicMock()
+        mock_stream_client.async_iter_events = mock_iter_events
+
+        with (
+            patch(
+                "custom_components.navirec.coordinator.NavirecStreamClient",
+                return_value=mock_stream_client,
+            ),
+            patch.object(coordinator, "_async_notify_listeners"),
+            patch.object(coordinator._store, "async_save"),
+        ):
+            await coordinator._async_stream_loop()
+
+        # Should have processed events and stored states
+        assert len(coordinator.data) == 2
+        mock_stream_client.reset_reconnect_delay.assert_called()
+
+    @pytest.mark.asyncio
+    async def test_stream_loop_cancelled_error(
+        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+    ) -> None:
+        """Test CancelledError exits loop cleanly."""
+
+        async def mock_connect():
+            raise asyncio.CancelledError
+
+        mock_stream_client = MagicMock()
+        mock_stream_client.async_connect = AsyncMock(side_effect=mock_connect)
+        mock_stream_client.async_disconnect = AsyncMock()
+
+        with patch(
+            "custom_components.navirec.coordinator.NavirecStreamClient",
+            return_value=mock_stream_client,
+        ):
+            # Should exit without error
+            await coordinator._async_stream_loop()
+
+    @pytest.mark.asyncio
+    async def test_stream_loop_should_stop_during_reconnect(
+        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+    ) -> None:
+        """Test loop exits when should_stop is set during communication error handling."""
+
+        async def mock_connect():
+            raise NavirecApiClientCommunicationError("Connection failed")
+
+        mock_stream_client = MagicMock()
+        mock_stream_client.async_connect = AsyncMock(side_effect=mock_connect)
+        mock_stream_client.async_disconnect = AsyncMock()
+        mock_stream_client.get_reconnect_delay = MagicMock(return_value=5)
+
+        # Set should_stop before loop starts
+        coordinator._should_stop = True
+
+        with patch(
+            "custom_components.navirec.coordinator.NavirecStreamClient",
+            return_value=mock_stream_client,
+        ):
+            await coordinator._async_stream_loop()
+
+        # Should exit immediately without sleeping
