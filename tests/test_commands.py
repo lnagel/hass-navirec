@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -11,6 +12,7 @@ import pytest
 from custom_components.navirec.commands import (
     _create_notification,
     _fire_result_event,
+    _poll_command_status,
     execute_action,
 )
 from custom_components.navirec.models import DeviceCommand
@@ -174,3 +176,139 @@ class TestCreateNotification:
             mock_create.assert_called_once()
             call_args = mock_create.call_args
             assert "timed out" in call_args.kwargs["title"]
+
+
+class TestPollCommandStatus:
+    """Tests for _poll_command_status function."""
+
+    @pytest.mark.asyncio
+    @patch("custom_components.navirec.commands.asyncio.sleep", new_callable=AsyncMock)
+    @patch("custom_components.navirec.commands.async_create")
+    async def test_command_reaches_acknowledged_state(
+        self,
+        mock_notification: MagicMock,
+        mock_sleep: AsyncMock,
+        mock_hass: MagicMock,
+        acknowledged_device_command: dict,
+    ) -> None:
+        """Test polling completes when command reaches terminal state."""
+        mock_client = MagicMock()
+        mock_client.async_get_device_command = AsyncMock(
+            return_value=acknowledged_device_command
+        )
+
+        await _poll_command_status(
+            hass=mock_hass,
+            client=mock_client,
+            command_id=acknowledged_device_command["id"],
+            expires_at=datetime(2030, 1, 1, tzinfo=UTC),  # Far future
+            vehicle_name="Test Vehicle",
+            action_name="Test Action",
+        )
+
+        mock_sleep.assert_called()  # Delay before polling
+        mock_hass.bus.async_fire.assert_called_once()  # Event fired
+        mock_notification.assert_called_once()  # Notification created
+
+        # Verify event data
+        event_data = mock_hass.bus.async_fire.call_args[0][1]
+        assert event_data["state"] == "acknowledged"
+        assert event_data["vehicle_name"] == "Test Vehicle"
+        assert event_data["action_name"] == "Test Action"
+
+    @pytest.mark.asyncio
+    @patch("custom_components.navirec.commands.async_create")
+    async def test_command_expires_before_polling(
+        self, mock_notification: MagicMock, mock_hass: MagicMock
+    ) -> None:
+        """Test polling stops when command has already expired."""
+        mock_client = MagicMock()
+
+        await _poll_command_status(
+            hass=mock_hass,
+            client=mock_client,
+            command_id="test-id",
+            expires_at=datetime(2020, 1, 1, tzinfo=UTC),  # Past date
+            vehicle_name="Test Vehicle",
+            action_name="Test Action",
+        )
+
+        # Should not have called API since already expired
+        mock_client.async_get_device_command.assert_not_called()
+
+        # Verify "expired" state in event
+        mock_hass.bus.async_fire.assert_called_once()
+        event_data = mock_hass.bus.async_fire.call_args[0][1]
+        assert event_data["state"] == "expired"
+
+        # Notification should be created
+        mock_notification.assert_called_once()
+
+    @pytest.mark.asyncio
+    @patch("custom_components.navirec.commands.asyncio.sleep", new_callable=AsyncMock)
+    @patch("custom_components.navirec.commands.async_create")
+    async def test_api_error_triggers_backoff(
+        self,
+        mock_notification: MagicMock,
+        mock_sleep: AsyncMock,
+        mock_hass: MagicMock,
+        acknowledged_device_command: dict,
+    ) -> None:
+        """Test exponential backoff on API errors."""
+        mock_client = MagicMock()
+        # First call fails, second succeeds
+        mock_client.async_get_device_command = AsyncMock(
+            side_effect=[Exception("API error"), acknowledged_device_command]
+        )
+
+        await _poll_command_status(
+            hass=mock_hass,
+            client=mock_client,
+            command_id="test-id",
+            expires_at=datetime(2030, 1, 1, tzinfo=UTC),
+            vehicle_name="Test Vehicle",
+            action_name="Test Action",
+        )
+
+        # Should have called API twice (once failed, once succeeded)
+        assert mock_client.async_get_device_command.call_count == 2
+
+        # Should have slept twice (once initially, once after backoff)
+        assert mock_sleep.call_count >= 2
+
+        # Eventually completed successfully
+        mock_hass.bus.async_fire.assert_called_once()
+        mock_notification.assert_called_once()
+
+    @pytest.mark.asyncio
+    @patch("custom_components.navirec.commands.asyncio.sleep", new_callable=AsyncMock)
+    @patch("custom_components.navirec.commands.async_create")
+    async def test_command_reaches_failed_state(
+        self,
+        mock_notification: MagicMock,
+        mock_sleep: AsyncMock,
+        mock_hass: MagicMock,
+        sample_device_command: dict,
+    ) -> None:
+        """Test polling completes when command reaches failed state."""
+        # Modify the command to have failed state
+        failed_command = sample_device_command.copy()
+        failed_command["state"] = "failed"
+        failed_command["errors"] = "Device offline"
+
+        mock_client = MagicMock()
+        mock_client.async_get_device_command = AsyncMock(return_value=failed_command)
+
+        await _poll_command_status(
+            hass=mock_hass,
+            client=mock_client,
+            command_id=failed_command["id"],
+            expires_at=datetime(2030, 1, 1, tzinfo=UTC),
+            vehicle_name="Test Vehicle",
+            action_name="Test Action",
+        )
+
+        # Verify event data includes errors
+        event_data = mock_hass.bus.async_fire.call_args[0][1]
+        assert event_data["state"] == "failed"
+        assert event_data["errors"] == "Device offline"
