@@ -11,6 +11,8 @@ import pytest
 from custom_components.navirec.api import (
     NavirecApiClient,
     NavirecApiClientAuthenticationError,
+    NavirecApiClientCommunicationError,
+    NavirecApiClientError,
     NavirecApiClientRateLimitError,
     NavirecStreamClient,
 )
@@ -383,3 +385,223 @@ class TestNavirecStreamClient:
         assert "updated_at__gt=" in url
         assert last_updated_at in url
         assert "account=test-account-id" in url
+
+    @pytest.mark.asyncio
+    async def test_connect_auth_error(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test authentication error during connect."""
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 401
+        mock_response.headers = {}
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        with pytest.raises(NavirecApiClientAuthenticationError):
+            await stream_client.async_connect()
+
+        assert stream_client.connected is False
+
+    @pytest.mark.asyncio
+    async def test_connect_rate_limit(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test rate limit error during connect."""
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 429
+        mock_response.headers = {"Retry-After": "45"}
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        with pytest.raises(NavirecApiClientRateLimitError) as exc_info:
+            await stream_client.async_connect()
+
+        assert exc_info.value.retry_after == 45
+        assert stream_client.connected is False
+
+    @pytest.mark.asyncio
+    async def test_connect_communication_error(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test communication error during connect."""
+        mock_session.get = AsyncMock(side_effect=aiohttp.ClientError("Network error"))
+
+        with pytest.raises(NavirecApiClientCommunicationError):
+            await stream_client.async_connect()
+
+        assert stream_client.connected is False
+
+    @pytest.mark.asyncio
+    async def test_disconnect(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test disconnect clears state."""
+        # First connect successfully
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_response.close = MagicMock()
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await stream_client.async_connect()
+        assert stream_client.connected is True
+
+        # Now disconnect
+        await stream_client.async_disconnect()
+
+        assert stream_client.connected is False
+        mock_response.close.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_iter_events_not_connected(
+        self, stream_client: NavirecStreamClient
+    ) -> None:
+        """Test iter_events raises when not connected."""
+        with pytest.raises(NavirecApiClientError) as exc_info:
+            async for _ in stream_client.async_iter_events():
+                pass  # pragma: no cover
+
+        assert "not connected" in str(exc_info.value)
+
+    @pytest.mark.asyncio
+    async def test_iter_events_success(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test successful event iteration."""
+        # Create mock response with async iterator content
+        events = [
+            b'{"event": "connected"}\n',
+            b'{"event": "vehicle_state", "data": {"vehicle": "https://api/vehicles/123/", "updated_at": "2025-01-01T00:00:00Z"}}\n',
+            b'{"event": "heartbeat"}\n',
+        ]
+
+        async def mock_content_iterator():
+            for event in events:
+                yield event
+
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_response.content = mock_content_iterator()
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await stream_client.async_connect()
+
+        received_events = [event async for event in stream_client.async_iter_events()]
+
+        assert len(received_events) == 3
+        assert received_events[0]["event"] == "connected"
+        assert received_events[1]["event"] == "vehicle_state"
+        assert received_events[2]["event"] == "heartbeat"
+
+        # Verify last_updated_at was tracked
+        assert stream_client.last_updated_at == "2025-01-01T00:00:00Z"
+
+    @pytest.mark.asyncio
+    async def test_iter_events_json_decode_error(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test handling of malformed JSON in stream."""
+        # Include malformed JSON that should be skipped
+        events = [
+            b'{"event": "connected"}\n',
+            b"not valid json\n",
+            b'{"event": "heartbeat"}\n',
+        ]
+
+        async def mock_content_iterator():
+            for event in events:
+                yield event
+
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_response.content = mock_content_iterator()
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await stream_client.async_connect()
+
+        received_events = [event async for event in stream_client.async_iter_events()]
+
+        # Should only have 2 valid events (malformed JSON skipped)
+        assert len(received_events) == 2
+        assert received_events[0]["event"] == "connected"
+        assert received_events[1]["event"] == "heartbeat"
+
+    @pytest.mark.asyncio
+    async def test_iter_events_empty_lines_skipped(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test that empty lines are skipped."""
+        events = [
+            b'{"event": "connected"}\n',
+            b"\n",
+            b"   \n",
+            b'{"event": "heartbeat"}\n',
+        ]
+
+        async def mock_content_iterator():
+            for event in events:
+                yield event
+
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_response.content = mock_content_iterator()
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await stream_client.async_connect()
+
+        received_events = [event async for event in stream_client.async_iter_events()]
+
+        assert len(received_events) == 2
+
+    @pytest.mark.asyncio
+    async def test_iter_events_connection_lost(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test handling of connection loss during iteration."""
+
+        async def mock_content_iterator():
+            yield b'{"event": "connected"}\n'
+            raise aiohttp.ClientError("Connection lost")
+
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_response.content = mock_content_iterator()
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await stream_client.async_connect()
+
+        async def collect_events():
+            return [event async for event in stream_client.async_iter_events()]
+
+        with pytest.raises(NavirecApiClientCommunicationError):
+            await collect_events()
+
+        # connected should be False after connection loss
+        assert stream_client.connected is False
+
+    @pytest.mark.asyncio
+    async def test_iter_events_stops_when_should_stop(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test that iteration stops when _should_stop is set."""
+
+        async def mock_content_iterator():
+            yield b'{"event": "connected"}\n'
+            # Set should_stop before yielding more events
+            stream_client._should_stop = True
+            yield b'{"event": "heartbeat"}\n'
+
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_response.content = mock_content_iterator()
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await stream_client.async_connect()
+
+        received_events = [event async for event in stream_client.async_iter_events()]
+
+        # Should only have received first event before stop
+        assert len(received_events) == 1
