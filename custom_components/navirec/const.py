@@ -1,6 +1,8 @@
 """Constants for navirec."""
 
+import json
 from logging import Logger, getLogger
+from pathlib import Path
 
 from homeassistant.const import (
     PERCENTAGE,
@@ -20,10 +22,15 @@ LOGGER: Logger = getLogger(__package__)
 DOMAIN = "navirec"
 ATTRIBUTION = "Data provided by Navirec"
 
+# Read version from manifest.json
+_MANIFEST_PATH = Path(__file__).parent / "manifest.json"
+_MANIFEST = json.loads(_MANIFEST_PATH.read_text())
+VERSION = _MANIFEST["version"]
+
 # API Configuration
 API_VERSION = "1.45.0"
 DEFAULT_API_URL = "https://api.navirec.com/"
-USER_AGENT = "hass-navirec"
+USER_AGENT = f"hass-navirec/{VERSION}"
 
 # Config entry keys
 CONF_API_URL = "api_url"
