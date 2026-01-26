@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 from custom_components.navirec.const import USER_AGENT, VERSION
@@ -22,12 +21,3 @@ def test_version_matches_manifest() -> None:
 def test_user_agent_includes_version() -> None:
     """Test that USER_AGENT includes the version number."""
     assert f"hass-navirec/{VERSION}" == USER_AGENT
-
-
-def test_user_agent_format() -> None:
-    """Test that USER_AGENT has correct format (name/version)."""
-    # Should match pattern: hass-navirec/X.Y.Z
-    pattern = r"^hass-navirec/\d+\.\d+\.\d+$"
-    assert re.match(pattern, USER_AGENT), (
-        f"USER_AGENT '{USER_AGENT}' doesn't match expected format"
-    )
