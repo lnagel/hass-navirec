@@ -59,9 +59,11 @@
             "activity": {
                 "name": "Activity",
                 "state": {
-                    "driving": "Driving",
+                    "offline": "Offline",
                     "parking": "Parking",
-                    "idling": "Idling"
+                    "towing": "Towing",
+                    "idling": "Idling",
+                    "driving": "Driving"
                 }
             },
             "time": {

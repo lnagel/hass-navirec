@@ -1,0 +1,105 @@
+{
+    "entity": {
+        "device_tracker": {
+            "vehicle": {
+                "default": "mdi:car"
+            }
+        },
+        "sensor": {
+            "speed": {
+                "default": "mdi:speedometer"
+            },
+            "fuel_level": {
+                "default": "mdi:gas-station"
+            },
+            "altitude": {
+                "default": "mdi:altimeter"
+            },
+            "heading": {
+                "default": "mdi:compass"
+            },
+            "total_distance": {
+                "default": "mdi:counter"
+            },
+            "total_engine_time": {
+                "default": "mdi:engine"
+            },
+            "total_fuel_used": {
+                "default": "mdi:gas-station"
+            },
+            "supply_voltage": {
+                "default": "mdi:car-battery"
+            },
+            "eco_score": {
+                "default": "mdi:leaf"
+            },
+            "activity": {
+                "default": "mdi:car",
+                "state": {
+                    "offline": "mdi:car-off",
+                    "parking": "mdi:parking",
+                    "towing": "mdi:tow-truck",
+                    "idling": "mdi:car-clock",
+                    "driving": "mdi:car"
+                }
+            },
+            "time": {
+                "default": "mdi:clock"
+            },
+            "updated_at": {
+                "default": "mdi:update"
+            }
+        },
+        "binary_sensor": {
+            "ignition": {
+                "default": "mdi:power",
+                "state": {
+                    "on": "mdi:power",
+                    "off": "mdi:power-off"
+                }
+            },
+            "alarm": {
+                "default": "mdi:alarm-light",
+                "state": {
+                    "on": "mdi:alarm-light",
+                    "off": "mdi:alarm-light-off"
+                }
+            }
+        },
+        "button": {
+            "update_location": {
+                "default": "mdi:map-marker-check"
+            },
+            "block_starter": {
+                "default": "mdi:car-key"
+            },
+            "unblock_starter": {
+                "default": "mdi:car-key"
+            },
+            "lock_doors": {
+                "default": "mdi:car-door-lock"
+            },
+            "unlock_doors": {
+                "default": "mdi:car-door"
+            },
+            "unlock_trunk": {
+                "default": "mdi:car-back"
+            },
+            "flash_lights": {
+                "default": "mdi:car-light-high"
+            },
+            "get_fault_codes": {
+                "default": "mdi:alert-circle"
+            },
+            "clear_fault_codes": {
+                "default": "mdi:alert-circle-check"
+            },
+            "start_alarm": {
+                "default": "mdi:alarm-light"
+            },
+            "stop_alarm": {
+                "default": "mdi:alarm-light-off"
+            }
+        }
+    }
+}
