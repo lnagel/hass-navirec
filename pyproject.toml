@@ -12,19 +12,18 @@ dependencies = [
     "homeassistant>=2025.10.0",
 ]
 
-[project.optional-dependencies]
-test = [
+[dependency-groups]
+dev = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.20.0",
     "pytest-cov>=4.0.0",
     "pytest-homeassistant-custom-component>=0.13.285",
-]
-dev = [
-    "ruff>=0.14.5",
-    "ty>=0.0.1a11",
-    "datamodel-code-generator>=0.26.0",
-    "python-dotenv>=1.0.0",
     "bump-my-version>=1.1.0",
+    "datamodel-code-generator>=0.26.0",
+    "diff-cover>=9.0.0",
+    "python-dotenv>=1.0.0",
+    "ruff>=0.14.10",
+    "ty>=0.0.1a11",
 ]
 
 [project.urls]

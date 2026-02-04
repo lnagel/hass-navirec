@@ -26,7 +26,7 @@ jobs:
         with:
           enable-cache: true
       - run: python -c "import sys; print(sys.version)"
-      - run: uv sync --extra test
+      - run: uv sync --dev
       - run: uv run pytest --cov=custom_components/navirec --cov-branch --cov-report=xml --cov-report=term --junitxml=junit.xml -o junit_family=legacy
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5

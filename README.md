@@ -159,7 +159,7 @@ git clone https://github.com/lnagel/hass-navirec.git
 cd hass-navirec
 
 # Install dependencies with uv
-uv sync --all-extras
+uv sync --dev
 ```
 
 ### Running Tests
