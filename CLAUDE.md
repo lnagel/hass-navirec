@@ -99,7 +99,7 @@ The `docs/openapi-navirec-1.45.0.json` contains the OpenAPI spec (versioned).
 
 ### Test Coverage
 
-- **Minimum 80% line coverage** (enforced in pyproject.toml)
+- **Minimum 85% line coverage** (enforced in pyproject.toml and CI)
 
 ### Bug Fixes: Reproduce First
 
