@@ -232,7 +232,7 @@ uv sync --dev
 uv run pytest
 
 # Run tests with coverage
-uv run pytest --cov=custom_components/navirec
+uv run pytest --cov=custom_components/navirec --cov-branch
 
 # Format code
 uv run ruff format .
