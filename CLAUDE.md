@@ -189,14 +189,14 @@ git commit
 
 ```python
 # WRONG - Just fix the code
-def calculate_duty_cycle(...):
+def some_function(...):
     return fixed_value  # "trust me it works now"
 
 
 # RIGHT - Write failing test first
-def test_duty_cycle_edge_case():
+def test_some_function_edge_case():
     # This test should fail before the fix
-    assert calculate_duty_cycle(edge_case) == expected
+    assert some_function(edge_case) == expected
 ```
 
 ### 5. Floating-Point Equality in Tests
