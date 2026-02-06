@@ -212,6 +212,12 @@ def test_duty_cycle_edge_case():
     assert calculate_duty_cycle(edge_case) == expected
 ```
 
+### 5. Floating-Point Equality in Tests
+Use `pytest.approx()` for asserting float values that have passed through
+any computation (division, interpolation, averaging). Direct assign-and-read
+without computation can use `==`. Dictionary comparisons with nested floats
+are especially dangerous — assert float fields individually with `approx()`.
+
 ## CI Workflows
 
 The CI runs three workflow files on PRs:
