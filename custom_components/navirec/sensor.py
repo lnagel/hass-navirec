@@ -234,6 +234,7 @@ class NavirecSensor(NavirecEntity, SensorEntity):
         # Entity attributes
         sensor_id = str(sensor_def.id) if sensor_def.id else ""
         self._attr_unique_id = f"{vehicle_id}_{sensor_id}"
+        self._attr_translation_key = self._interpretation_key
         self._attr_name = sensor_def.name_display or self._interpretation_key
 
         # Use show_in_map to determine if entity is enabled by default
