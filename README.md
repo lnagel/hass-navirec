@@ -1,7 +1,7 @@
 # Navirec
 
 [![GitHub Release](https://img.shields.io/github/v/release/lnagel/hass-navirec?style=flat-square)](https://github.com/lnagel/hass-navirec/releases)
-[![License](https://img.shields.io/github/license/lnagel/hass-navirec?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/github/license/lnagel/hass-navirec?style=flat-square)](https://github.com/lnagel/hass-navirec/blob/main/LICENSE)
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=flat-square)](https://my.home-assistant.io/redirect/hacs_repository/?owner=lnagel&repository=hass-navirec&category=integration)
 [![CI](https://img.shields.io/github/actions/workflow/status/lnagel/hass-navirec/checks.yml?branch=main&style=flat-square&label=tests)](https://github.com/lnagel/hass-navirec/actions)
 [![codecov](https://codecov.io/gh/lnagel/hass-navirec/branch/main/graph/badge.svg)](https://codecov.io/gh/lnagel/hass-navirec)
