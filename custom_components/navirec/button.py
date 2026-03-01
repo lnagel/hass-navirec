@@ -63,6 +63,7 @@ class NavirecActionButton(NavirecEntity, ButtonEntity):
 
         # Entity attributes
         self._attr_unique_id = f"{vehicle_id}_{action.id}"
+        self._attr_translation_key = action.slug
         self._attr_name = action.name_display or action.slug or str(action.type)
         # Actions are enabled by default (unlike diagnostic sensors)
         self._attr_entity_registry_enabled_default = True
