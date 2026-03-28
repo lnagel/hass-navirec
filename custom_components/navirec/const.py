@@ -28,7 +28,7 @@ _MANIFEST = json.loads(_MANIFEST_PATH.read_text())
 VERSION = _MANIFEST["version"]
 
 # API Configuration
-API_VERSION = "1.45.0"
+API_VERSION = "1.46.2"
 DEFAULT_API_URL = "https://api.navirec.com/"
 USER_AGENT = f"hass-navirec/{VERSION}"
 

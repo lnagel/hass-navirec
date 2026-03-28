@@ -2,12 +2,13 @@
 
 The Navirec API is a RESTful web service for developers to programmatically interact with Navirec data.
 
-The Navirec API is organized around REST. Every bit of data exchanged between clients and the API is JSON over HTTPS. 
+The Navirec API is organized around REST. Every bit of data exchanged between clients and the API is JSON over HTTPS.
 All API requests must be made over HTTPS. Calls made over plain HTTP will fail. You must authenticate for all requests.
 
 The base URL for the Navirec API is https://api.navirec.com/.
 
-If you have questions about using the API, or have come across a bug you'd like to report, write us an email at <api@navirec.com>.
+If you have questions about using the API, or have come across a bug you'd like to report, write us an email
+at <api@navirec.com>.
 
 ## User-Agent
 
@@ -16,7 +17,7 @@ This makes our admin staff fully aware of your integration and allows us to keep
 
 Please use only printable ASCII characters.
 
-Examples that we consider a good practice. Please substitute your own names in the examples. 
+Examples that we consider a good practice. Please substitute your own names in the examples.
 
 ```http request
 User-Agent: MyDomain.com
@@ -30,7 +31,8 @@ User-Agent: MyApplication/1.0.0 (python-requests/2.24.0)
 All API requests should specify the version of the API that the integration was built with.
 This version number needs to be appended to the Accept HTTP header as an additional argument.
 
-In the following example, replace `X.Y.Z` with the most recent version number given at the top of the documentation page.
+In the following example, replace `X.Y.Z` with the most recent version number given at the top of the documentation
+page.
 
 ```http request
 GET /trips/ HTTP/1.1
@@ -40,8 +42,8 @@ User-Agent: MyApplication/1.0.0
 ```
 
 It is possible to use the browsable API without specifying the version, but this is intended
-for developer convenience only. All requests made by production systems need to include the 
-version in the Accept header. 
+for developer convenience only. All requests made by production systems need to include the
+version in the Accept header.
 
 ## Language
 
@@ -83,7 +85,8 @@ Content-Timezone: Europe/Tallinn
 Navirec API uses Link Header Pagination for most endpoints (except Last Vehicle States and Last Driver States).
 
 For example when requesting a list of vehicles and the number of objects exceeds 100, then the API will respond with
-the first 100 objects and a link to fetch the next 100 objects. The link is stored in the `Link` header with attribute `rel="next"`.
+the first 100 objects and a link to fetch the next 100 objects. The link is stored in the `Link` header with attribute
+`rel="next"`.
 The provided link will have the same query arguments as your original query but with the `cursor` attribute updated.
 
 ```http request
@@ -122,9 +125,9 @@ https://docs.github.com/en/rest/guides/traversing-with-pagination
 
 ## Rate limits
 
-Navirec API is rate limited to ensure fair access to available resources. Clients are expected to handle responses 
+Navirec API is rate limited to ensure fair access to available resources. Clients are expected to handle responses
 with status HTTP 429 Too Many Requests appropriately by waiting the number of seconds indicated by the `Retry-After`
-response header. In the next example, the API client is expected to wait a minimum of 3 seconds before attempting 
+response header. In the next example, the API client is expected to wait a minimum of 3 seconds before attempting
 the request again.
 
 ```http request
@@ -141,17 +144,18 @@ Vary: Accept
 }
 ```
 
-An overview of the current limits is provided purely for informative reasons. 
+An overview of the current limits is provided purely for informative reasons.
 These limits are subject to change without prior notice when necessary to maintain operation.
 
 Session-based limits:
 
 * anonymous: 100/hour
 * authenticated sessions: 120/minute, 1800/hour
-  
+
 In addition to session-based limits, some endpoints are limited further:
 
 * authenticate: 10/hour
+* authorize: 24/minute, 400/hour
 * areas: 24/minute, 400/hour
 * trips: 24/minute, 200/hour
 * notifications: 24/minute, 200/hour
@@ -165,11 +169,14 @@ In addition to session-based limits, some endpoints are limited further:
 
 ## Errors
 
-Navirec uses conventional HTTP response codes to indicate success or failure of an API request. In general, codes in the 2xx range indicate success, codes in the 4xx range indicate an error that resulted from the provided information (e.g. a required parameter was missing, a charge failed, etc.), and codes in the 5xx range indicate an error with Navirec's servers.
+Navirec uses conventional HTTP response codes to indicate success or failure of an API request. In general, codes in the
+2xx range indicate success, codes in the 4xx range indicate an error that resulted from the provided information (e.g. a
+required parameter was missing, a charge failed, etc.), and codes in the 5xx range indicate an error with Navirec's
+servers.
 
 | Status code | Status text       | Description                                |
 |-------------|-------------------|--------------------------------------------|
-| 200         | OK                | Everything                                 |
+| 200         | OK                | Everything worked as expected.             |
 | 400         | Bad Request       | Often missing a required parameter.        |
 | 401         | Unauthorized      | No valid API key provided.                 |
 | 402         | Request Failed    | Parameters were valid but request failed.  |
@@ -179,31 +186,30 @@ Navirec uses conventional HTTP response codes to indicate success or failure of 
 
 ## Sideloading
 
-Some list endpoints support sideloading of the related objects. It can be used by providing `sideload` query param. 
-Note that this will change response type from List to object and items will have nested lists of requested objects. 
+Some list endpoints support sideloading of the related objects. It can be used by providing `sideload` query param.
+Note that this will change response type from List to object and items will have nested lists of requested objects.
 
-Example request: 
+Example request:
 
     /emails/?sideload=accounts,drivers,contacts 
-
 
 Body:
 
 ```json    
     {
-       "email":[
-          ...
-       ],
-       "accounts":[
-          ...
-       ],
-       "drivers":[
-          ...
-       ],
-       "contacts":[
-          ...
-       ]
-    }
+  "email": [
+    ...
+  ],
+  "accounts": [
+    ...
+  ],
+  "drivers": [
+    ...
+  ],
+  "contacts": [
+    ...
+  ]
+}
 ```
 
 ## Data streaming
@@ -215,11 +221,11 @@ Live GPS tracking data streams of vehicle and driver states is provided with two
 
 The data format in the streams is compatible with previously available polling endpoints
 [last driver states](#tag/Last-driver-states) and [last vehicle states](#tag/Last-vehicle-states).
-However, instead of a single JSON list object containing all the state objects, the streaming endpoints 
-return state objects in the Newline Delimited JSON (ndjson) Format. 
+However, instead of a single JSON list object containing all the state objects, the streaming endpoints
+return state objects in the Newline Delimited JSON (ndjson) Format.
 
 Query arguments for `/streams/driver_states/`:
- 
+
 * `account`
 * `driver`
 * `driver_group`
@@ -247,7 +253,8 @@ Event types:
 * `connected`: sent at the moment the stream is initialized
 * `vehicle_state`: GPS tracking info from a vehicle (only from `/streams/vehicle_states/`)
 * `driver_state`: driver state info based on driver recognition tools (only from `/streams/driver_states/`)
-* `initial_state_sent`: indicates that the API has sent all currently known state data and will continue to send new state data once it becomes available
+* `initial_state_sent`: indicates that the API has sent all currently known state data and will continue to send new
+  state data once it becomes available
 * `heartbeat`: sent every 30 seconds to prevent idle connections from timing out
 * `disconnected`: sent before recycling the connection in about 1h. the client is expected to reconnect.
 
@@ -257,7 +264,7 @@ Example request:
 GET https://api.navirec.com/streams/vehicle_states/?account=<account_id>
 
 User-Agent: IntegrationApp123
-Accept: application/x-ndjson; version=1.33.0
+Accept: application/x-ndjson; version=X.Y.Z
 Accept-Timezone: Europe/Tallinn
 Authorization: Token eyJ0e..redacted..9ch0A
 ```
@@ -291,10 +298,134 @@ Then the next API call should be like this:
 GET https://api.navirec.com/streams/vehicle_states/?account=<account_id>&updated_at__gt=2024-02-16T14:02:41.127646Z
 ```
 
+## Report Data
+
+Report data streaming allows downloading large reports in paginated chunks. This is useful for reports that may contain
+thousands of rows that would be impractical to download in a single request.
+
+To stream report data, append `stream/` to any report URL:
+
+* `/reports/trips/{id}/stream/` - stream trip report data
+* `/reports/tankings/{id}/stream/` - stream fuel tanking report data
+* `/reports/vehicle_events/{id}/stream/` - stream vehicle event report data
+* (and other report types)
+
+### Request Format
+
+Report data streams support **GET**, **PATCH**, and **POST** requests:
+
+* **GET** - uses the stored report parameters from the report instance
+* **PATCH** - merges request body params with the stored instance params
+* **POST** - uses params from the request body entirely (ignores stored params)
+
+For PATCH and POST, the request body contains a `params` object with the following common parameters:
+
+* `period` - predefined reporting period (e.g. `today`, `yesterday`, `current_week`, `previous_week`, `current_month`,
+  `previous_month`). Alternative to providing `start_date` and `end_date`.
+* `start_date` - start of the reporting period (ISO-8601 format)
+* `end_date` - end of the reporting period (ISO-8601 format)
+* `columns` - list of field names to include in the response
+* `page_size` - number of results per page (min: 10, max: 50000 for NDJSON streaming)
+* `ordering` - list of fields to order results by (prefix with `-` for descending)
+* `cursor` - pagination cursor for fetching subsequent pages
+
+Either `period` or both `start_date` and `end_date` must be provided. If neither is given, defaults to the current
+month.
+
+Additional report-specific parameters (e.g. vehicle/driver filters, `group_by`) are documented in each report type's
+OPTIONS response.
+
+### Response Format
+
+Report streams return data in Newline Delimited JSON (NDJSON) format. Each line is a JSON object with an `event` field
+and an optional `data` field.
+
+Event types:
+
+* `connected` - sent when the stream is initialized
+* `result` - contains a single row of report data in the `data` field
+* `pagination` - contains pagination info with `more_results` boolean and `next_cursor` token (if more results exist)
+* `disconnected` - sent when the stream is complete
+
+### Example Request
+
+```http request
+POST https://api.navirec.com/reports/trips/{id}/stream/
+
+User-Agent: IntegrationApp123
+Accept: application/x-ndjson; version=X.Y.Z
+Content-Type: application/json
+Authorization: Token eyJ0e..redacted..9ch0A
+
+{"params": {"start_date": "2025-01-01T00:00:00+02:00", "end_date": "2025-01-31T23:59:59+02:00", "page_size": 50000}}
+```
+
+### Example Response Stream
+
+```
+{"event":"connected"}
+{"event":"result","data":{"vehicle":"https://api.navirec.com/vehicles/4d7df82d-...","start_time":"2025-01-15T08:30:00+02:00","end_time":"2025-01-15T09:15:00+02:00","distance":42500,...}}
+{"event":"result","data":{"vehicle":"https://api.navirec.com/vehicles/4d7df82d-...","start_time":"2025-01-15T10:00:00+02:00","end_time":"2025-01-15T11:30:00+02:00","distance":78200,...}}
+{"event":"pagination","data":{"more_results":true,"next_cursor":"eyJmaWVsZCI6InN0YXJ0X3RpbWUiLC..."}}
+{"event":"disconnected"}
+```
+
+### Pagination
+
+Report streams use cursor-based pagination. After processing a page of results, check the `pagination` event:
+
+* If `more_results` is `true`, use the `next_cursor` value in your next request
+* If `more_results` is `false`, all data has been retrieved
+
+Example pagination loop (pseudocode):
+
+```
+cursor = null
+all_results = []
+
+loop:
+    params = {"start_date": "...", "end_date": "...", "page_size": 50000}
+    if cursor is not null:
+        params["cursor"] = cursor
+
+    response = POST /reports/{type}/{id}/stream/ with {"params": params}
+
+    for each line in response:
+        event = parse_json(line)
+        if event.event == "result":
+            all_results.append(event.data)
+        else if event.event == "pagination":
+            if event.data.more_results:
+                cursor = event.data.next_cursor
+            else:
+                cursor = null
+
+    if cursor is null:
+        break
+
+    sleep(10 seconds)  # Rate limiting: wait between page requests
+```
+
+**Rate limiting note:** A delay of at least 10 seconds between page requests is recommended to avoid hitting rate
+limits. Use larger page sizes (e.g. 50000) for large reports to minimize the number of pagination requests.
+
+### Error Handling
+
+If the request parameters are invalid, the API returns HTTP 400 Bad Request with a JSON response (not streamed):
+
+```http request
+POST https://api.navirec.com/reports/trips/{id}/stream/
+
+HTTP 400 Bad Request
+Content-Type: application/json
+
+{"params": {"start_date": ["This field is required."]}}
+```
+
 # Authentication
 
 Please use the Navirec web application to generate an API token.
-The API token management page is located in Profile menu -> Account settings -> 
+The API token management page is located in Profile menu -> Account settings ->
 [API access](https://app.navirec.com/account/api-access/).
 
 After creating the access token for a new integration, you must also assign permissions to the newly
@@ -304,5 +435,5 @@ For clients to authenticate, the token key should be included in the Authorizati
 The key should be prefixed by the string literal "Token", with whitespace separating the two strings.
 
 `Authorization: Token eyJhbGc.example.ssw5c`
-    
+
 Note: you must replace `eyJhbGc.example.ssw5c` with the newly created API token.
