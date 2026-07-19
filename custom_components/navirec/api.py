@@ -348,11 +348,11 @@ class NavirecStreamClient:
 
                 yield event
 
-        except (aiohttp.ClientError, asyncio.CancelledError) as exception:
+        except aiohttp.ClientError as exception:
             self._connected = False
-            LOGGER.warning("Stream connection lost: %s", exception)
+            LOGGER.warning("Stream connection lost: %r", exception)
             raise NavirecApiClientCommunicationError(
-                f"Stream connection lost: {exception}"
+                f"Stream connection lost: {exception!r}"
             ) from exception
         finally:
             self._connected = False
