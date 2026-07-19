@@ -158,7 +158,7 @@ async def async_unload_entry(
 ) -> bool:
     """Handle removal of an entry."""
     # Stop streaming
-    if hasattr(entry, "runtime_data") and entry.runtime_data:
+    if entry.runtime_data is not None:
         await entry.runtime_data.coordinator.async_stop_streaming()
 
     # Unload platforms

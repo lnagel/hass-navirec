@@ -149,8 +149,9 @@ class TestFindVehicleAndAction:
         vehicle_id = sample_vehicle["id"]
         action_id = sample_action["id"]
 
-        # Create entry without runtime_data attribute
-        mock_entry_no_data = MagicMock(spec=[])  # No runtime_data attribute
+        # Entry with runtime_data set to None (setup not yet complete)
+        mock_entry_no_data = MagicMock()
+        mock_entry_no_data.runtime_data = None
 
         # Create entry with runtime_data but without vehicles
         mock_entry_with_data = MagicMock()

@@ -76,7 +76,7 @@ def _find_vehicle_and_action(
     entries: list[NavirecConfigEntry] = hass.config_entries.async_entries(DOMAIN)
 
     for entry in entries:
-        if not hasattr(entry, "runtime_data") or not entry.runtime_data:
+        if entry.runtime_data is None:
             continue
 
         data = entry.runtime_data
