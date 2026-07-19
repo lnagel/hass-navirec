@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
@@ -579,6 +580,32 @@ class TestNavirecStreamClient:
             await collect_events()
 
         # connected should be False after connection loss
+        assert stream_client.connected is False
+
+    @pytest.mark.asyncio
+    async def test_iter_events_cancellation_propagates(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """CancelledError must propagate, not be wrapped as a communication error."""
+
+        async def mock_content_iterator():
+            yield b'{"event": "connected"}\n'
+            raise asyncio.CancelledError
+
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.headers = {}
+        mock_response.content = mock_content_iterator()
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await stream_client.async_connect()
+
+        async def collect_events():
+            return [event async for event in stream_client.async_iter_events()]
+
+        with pytest.raises(asyncio.CancelledError):
+            await collect_events()
+
         assert stream_client.connected is False
 
     @pytest.mark.asyncio
