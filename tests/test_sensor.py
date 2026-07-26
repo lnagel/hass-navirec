@@ -143,6 +143,7 @@ def test_sensor_enum_returns_string(mock_config_entry, fixtures):
 def test_sensor_unique_id(mock_config_entry, fixtures):
     """Test sensor unique ID format."""
     sensor = _make_sensor(mock_config_entry, fixtures, "speed", SensorDeviceClass.SPEED)
+    assert sensor.unique_id is not None
     assert "_" in sensor.unique_id
 
 

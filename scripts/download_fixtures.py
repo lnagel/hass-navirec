@@ -87,7 +87,7 @@ async def fetch_json(
     paginated: bool = True,
 ) -> list[dict]:
     """Fetch JSON data from a URL, handling pagination and rate limits."""
-    all_results = []
+    all_results: list[dict] = []
     current_url: str | None = url
     page = 1
 

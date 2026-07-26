@@ -205,6 +205,7 @@ class TestNavirecBinarySensor:
             device_class=BINARY_SENSOR_DEVICE_CLASSES.get("ignition"),
         )
 
+        assert sensor.unique_id is not None
         assert vehicle_id in sensor.unique_id
 
     def test_sensor_enabled_by_default(
