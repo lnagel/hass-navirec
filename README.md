@@ -141,7 +141,7 @@ Each vehicle also has diagnostic sensors (disabled by default):
 
 - **IoT Class**: Cloud Push (real-time streaming)
 - **Integration Type**: Hub
-- **Minimum HA Version**: 2025.10.0
+- **Minimum HA Version**: 2026.3.0
 
 The integration uses Navirec's NDJSON streaming API to receive real-time vehicle state updates. This provides immediate
 updates without polling, reducing latency and API load.
@@ -150,7 +150,7 @@ updates without polling, reducing latency and API load.
 
 ### Prerequisites
 
-- Python 3.13+
+- Python 3.14+
 - [uv](https://github.com/astral-sh/uv) package manager
 
 ### Setup

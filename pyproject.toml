@@ -3,13 +3,13 @@ name = "hass-navirec"
 version = "0.2.1"
 description = "A Home Assistant integration for Navirec"
 readme = "README.md"
-requires-python = ">=3.13.2"
+requires-python = ">=3.14.2"
 authors = [
     { name = "lnagel", email = "lnagel@users.noreply.github.com" }
 ]
 dependencies = [
     "colorlog>=6.10.1",
-    "homeassistant>=2025.10.0",
+    "homeassistant>=2026.3.0",
 ]
 
 [dependency-groups]
@@ -34,19 +34,6 @@ Issues = "https://github.com/lnagel/hass-navirec/issues"
 [tool.uv]
 package = false
 
-[tool.black]
-line-length = 88
-target-version = ["py313"]
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | build
-  | dist
-
-)/
-'''
-
 [tool.pytest.ini_options]
 pythonpath = "."
 asyncio_mode = "auto"
@@ -69,12 +56,13 @@ exclude_lines = [
 
 [tool.ruff]
 line-length = 88
-target-version = "py313"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
     "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
+    "CPY001", # Missing copyright notice at top of file
     "D203", # no-blank-line-before-class (incompatible with formatter)
     "D212", # multi-line-summary-first-line (incompatible with formatter)
     "COM812", # incompatible with formatter
@@ -94,7 +82,7 @@ combine-as-imports = true
 ]
 
 [tool.ty.environment]
-python-version = "3.13"
+python-version = "3.14"
 
 [[tool.ty.overrides]]
 # Auto-generated models use Pydantic constrained types (constr, conint)

@@ -153,7 +153,7 @@ def main() -> int:
             "--output-model-type",
             "pydantic_v2.BaseModel",
             "--target-python-version",
-            "3.13",
+            "3.14",
             "--use-standard-collections",
             "--use-union-operator",
             # Skip field constraints to be more flexible with API responses
