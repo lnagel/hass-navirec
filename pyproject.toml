@@ -3,13 +3,13 @@ name = "hass-navirec"
 version = "0.2.1"
 description = "A Home Assistant integration for Navirec"
 readme = "README.md"
-requires-python = ">=3.13.2"
+requires-python = ">=3.14.2"
 authors = [
     { name = "lnagel", email = "lnagel@users.noreply.github.com" }
 ]
 dependencies = [
     "colorlog>=6.10.1",
-    "homeassistant>=2025.10.0",
+    "homeassistant>=2026.3.0",
 ]
 
 [dependency-groups]
@@ -69,7 +69,7 @@ exclude_lines = [
 
 [tool.ruff]
 line-length = 88
-target-version = "py313"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -94,7 +94,7 @@ combine-as-imports = true
 ]
 
 [tool.ty.environment]
-python-version = "3.13"
+python-version = "3.14"
 
 [[tool.ty.overrides]]
 # Auto-generated models use Pydantic constrained types (constr, conint)
