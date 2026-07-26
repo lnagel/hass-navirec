@@ -34,19 +34,6 @@ Issues = "https://github.com/lnagel/hass-navirec/issues"
 [tool.uv]
 package = false
 
-[tool.black]
-line-length = 88
-target-version = ["py313"]
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | build
-  | dist
-
-)/
-'''
-
 [tool.pytest.ini_options]
 pythonpath = "."
 asyncio_mode = "auto"
