@@ -23,7 +23,7 @@ dev = [
     "diff-cover>=9.0.0",
     "python-dotenv>=1.0.0",
     "ruff>=0.14.10",
-    "ty>=0.0.64",
+    "ty>=0.0.65",
 ]
 
 [project.urls]
