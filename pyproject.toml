@@ -22,7 +22,7 @@ dev = [
     "datamodel-code-generator>=0.26.0",
     "diff-cover>=9.0.0",
     "python-dotenv>=1.0.0",
-    "ruff>=0.14.10",
+    "ruff>=0.16.1",
     "ty>=0.0.65",
 ]
 
