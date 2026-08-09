@@ -20,7 +20,7 @@ dev = [
     "pytest-cov>=4.0.0",
     "pytest-homeassistant-custom-component==0.13.355",
     "bump-my-version>=1.5.1",
-    "datamodel-code-generator>=0.26.0",
+    "datamodel-code-generator>=0.72.2",
     "diff-cover>=9.0.0",
     "python-dotenv>=1.0.0",
     "ruff>=0.16.1",
