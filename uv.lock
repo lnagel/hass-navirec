@@ -1184,7 +1184,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiohttp", specifier = ">=3.9.0" },
+    { name = "aiohttp" },
     { name = "homeassistant", specifier = ">=2026.3.0" },
 ]
 
