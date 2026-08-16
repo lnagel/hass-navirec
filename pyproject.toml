@@ -9,22 +9,21 @@ authors = [
 ]
 dependencies = [
     "aiohttp>=3.9.0",
-    "colorlog>=6.10.1",
     "homeassistant>=2026.3.0",
 ]
 
 [dependency-groups]
 dev = [
-    "pytest>=7.0.0",
-    "pytest-asyncio>=0.20.0",
-    "pytest-cov>=4.0.0",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
     "pytest-homeassistant-custom-component==0.13.355",
-    "bump-my-version>=1.5.1",
-    "datamodel-code-generator>=0.72.2",
-    "diff-cover>=10.5.0",
-    "python-dotenv>=1.0.0",
-    "ruff>=0.16.2",
-    "ty>=0.0.69",
+    "bump-my-version",
+    "datamodel-code-generator",
+    "diff-cover",
+    "python-dotenv",
+    "ruff",
+    "ty",
 ]
 
 [project.urls]
