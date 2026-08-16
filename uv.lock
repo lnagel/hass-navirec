@@ -1165,7 +1165,6 @@ version = "0.2.3"
 source = { virtual = "." }
 dependencies = [
     { name = "aiohttp" },
-    { name = "homeassistant" },
 ]
 
 [package.dev-dependencies]
@@ -1173,9 +1172,6 @@ dev = [
     { name = "bump-my-version" },
     { name = "datamodel-code-generator" },
     { name = "diff-cover" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-cov" },
     { name = "pytest-homeassistant-custom-component" },
     { name = "python-dotenv" },
     { name = "ruff" },
@@ -1183,19 +1179,13 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "aiohttp" },
-    { name = "homeassistant", specifier = ">=2026.3.0" },
-]
+requires-dist = [{ name = "aiohttp" }]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "bump-my-version" },
     { name = "datamodel-code-generator" },
     { name = "diff-cover" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-cov" },
     { name = "pytest-homeassistant-custom-component", specifier = "==0.13.355" },
     { name = "python-dotenv" },
     { name = "ruff" },
