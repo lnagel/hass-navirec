@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -16,6 +17,9 @@ from custom_components.navirec.commands import (
     execute_action,
 )
 from custom_components.navirec.models import DeviceCommand
+
+if TYPE_CHECKING:
+    from collections.abc import Coroutine
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -45,13 +49,27 @@ def mock_client(sample_device_command) -> MagicMock:
     return client
 
 
+def _close_background_coro(coro: Coroutine, name: str) -> MagicMock:
+    """
+    Stand in for hass.async_create_background_task.
+
+    The real method takes ownership of the coroutine and schedules it. The mock
+    never awaits it, so close it here to avoid leaking a "coroutine was never
+    awaited" RuntimeWarning into an unrelated test at garbage collection time.
+    """
+    coro.close()
+    return MagicMock()
+
+
 @pytest.fixture
 def mock_hass() -> MagicMock:
     """Create a mock Home Assistant instance."""
     hass = MagicMock()
     hass.bus = MagicMock()
     hass.bus.async_fire = MagicMock()
-    hass.async_create_background_task = MagicMock()
+    hass.async_create_background_task = MagicMock(
+        side_effect=_close_background_coro,
+    )
     return hass
 
 
