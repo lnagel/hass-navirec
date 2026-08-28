@@ -23,14 +23,13 @@ from pathlib import Path
 import aiohttp
 from dotenv import load_dotenv
 
-from custom_components.navirec.const import USER_AGENT
+from custom_components.navirec.const import API_VERSION, USER_AGENT
 
 load_dotenv()
 
 # Configuration
 API_URL = os.environ.get("NAVIREC_API_URL", "https://api.navirec.com/")
 API_TOKEN = os.environ.get("NAVIREC_API_TOKEN", "")
-API_VERSION = "1.46.2"
 STREAM_DURATION_SECONDS = 10
 FIXTURES_DIR = Path(__file__).parent.parent / "tests" / "fixtures"
 
