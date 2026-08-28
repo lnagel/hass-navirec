@@ -139,6 +139,9 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         self._sensor_def = sensor_def
         self._interpretation = interpretation
         self._interpretation_key = interpretation.key or ""
+        # Values are addressed by api_field; the key only identifies the
+        # interpretation for translations and device class lookup.
+        self._api_field = interpretation.api_field or ""
 
         # Entity attributes
         sensor_id = str(sensor_def.id) if sensor_def.id else ""
@@ -158,7 +161,7 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         """Return true if the binary sensor is on."""
         state = self.vehicle_state
         if state:
-            value = get_sensor_value_from_state(state, self._interpretation_key)
+            value = get_sensor_value_from_state(state, self._api_field)
             if value is not None:
                 bool_value = bool(value)
                 # Invert value for sensors in the inversion list
