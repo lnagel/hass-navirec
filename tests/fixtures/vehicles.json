@@ -25,7 +25,9 @@
       "https://api.navirec.namespace.ee/vehicle_groups/91d16925-5721-40d4-a9b2-aac997799128/",
       "https://api.navirec.namespace.ee/vehicle_groups/0c49b2c9-3d56-4296-a89c-a41279991470/",
       "https://api.navirec.namespace.ee/vehicle_groups/4e7acc78-2a49-4f63-b345-759b597226be/",
-      "https://api.navirec.namespace.ee/vehicle_groups/2b5a87a6-5f00-4bb6-a7d2-ee1a629ccc3b/"
+      "https://api.navirec.namespace.ee/vehicle_groups/2b5a87a6-5f00-4bb6-a7d2-ee1a629ccc3b/",
+      "https://api.navirec.namespace.ee/vehicle_groups/776cc466-eafc-48e0-9a41-729431b2a9d4/",
+      "https://api.navirec.namespace.ee/vehicle_groups/8707d3f3-d507-4785-8454-eeefb1869e89/"
     ],
     "workhours": [
       [
@@ -85,7 +87,7 @@
     "fuel_removed_thresholds": [
       1
     ],
-    "tachograph_enabled": null,
+    "tachograph_enabled": true,
     "auth_tachograph_card": null,
     "tachograph_lock_card": null,
     "tachograph_locked_at": null,
@@ -124,7 +126,7 @@
     "name_display": "TEST-2",
     "active": true,
     "accountable_user": "https://api.navirec.namespace.ee/users/f7c315c0-a9f5-48f5-a985-f3733c60d156/",
-    "driver": null,
+    "driver": "https://api.navirec.namespace.ee/drivers/06274b87-c52d-4ee3-9a5e-f2db204174fa/",
     "vehicle_groups": [
       "https://api.navirec.namespace.ee/vehicle_groups/50d07b69-cb1f-4d08-8164-887acdd7388e/",
       "https://api.navirec.namespace.ee/vehicle_groups/d6dc689a-2ead-4313-9b71-985388be7c7f/",
@@ -144,7 +146,8 @@
       "https://api.navirec.namespace.ee/vehicle_groups/aae3910a-5c4e-4af2-9dd5-27fc0ed36ef4/",
       "https://api.navirec.namespace.ee/vehicle_groups/e37f2c96-45d4-40e6-8f0f-d2882cd8d5d4/",
       "https://api.navirec.namespace.ee/vehicle_groups/4e7acc78-2a49-4f63-b345-759b597226be/",
-      "https://api.navirec.namespace.ee/vehicle_groups/2b5a87a6-5f00-4bb6-a7d2-ee1a629ccc3b/"
+      "https://api.navirec.namespace.ee/vehicle_groups/2b5a87a6-5f00-4bb6-a7d2-ee1a629ccc3b/",
+      "https://api.navirec.namespace.ee/vehicle_groups/8707d3f3-d507-4785-8454-eeefb1869e89/"
     ],
     "workhours": [
       [
@@ -198,7 +201,7 @@
     ],
     "fuel_tanked_thresholds": [],
     "fuel_removed_thresholds": [],
-    "tachograph_enabled": null,
+    "tachograph_enabled": true,
     "auth_tachograph_card": null,
     "tachograph_lock_card": null,
     "tachograph_locked_at": null,
@@ -253,7 +256,8 @@
       "https://api.navirec.namespace.ee/vehicle_groups/91d16925-5721-40d4-a9b2-aac997799128/",
       "https://api.navirec.namespace.ee/vehicle_groups/0c49b2c9-3d56-4296-a89c-a41279991470/",
       "https://api.navirec.namespace.ee/vehicle_groups/422863b0-2711-4e82-987d-f4ab4b45948c/",
-      "https://api.navirec.namespace.ee/vehicle_groups/639d7127-7a0d-4409-9492-dc16b7b170e1/"
+      "https://api.navirec.namespace.ee/vehicle_groups/639d7127-7a0d-4409-9492-dc16b7b170e1/",
+      "https://api.navirec.namespace.ee/vehicle_groups/8707d3f3-d507-4785-8454-eeefb1869e89/"
     ],
     "workhours": [
       [
@@ -294,7 +298,7 @@
     "last_activity_enabled": true,
     "country_split_enabled": true,
     "daily_split_times_enabled": true,
-    "hide_private_trips": false,
+    "hide_private_trips": true,
     "history_optimization_enabled": true,
     "switched_by_ignition": false,
     "average_fuel_consumption": null,
@@ -302,9 +306,15 @@
     "average_co2_emission": null,
     "hourly_co2_emission": null,
     "trip_tariff": null,
-    "fuel_tank_capacities": [],
-    "fuel_tanked_thresholds": [],
-    "fuel_removed_thresholds": [],
+    "fuel_tank_capacities": [
+      100
+    ],
+    "fuel_tanked_thresholds": [
+      200
+    ],
+    "fuel_removed_thresholds": [
+      1000
+    ],
     "tachograph_enabled": true,
     "auth_tachograph_card": null,
     "tachograph_lock_card": null,
@@ -466,32 +476,32 @@
     ],
     "workhours": [
       [
-        "07:30:00",
-        "19:30:00"
+        "00:00:00",
+        "23:59:59"
       ],
       [
-        "07:30:00",
-        "19:30:00"
+        "00:00:00",
+        "23:59:59"
       ],
       [
-        "07:30:00",
-        "19:30:00"
+        "00:00:00",
+        "23:59:59"
       ],
       [
-        "07:30:00",
-        "19:30:00"
+        "00:00:00",
+        "23:59:59"
       ],
       [
-        "07:30:00",
-        "19:30:00"
+        "00:00:00",
+        "23:59:59"
       ],
       [
-        "07:30:00",
-        "19:30:00"
+        "00:00:00",
+        "23:59:59"
       ],
       [
-        "07:30:00",
-        "19:30:00"
+        "00:00:00",
+        "23:59:59"
       ]
     ],
     "error_state_threshold": "00:01:00",
@@ -520,7 +530,7 @@
     "fuel_removed_thresholds": [
       1
     ],
-    "tachograph_enabled": null,
+    "tachograph_enabled": true,
     "auth_tachograph_card": null,
     "tachograph_lock_card": null,
     "tachograph_locked_at": null,

@@ -23,9 +23,9 @@
     "key": "accelerator",
     "name": "Accelerator",
     "name_display": "Accelerator",
-    "unit": "percent",
+    "unit": null,
     "unit_conversion": null,
-    "unit_display": "%",
+    "unit_display": null,
     "data_type": "double",
     "multiple_value": false,
     "decimal_places": null,
@@ -38,17 +38,53 @@
     "choices": null
   },
   {
+    "id": 745,
+    "url": "https://api.navirec.namespace.ee/interpretations/745/",
+    "key": "account_id",
+    "name": "Account",
+    "name_display": "Account",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "uuid",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 803,
+    "url": "https://api.navirec.namespace.ee/interpretations/803/",
+    "key": "account_name",
+    "name": "Account Name",
+    "name_display": "Account Name",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "string",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
     "id": 98,
     "url": "https://api.navirec.namespace.ee/interpretations/98/",
     "key": "accumulated_distance",
     "name": "Accumulated distance",
     "name_display": "Accumulated distance",
     "unit": "m",
-    "unit_conversion": null,
-    "unit_display": "m",
+    "unit_conversion": "km",
+    "unit_display": "km",
     "data_type": "long",
     "multiple_value": false,
-    "decimal_places": null,
+    "decimal_places": 0,
     "icon": "https://api.navirec.namespace.ee/icons/1a0ff54c-a815-42f0-aeea-9e2f7f11cfd1/",
     "icon_template_vars": {
       "index": null
@@ -64,8 +100,8 @@
     "name": "Accumulated engine time",
     "name_display": "Accumulated engine time",
     "unit": "s",
-    "unit_conversion": null,
-    "unit_display": "s",
+    "unit_conversion": "hr",
+    "unit_display": "h",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": 1,
@@ -729,7 +765,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": null,
+    "api_field": "battery_current",
     "choices": null
   },
   {
@@ -899,14 +935,284 @@
     "choices": null
   },
   {
+    "id": 761,
+    "url": "https://api.navirec.namespace.ee/interpretations/761/",
+    "key": "camera_device_fault",
+    "name": "Camera fault",
+    "name_display": "Camera fault",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 752,
+    "url": "https://api.navirec.namespace.ee/interpretations/752/",
+    "key": "camera_driver_distraction",
+    "name": "Driver distraction",
+    "name_display": "Driver distraction",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 759,
+    "url": "https://api.navirec.namespace.ee/interpretations/759/",
+    "key": "camera_driver_drinking",
+    "name": "Driver drinking",
+    "name_display": "Driver drinking",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 756,
+    "url": "https://api.navirec.namespace.ee/interpretations/756/",
+    "key": "camera_driver_eyes_closed",
+    "name": "Driver eyes closed",
+    "name_display": "Driver eyes closed",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 751,
+    "url": "https://api.navirec.namespace.ee/interpretations/751/",
+    "key": "camera_driver_fatigue",
+    "name": "Driver fatigue",
+    "name_display": "Driver fatigue",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 758,
+    "url": "https://api.navirec.namespace.ee/interpretations/758/",
+    "key": "camera_driver_head_down",
+    "name": "Driver head down",
+    "name_display": "Driver head down",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 757,
+    "url": "https://api.navirec.namespace.ee/interpretations/757/",
+    "key": "camera_driver_no_face",
+    "name": "Driver not detected",
+    "name_display": "Driver not detected",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 753,
+    "url": "https://api.navirec.namespace.ee/interpretations/753/",
+    "key": "camera_driver_phone_use",
+    "name": "Driver phone use",
+    "name_display": "Driver phone use",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 754,
+    "url": "https://api.navirec.namespace.ee/interpretations/754/",
+    "key": "camera_driver_smoking",
+    "name": "Driver smoking",
+    "name_display": "Driver smoking",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 755,
+    "url": "https://api.navirec.namespace.ee/interpretations/755/",
+    "key": "camera_driver_yawning",
+    "name": "Driver yawning",
+    "name_display": "Driver yawning",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 747,
+    "url": "https://api.navirec.namespace.ee/interpretations/747/",
+    "key": "camera_forward_collision_warning",
+    "name": "Forward collision warning",
+    "name_display": "Forward collision warning",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 749,
+    "url": "https://api.navirec.namespace.ee/interpretations/749/",
+    "key": "camera_headway_monitoring_warning",
+    "name": "Headway monitoring warning",
+    "name_display": "Headway monitoring warning",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 748,
+    "url": "https://api.navirec.namespace.ee/interpretations/748/",
+    "key": "camera_lane_departure_warning",
+    "name": "Lane departure warning",
+    "name_display": "Lane departure warning",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 750,
+    "url": "https://api.navirec.namespace.ee/interpretations/750/",
+    "key": "camera_pedestrian_collision_warning",
+    "name": "Pedestrian collision warning",
+    "name_display": "Pedestrian collision warning",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 760,
+    "url": "https://api.navirec.namespace.ee/interpretations/760/",
+    "key": "camera_video_signal_loss",
+    "name": "Video signal loss",
+    "name_display": "Video signal loss",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
     "id": 34,
     "url": "https://api.navirec.namespace.ee/interpretations/34/",
     "key": "can_fuel_level_litres",
     "name": "Can fuel level litres",
     "name_display": "Can fuel level litres",
-    "unit": "l",
+    "unit": null,
     "unit_conversion": null,
-    "unit_display": "l",
+    "unit_display": null,
     "data_type": "double",
     "multiple_value": false,
     "decimal_places": null,
@@ -953,7 +1259,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "can_state_1",
+    "api_field": null,
     "choices": [
       [
         0,
@@ -988,7 +1294,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "can_state_2",
+    "api_field": null,
     "choices": [
       [
         0,
@@ -1023,7 +1329,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "can_state_3",
+    "api_field": null,
     "choices": [
       [
         0,
@@ -1058,7 +1364,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "can_state_4",
+    "api_field": null,
     "choices": [
       [
         0,
@@ -1150,6 +1456,24 @@
     "icon_template_vars": {},
     "color": null,
     "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 807,
+    "url": "https://api.navirec.namespace.ee/interpretations/807/",
+    "key": "continuation",
+    "name": "Continuation",
+    "name_display": "Continuation",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "continuation",
     "choices": null
   },
   {
@@ -1618,12 +1942,7 @@
     "icon_template_vars": {},
     "color": null,
     "api_field": "door_states",
-    "choices": [
-      [
-        "0000",
-        "All closed"
-      ]
-    ]
+    "choices": null
   },
   {
     "id": 665,
@@ -1762,41 +2081,6 @@
     "choices": null
   },
   {
-    "id": 672,
-    "url": "https://api.navirec.namespace.ee/interpretations/672/",
-    "key": "driver_1_card_presence",
-    "name": "Driver 1 Card Presence",
-    "name_display": "Driver 1 Card Presence",
-    "unit": null,
-    "unit_conversion": null,
-    "unit_display": null,
-    "data_type": "int",
-    "multiple_value": false,
-    "decimal_places": null,
-    "icon": null,
-    "icon_template_vars": {},
-    "color": null,
-    "api_field": null,
-    "choices": [
-      [
-        0,
-        "Card is not present"
-      ],
-      [
-        1,
-        "Card is present"
-      ],
-      [
-        2,
-        "Error"
-      ],
-      [
-        3,
-        "Not Available"
-      ]
-    ]
-  },
-  {
     "id": 245,
     "url": "https://api.navirec.namespace.ee/interpretations/245/",
     "key": "driver_1_card_present",
@@ -1822,9 +2106,9 @@
     "key": "driver_1_continuous_driving_time",
     "name": "Driver 1 Continuous Driving Time",
     "name_display": "Driver 1 Continuous Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -1840,9 +2124,9 @@
     "key": "driver_1_cumulative_break_time",
     "name": "Driver 1 Cumulative Break Time",
     "name_display": "Driver 1 Cumulative Break Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -1858,9 +2142,9 @@
     "key": "driver_1_cumulative_driving_time",
     "name": "Driver 1 Cumulative Driving Time",
     "name_display": "Driver 1 Cumulative Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -1876,9 +2160,9 @@
     "key": "driver_1_daily_driving_time",
     "name": "Driver 1 Daily Driving Time",
     "name_display": "Driver 1 Daily Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2026,9 +2310,9 @@
     "key": "driver_1_min_daily_rest",
     "name": "Driver 1 Min Daily Rest",
     "name_display": "Driver 1 Min Daily Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2044,9 +2328,9 @@
     "key": "driver_1_min_weekly_rest",
     "name": "Driver 1 Min Weekly Rest",
     "name_display": "Driver 1 Min Weekly Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2080,9 +2364,9 @@
     "key": "driver_1_next_driving_duration",
     "name": "Driver 1 Duration Next Driving Period",
     "name_display": "Driver 1 Duration Next Driving Period",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2098,9 +2382,9 @@
     "key": "driver_1_next_rest_duration",
     "name": "Driver 1 Duration Of Next Rest",
     "name_display": "Driver 1 Duration Of Next Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2134,9 +2418,9 @@
     "key": "driver_1_open_compensation_2nd_week_before_last",
     "name": "Driver 1 Open Compensation 2nd Week Before Last",
     "name_display": "Driver 1 Open Compensation 2nd Week Before Last",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2152,9 +2436,9 @@
     "key": "driver_1_open_compensation_last_week",
     "name": "Driver 1 Open Compensation Last Week",
     "name_display": "Driver 1 Open Compensation Last Week",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2170,9 +2454,9 @@
     "key": "driver_1_open_compensation_week_before_last",
     "name": "Driver 1 Open Compensation Week Before Last",
     "name_display": "Driver 1 Open Compensation Week Before Last",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2188,9 +2472,9 @@
     "key": "driver_1_remaining_current_driving_time",
     "name": "Driver 1 Remaining Current Driving Time",
     "name_display": "Driver 1 Remaining Current Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2206,9 +2490,27 @@
     "key": "driver_1_remaining_current_rest_time",
     "name": "Driver 1 Remaining Time Current Rest",
     "name_display": "Driver 1 Remaining Time Current Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
+    "data_type": "duration",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 718,
+    "url": "https://api.navirec.namespace.ee/interpretations/718/",
+    "key": "driver_1_remaining_daily_driving_time",
+    "name": "Driver 1 Remaining Driving Time Current Day",
+    "name_display": "Driver 1 Remaining Driving Time Current Day",
+    "unit": "s",
+    "unit_conversion": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2224,9 +2526,9 @@
     "key": "driver_1_remaining_shift_driving_time",
     "name": "Driver 1 Remaining Driving Time Current Shift",
     "name_display": "Driver 1 Remaining Driving Time Current Shift",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2242,9 +2544,9 @@
     "key": "driver_1_remaining_weekly_driving_time",
     "name": "Driver 1 Remaining Driving Time Current Week",
     "name_display": "Driver 1 Remaining Driving Time Current Week",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2280,9 +2582,9 @@
     "key": "driver_1_selected_activity_duration",
     "name": "Driver 1 Selected Activity Duration",
     "name_display": "Driver 1 Selected Activity Duration",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2328,72 +2630,7 @@
     },
     "color": null,
     "api_field": "driver_1_time_state",
-    "choices": [
-      [
-        0,
-        "Normal"
-      ],
-      [
-        1,
-        "15 min before 4.5h"
-      ],
-      [
-        2,
-        "4.5h reached"
-      ],
-      [
-        3,
-        "15 min before 9h"
-      ],
-      [
-        4,
-        "9h reached"
-      ],
-      [
-        5,
-        "15 min before 16h"
-      ],
-      [
-        6,
-        "16h reached"
-      ],
-      [
-        7,
-        "Weekly driving time pre-warning active"
-      ],
-      [
-        8,
-        "weekly driving time warning active"
-      ],
-      [
-        9,
-        "2 weeks driving time pre-warning active"
-      ],
-      [
-        10,
-        "2 weeks driving time warning active"
-      ],
-      [
-        11,
-        "Driver 1 card expiry warning active"
-      ],
-      [
-        12,
-        "Next mandatory driver 1 card download warning active"
-      ],
-      [
-        13,
-        "Other"
-      ],
-      [
-        14,
-        "Error"
-      ],
-      [
-        15,
-        "Not available"
-      ]
-    ]
+    "choices": null
   },
   {
     "id": 657,
@@ -2401,9 +2638,9 @@
     "key": "driver_1_time_until_next_break",
     "name": "Driver 1 Time Remain Until Next Break",
     "name_display": "Driver 1 Time Remain Until Next Break",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2419,9 +2656,9 @@
     "key": "driver_1_time_until_next_daily_rest_period",
     "name": "Driver 1 Time Left Until New Daily Rest Period",
     "name_display": "Driver 1 Time Left Until New Daily Rest Period",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2437,9 +2674,9 @@
     "key": "driver_1_time_until_next_driving_period",
     "name": "Driver 1 Time Until Next Driving Period",
     "name_display": "Driver 1 Time Until Next Driving Period",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2455,9 +2692,9 @@
     "key": "driver_1_time_until_next_weekly_rest_period",
     "name": "Driver 1 Time Left Until New Weekly Rest Period",
     "name_display": "Driver 1 Time Left Until New Weekly Rest Period",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2473,9 +2710,9 @@
     "key": "driver_1_weekly_driving_time",
     "name": "Driver 1 Weekly Driving Time",
     "name_display": "Driver 1 Weekly Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2503,32 +2740,7 @@
     },
     "color": null,
     "api_field": "driver_1_working_state",
-    "choices": [
-      [
-        0,
-        "Rest"
-      ],
-      [
-        1,
-        "Driver available"
-      ],
-      [
-        2,
-        "Work"
-      ],
-      [
-        3,
-        "Drive"
-      ],
-      [
-        6,
-        "Error"
-      ],
-      [
-        7,
-        "Not available"
-      ]
-    ]
+    "choices": null
   },
   {
     "id": 417,
@@ -2641,41 +2853,6 @@
     "choices": null
   },
   {
-    "id": 673,
-    "url": "https://api.navirec.namespace.ee/interpretations/673/",
-    "key": "driver_2_card_presence",
-    "name": "Driver 2 Card Presence",
-    "name_display": "Driver 2 Card Presence",
-    "unit": null,
-    "unit_conversion": null,
-    "unit_display": null,
-    "data_type": "int",
-    "multiple_value": false,
-    "decimal_places": null,
-    "icon": null,
-    "icon_template_vars": {},
-    "color": null,
-    "api_field": null,
-    "choices": [
-      [
-        0,
-        "Card is not present"
-      ],
-      [
-        1,
-        "Card is present"
-      ],
-      [
-        2,
-        "Error"
-      ],
-      [
-        3,
-        "Not Available"
-      ]
-    ]
-  },
-  {
     "id": 246,
     "url": "https://api.navirec.namespace.ee/interpretations/246/",
     "key": "driver_2_card_present",
@@ -2701,9 +2878,9 @@
     "key": "driver_2_continuous_driving_time",
     "name": "Driver 2 Continuous Driving Time",
     "name_display": "Driver 2 Continuous Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2719,9 +2896,9 @@
     "key": "driver_2_cumulative_break_time",
     "name": "Driver 2 Cumulative Break Time",
     "name_display": "Driver 2 Cumulative Break Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2737,9 +2914,9 @@
     "key": "driver_2_cumulative_driving_time",
     "name": "Driver 2 Cumulative Driving Time",
     "name_display": "Driver 2 Cumulative Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2755,9 +2932,9 @@
     "key": "driver_2_daily_driving_time",
     "name": "Driver 2 Daily Driving Time",
     "name_display": "Driver 2 Daily Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2901,9 +3078,9 @@
     "key": "driver_2_min_daily_rest",
     "name": "Driver 2 Min Daily Rest",
     "name_display": "Driver 2 Min Daily Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2919,9 +3096,9 @@
     "key": "driver_2_min_weekly_rest",
     "name": "Driver 2 Min Weekly Rest",
     "name_display": "Driver 2 Min Weekly Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -2955,9 +3132,9 @@
     "key": "driver_2_next_rest_duration",
     "name": "Driver 2 Duration Of Next Rest",
     "name_display": "Driver 2 Duration Of Next Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3011,9 +3188,9 @@
     "key": "driver_2_selected_activity_duration",
     "name": "Driver 2 Selected Activity Duration",
     "name_display": "Driver 2 Selected Activity Duration",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3059,72 +3236,7 @@
     },
     "color": null,
     "api_field": "driver_2_time_state",
-    "choices": [
-      [
-        0,
-        "Normal"
-      ],
-      [
-        1,
-        "15 min before 4.5h"
-      ],
-      [
-        2,
-        "4.5h reached"
-      ],
-      [
-        3,
-        "15 min before 9h"
-      ],
-      [
-        4,
-        "9h reached"
-      ],
-      [
-        5,
-        "15 min before 16h"
-      ],
-      [
-        6,
-        "16h reached"
-      ],
-      [
-        7,
-        "Weekly driving time pre-warning active"
-      ],
-      [
-        8,
-        "weekly driving time warning active"
-      ],
-      [
-        9,
-        "2 weeks driving time pre-warning active"
-      ],
-      [
-        10,
-        "2 weeks driving time warning active"
-      ],
-      [
-        11,
-        "Driver 1 card expiry warning active"
-      ],
-      [
-        12,
-        "Next mandatory driver 1 card download warning active"
-      ],
-      [
-        13,
-        "Other"
-      ],
-      [
-        14,
-        "Error"
-      ],
-      [
-        15,
-        "Not available"
-      ]
-    ]
+    "choices": null
   },
   {
     "id": 658,
@@ -3132,9 +3244,9 @@
     "key": "driver_2_time_until_next_break",
     "name": "Driver 2 Time Remain Until Next Break",
     "name_display": "Driver 2 Time Remain Until Next Break",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3150,9 +3262,9 @@
     "key": "driver_2_time_until_next_daily_rest_period",
     "name": "Driver 2 Time Left Until New Daily Rest Period",
     "name_display": "Driver 2 Time Left Until New Daily Rest Period",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3168,9 +3280,9 @@
     "key": "driver_2_time_until_next_weekly_rest_period",
     "name": "Driver 2 Time Left Until New Weekly Rest Period",
     "name_display": "Driver 2 Time Left Until New Weekly Rest Period",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3186,9 +3298,9 @@
     "key": "driver_2_weekly_driving_time",
     "name": "Driver 2 Weekly Driving Time",
     "name_display": "Driver 2 Weekly Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3216,32 +3328,7 @@
     },
     "color": null,
     "api_field": "driver_2_working_state",
-    "choices": [
-      [
-        0,
-        "Rest"
-      ],
-      [
-        1,
-        "Driver available"
-      ],
-      [
-        2,
-        "Work"
-      ],
-      [
-        3,
-        "Drive"
-      ],
-      [
-        6,
-        "Error"
-      ],
-      [
-        7,
-        "Not available"
-      ]
-    ]
+    "choices": null
   },
   {
     "id": 714,
@@ -3276,7 +3363,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "break_time",
+    "api_field": "driver_break_time",
     "choices": null
   },
   {
@@ -3323,9 +3410,9 @@
     "key": "driver_cumulative_break_time",
     "name": "Driver Cumulative Break Time",
     "name_display": "Driver Cumulative Break Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3341,9 +3428,9 @@
     "key": "driver_cumulative_driving_time",
     "name": "Driver Cumulative Driving Time",
     "name_display": "Driver Cumulative Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3368,7 +3455,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "daily_driving_time",
+    "api_field": "driver_daily_driving_time",
     "choices": null
   },
   {
@@ -3404,7 +3491,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "daily_work_time",
+    "api_field": "driver_daily_work_time",
     "choices": null
   },
   {
@@ -3422,7 +3509,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "driving_time",
+    "api_field": "driver_driving_time",
     "choices": null
   },
   {
@@ -3503,9 +3590,9 @@
     "key": "driver_load_unload_time",
     "name": "Driver Load Unload Time",
     "name_display": "Driver Load Unload Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3521,9 +3608,9 @@
     "key": "driver_min_daily_rest",
     "name": "Driver Min Daily Rest",
     "name_display": "Driver Min Daily Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3539,9 +3626,9 @@
     "key": "driver_min_weekly_rest",
     "name": "Driver Min Weekly Rest",
     "name_display": "Driver Min Weekly Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3575,9 +3662,9 @@
     "key": "driver_next_driving_duration",
     "name": "Driver Next Driving Duration",
     "name_display": "Driver Next Driving Duration",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3593,9 +3680,9 @@
     "key": "driver_next_rest_duration",
     "name": "Driver Next Rest Duration",
     "name_display": "Driver Next Rest Duration",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3611,9 +3698,9 @@
     "key": "driver_open_compensation_2nd_week_before_last",
     "name": "Driver Open Compensation 2nd Week Before Last",
     "name_display": "Driver Open Compensation 2nd Week Before Last",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3629,9 +3716,9 @@
     "key": "driver_open_compensation_last_week",
     "name": "Driver Open Compensation Last Week",
     "name_display": "Driver Open Compensation Last Week",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3647,9 +3734,9 @@
     "key": "driver_open_compensation_week_before_last",
     "name": "Driver Open Compensation Week Before Last",
     "name_display": "Driver Open Compensation Week Before Last",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3665,9 +3752,9 @@
     "key": "driver_remaining_current_driving_time",
     "name": "Driver Remaining Current Driving Time",
     "name_display": "Driver Remaining Current Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3683,9 +3770,9 @@
     "key": "driver_remaining_current_rest_time",
     "name": "Driver Remaining Current Rest Time",
     "name_display": "Driver Remaining Current Rest Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3696,14 +3783,32 @@
     "choices": null
   },
   {
+    "id": 719,
+    "url": "https://api.navirec.namespace.ee/interpretations/719/",
+    "key": "driver_remaining_daily_driving_time",
+    "name": "Driver Remaining Driving Time Current Day",
+    "name_display": "Driver Remaining Driving Time Current Day",
+    "unit": "s",
+    "unit_conversion": null,
+    "unit_display": "s",
+    "data_type": "duration",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "driver_remaining_daily_driving_time",
+    "choices": null
+  },
+  {
     "id": 701,
     "url": "https://api.navirec.namespace.ee/interpretations/701/",
     "key": "driver_remaining_shift_driving_time",
     "name": "Driver Remaining Shift Driving Time",
     "name_display": "Driver Remaining Shift Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3719,9 +3824,9 @@
     "key": "driver_remaining_weekly_driving_time",
     "name": "Driver Remaining Weekly Driving Time",
     "name_display": "Driver Remaining Weekly Driving Time",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3737,9 +3842,9 @@
     "key": "driver_selected_activity_duration",
     "name": "Driver Selected Activity Duration",
     "name_display": "Driver Selected Activity Duration",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3747,6 +3852,24 @@
     "icon_template_vars": {},
     "color": null,
     "api_field": "driver_selected_activity_duration",
+    "choices": null
+  },
+  {
+    "id": 746,
+    "url": "https://api.navirec.namespace.ee/interpretations/746/",
+    "key": "driver_slot_id",
+    "name": "Driver Slot",
+    "name_display": "Driver Slot",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
     "choices": null
   },
   {
@@ -3768,14 +3891,97 @@
     "choices": null
   },
   {
+    "id": 717,
+    "url": "https://api.navirec.namespace.ee/interpretations/717/",
+    "key": "driver_time_state",
+    "name": "Driver time state",
+    "name_display": "Driver time state",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "driver_time_state",
+    "choices": [
+      [
+        0,
+        "Normal"
+      ],
+      [
+        1,
+        "15 min before 4.5h"
+      ],
+      [
+        2,
+        "4.5h reached"
+      ],
+      [
+        3,
+        "15 min before 9h"
+      ],
+      [
+        4,
+        "9h reached"
+      ],
+      [
+        5,
+        "15 min before 16h"
+      ],
+      [
+        6,
+        "16h reached"
+      ],
+      [
+        7,
+        "Weekly driving time pre-warning active"
+      ],
+      [
+        8,
+        "weekly driving time warning active"
+      ],
+      [
+        9,
+        "2 weeks driving time pre-warning active"
+      ],
+      [
+        10,
+        "2 weeks driving time warning active"
+      ],
+      [
+        11,
+        "Driver 1 card expiry warning active"
+      ],
+      [
+        12,
+        "Next mandatory driver 1 card download warning active"
+      ],
+      [
+        13,
+        "Other"
+      ],
+      [
+        14,
+        "Error"
+      ],
+      [
+        15,
+        "Not available"
+      ]
+    ]
+  },
+  {
     "id": 697,
     "url": "https://api.navirec.namespace.ee/interpretations/697/",
     "key": "driver_time_until_next_break",
     "name": "Driver Time Until Next Break",
     "name_display": "Driver Time Until Next Break",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3791,9 +3997,9 @@
     "key": "driver_time_until_next_daily_rest",
     "name": "Driver Time Until Next Daily Rest",
     "name_display": "Driver Time Until Next Daily Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3804,14 +4010,32 @@
     "choices": null
   },
   {
+    "id": 720,
+    "url": "https://api.navirec.namespace.ee/interpretations/720/",
+    "key": "driver_time_until_next_driving_period",
+    "name": "Driver Time Until Next Driving Period",
+    "name_display": "Driver Time Until Next Driving Period",
+    "unit": "s",
+    "unit_conversion": null,
+    "unit_display": "s",
+    "data_type": "duration",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "driver_time_until_next_driving_period",
+    "choices": null
+  },
+  {
     "id": 699,
     "url": "https://api.navirec.namespace.ee/interpretations/699/",
     "key": "driver_time_until_next_weekly_rest",
     "name": "Driver Time Until Next Weekly Rest",
     "name_display": "Driver Time Until Next Weekly Rest",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
@@ -3836,7 +4060,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "two_weekly_driving_time",
+    "api_field": "driver_two_weekly_driving_time",
     "choices": null
   },
   {
@@ -3854,7 +4078,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "two_weekly_work_time",
+    "api_field": "driver_two_weekly_work_time",
     "choices": null
   },
   {
@@ -3872,7 +4096,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "weekly_driving_time",
+    "api_field": "driver_weekly_driving_time",
     "choices": null
   },
   {
@@ -3890,7 +4114,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "weekly_work_time",
+    "api_field": "driver_weekly_work_time",
     "choices": null
   },
   {
@@ -3908,7 +4132,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "working_state",
+    "api_field": "driver_working_state",
     "choices": null
   },
   {
@@ -3926,7 +4150,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "work_time",
+    "api_field": "driver_work_time",
     "choices": null
   },
   {
@@ -4220,7 +4444,7 @@
     "unit_display": "km/h",
     "data_type": "int",
     "multiple_value": false,
-    "decimal_places": 0,
+    "decimal_places": null,
     "icon": null,
     "icon_template_vars": {},
     "color": null,
@@ -4617,9 +4841,9 @@
     "key": "elect_soc",
     "name": "Elect soc",
     "name_display": "Elect soc",
-    "unit": "percent",
+    "unit": null,
     "unit_conversion": null,
-    "unit_display": "%",
+    "unit_display": null,
     "data_type": "int",
     "multiple_value": false,
     "decimal_places": null,
@@ -5174,7 +5398,7 @@
       "index": 2
     },
     "color": null,
-    "api_field": null,
+    "api_field": "fuel_temperature_2",
     "choices": null
   },
   {
@@ -5194,7 +5418,7 @@
       "index": 3
     },
     "color": null,
-    "api_field": null,
+    "api_field": "fuel_temperature_3",
     "choices": null
   },
   {
@@ -5214,7 +5438,7 @@
       "index": 4
     },
     "color": null,
-    "api_field": null,
+    "api_field": "fuel_temperature_4",
     "choices": null
   },
   {
@@ -5550,7 +5774,7 @@
       "index": 3
     },
     "color": null,
-    "api_field": null,
+    "api_field": "humidity_3",
     "choices": null
   },
   {
@@ -5570,7 +5794,7 @@
       "index": 4
     },
     "color": null,
-    "api_field": null,
+    "api_field": "humidity_4",
     "choices": null
   },
   {
@@ -5700,7 +5924,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "intake_maf",
+    "api_field": null,
     "choices": null
   },
   {
@@ -7189,8 +7413,8 @@
     "id": 146,
     "url": "https://api.navirec.namespace.ee/interpretations/146/",
     "key": "navtelecom_navigation_information",
-    "name": "navtelecom navigation information",
-    "name_display": "navtelecom navigation information",
+    "name": "Navtelecom navigation information",
+    "name_display": "Navtelecom navigation information",
     "unit": null,
     "unit_conversion": null,
     "unit_display": null,
@@ -7724,7 +7948,7 @@
       "index": null
     },
     "color": null,
-    "api_field": "panic",
+    "api_field": null,
     "choices": null
   },
   {
@@ -7743,6 +7967,46 @@
     "icon_template_vars": {},
     "color": null,
     "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 810,
+    "url": "https://api.navirec.namespace.ee/interpretations/810/",
+    "key": "passenger_ibutton_id",
+    "name": "Passenger ibutton id",
+    "name_display": "Passenger ibutton id",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "hex",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": "https://api.navirec.namespace.ee/icons/ea82f677-93e6-4cbd-bfd1-bcafc172f063/",
+    "icon_template_vars": {
+      "index": null
+    },
+    "color": null,
+    "api_field": "passenger_ibutton_id",
+    "choices": null
+  },
+  {
+    "id": 811,
+    "url": "https://api.navirec.namespace.ee/interpretations/811/",
+    "key": "passenger_rfid_id",
+    "name": "Passenger RFID id",
+    "name_display": "Passenger RFID id",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "hex",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": "https://api.navirec.namespace.ee/icons/ea82f677-93e6-4cbd-bfd1-bcafc172f063/",
+    "icon_template_vars": {
+      "index": null
+    },
+    "color": null,
+    "api_field": "passenger_rfid_id",
     "choices": null
   },
   {
@@ -7797,6 +8061,874 @@
     "icon_template_vars": {},
     "color": null,
     "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 783,
+    "url": "https://api.navirec.namespace.ee/interpretations/783/",
+    "key": "reefer_ambient_air_temperature",
+    "name": "Reefer Ambient Air Temperature",
+    "name_display": "Reefer Ambient Air Temperature",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": null
+    },
+    "color": null,
+    "api_field": "reefer_ambient_air_temperature",
+    "choices": null
+  },
+  {
+    "id": 788,
+    "url": "https://api.navirec.namespace.ee/interpretations/788/",
+    "key": "reefer_analog_input_1",
+    "name": "Reefer Analog Input 1",
+    "name_display": "Reefer Analog Input 1",
+    "unit": "V",
+    "unit_conversion": null,
+    "unit_display": "V",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 789,
+    "url": "https://api.navirec.namespace.ee/interpretations/789/",
+    "key": "reefer_analog_input_2",
+    "name": "Reefer Analog Input 2",
+    "name_display": "Reefer Analog Input 2",
+    "unit": "V",
+    "unit_conversion": null,
+    "unit_display": "V",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 790,
+    "url": "https://api.navirec.namespace.ee/interpretations/790/",
+    "key": "reefer_analog_input_3",
+    "name": "Reefer Analog Input 3",
+    "name_display": "Reefer Analog Input 3",
+    "unit": "V",
+    "unit_conversion": null,
+    "unit_display": "V",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 792,
+    "url": "https://api.navirec.namespace.ee/interpretations/792/",
+    "key": "reefer_battery_state_flags",
+    "name": "Reefer Battery State Flags",
+    "name_display": "Reefer Battery State Flags",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 786,
+    "url": "https://api.navirec.namespace.ee/interpretations/786/",
+    "key": "reefer_compressor_config",
+    "name": "Reefer Compressor Config",
+    "name_display": "Reefer Compressor Config",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 784,
+    "url": "https://api.navirec.namespace.ee/interpretations/784/",
+    "key": "reefer_compressor_coolant_temperature",
+    "name": "Reefer Compressor Coolant Temperature",
+    "name_display": "Reefer Compressor Coolant Temperature",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": null
+    },
+    "color": null,
+    "api_field": "reefer_compressor_coolant_temperature",
+    "choices": null
+  },
+  {
+    "id": 785,
+    "url": "https://api.navirec.namespace.ee/interpretations/785/",
+    "key": "reefer_compressor_rpm",
+    "name": "Reefer Compressor RPM",
+    "name_display": "Reefer Compressor RPM",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 800,
+    "url": "https://api.navirec.namespace.ee/interpretations/800/",
+    "key": "reefer_error_codes",
+    "name": "Reefer Error Codes",
+    "name_display": "Reefer Error Codes",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "hex",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 793,
+    "url": "https://api.navirec.namespace.ee/interpretations/793/",
+    "key": "reefer_fuel_state_flags",
+    "name": "Reefer Fuel state flags",
+    "name_display": "Reefer Fuel state flags",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 787,
+    "url": "https://api.navirec.namespace.ee/interpretations/787/",
+    "key": "reefer_installation_serial",
+    "name": "Reefer Installation Serial",
+    "name_display": "Reefer Installation Serial",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "string",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 794,
+    "url": "https://api.navirec.namespace.ee/interpretations/794/",
+    "key": "reefer_maintenance_1_hours",
+    "name": "Reefer Maintenance 1 Hours",
+    "name_display": "Reefer Maintenance 1 Hours",
+    "unit": "hr",
+    "unit_conversion": null,
+    "unit_display": "h",
+    "data_type": "long",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 795,
+    "url": "https://api.navirec.namespace.ee/interpretations/795/",
+    "key": "reefer_maintenance_2_hours",
+    "name": "Reefer Maintenance 2 Hours",
+    "name_display": "Reefer Maintenance 2 Hours",
+    "unit": "hr",
+    "unit_conversion": null,
+    "unit_display": "h",
+    "data_type": "long",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 796,
+    "url": "https://api.navirec.namespace.ee/interpretations/796/",
+    "key": "reefer_maintenance_3_hours",
+    "name": "Reefer Maintenance 3 Hours",
+    "name_display": "Reefer Maintenance 3 Hours",
+    "unit": "hr",
+    "unit_conversion": null,
+    "unit_display": "h",
+    "data_type": "long",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 797,
+    "url": "https://api.navirec.namespace.ee/interpretations/797/",
+    "key": "reefer_maintenance_4_hours",
+    "name": "Reefer Maintenance 4 Hours",
+    "name_display": "Reefer Maintenance 4 Hours",
+    "unit": "hr",
+    "unit_conversion": null,
+    "unit_display": "h",
+    "data_type": "long",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 798,
+    "url": "https://api.navirec.namespace.ee/interpretations/798/",
+    "key": "reefer_maintenance_5_hours",
+    "name": "Reefer Maintenance 5 Hours",
+    "name_display": "Reefer Maintenance 5 Hours",
+    "unit": "hr",
+    "unit_conversion": null,
+    "unit_display": "h",
+    "data_type": "long",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 791,
+    "url": "https://api.navirec.namespace.ee/interpretations/791/",
+    "key": "reefer_manufacturer_id",
+    "name": "Reefer Manufacturer ID",
+    "name_display": "Reefer Manufacturer ID",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 804,
+    "url": "https://api.navirec.namespace.ee/interpretations/804/",
+    "key": "reefer_power_status",
+    "name": "Reefer Power Status",
+    "name_display": "Reefer Power Status",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 806,
+    "url": "https://api.navirec.namespace.ee/interpretations/806/",
+    "key": "reefer_rear_door_open",
+    "name": "Reefer Rear Door Open",
+    "name_display": "Reefer Rear Door Open",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 799,
+    "url": "https://api.navirec.namespace.ee/interpretations/799/",
+    "key": "reefer_run_mode",
+    "name": "Reefer Run Mode",
+    "name_display": "Reefer Run Mode",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 805,
+    "url": "https://api.navirec.namespace.ee/interpretations/805/",
+    "key": "reefer_side_door_open",
+    "name": "Reefer Side Door Open",
+    "name_display": "Reefer Side Door Open",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "boolean",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 766,
+    "url": "https://api.navirec.namespace.ee/interpretations/766/",
+    "key": "reefer_zone_1_evaporator_temperature",
+    "name": "Reefer Zone 1 Evaporator temperature",
+    "name_display": "Reefer Zone 1 Evaporator temperature",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 1
+    },
+    "color": null,
+    "api_field": "reefer_zone_1_evaporator_temperature",
+    "choices": null
+  },
+  {
+    "id": 763,
+    "url": "https://api.navirec.namespace.ee/interpretations/763/",
+    "key": "reefer_zone_1_mode",
+    "name": "Reefer Zone 1 Mode",
+    "name_display": "Reefer Zone 1 Mode",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 764,
+    "url": "https://api.navirec.namespace.ee/interpretations/764/",
+    "key": "reefer_zone_1_return_air_temperature_1",
+    "name": "Reefer Zone 1 Return Air Temperature 1",
+    "name_display": "Reefer Zone 1 Return Air Temperature 1",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 1
+    },
+    "color": null,
+    "api_field": "reefer_zone_1_return_air_temperature_1",
+    "choices": null
+  },
+  {
+    "id": 767,
+    "url": "https://api.navirec.namespace.ee/interpretations/767/",
+    "key": "reefer_zone_1_return_air_temperature_2",
+    "name": "Reefer Zone 1 Return Air Temperature 2",
+    "name_display": "Reefer Zone 1 Return Air Temperature 2",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 2
+    },
+    "color": null,
+    "api_field": "reefer_zone_1_return_air_temperature_2",
+    "choices": null
+  },
+  {
+    "id": 231,
+    "url": "https://api.navirec.namespace.ee/interpretations/231/",
+    "key": "reefer_zone_1_set_temperature",
+    "name": "Reefer Zone 1 Set Temperature",
+    "name_display": "Reefer Zone 1 Set Temperature",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 1
+    },
+    "color": null,
+    "api_field": "reefer_zone_1_set_temperature",
+    "choices": null
+  },
+  {
+    "id": 762,
+    "url": "https://api.navirec.namespace.ee/interpretations/762/",
+    "key": "reefer_zone_1_state",
+    "name": "Reefer Zone 1 State",
+    "name_display": "Reefer Zone 1 State",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 765,
+    "url": "https://api.navirec.namespace.ee/interpretations/765/",
+    "key": "reefer_zone_1_supply_air_temperature_1",
+    "name": "Reefer Zone 1 Supply Air Temperature 1",
+    "name_display": "Reefer Zone 1 Supply Air Temperature 1",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 1
+    },
+    "color": null,
+    "api_field": "reefer_zone_1_supply_air_temperature_1",
+    "choices": null
+  },
+  {
+    "id": 768,
+    "url": "https://api.navirec.namespace.ee/interpretations/768/",
+    "key": "reefer_zone_1_supply_air_temperature_2",
+    "name": "Reefer Zone 1 Supply Air Temperature 2",
+    "name_display": "Reefer Zone 1 Supply Air Temperature 2",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 2
+    },
+    "color": null,
+    "api_field": "reefer_zone_1_supply_air_temperature_2",
+    "choices": null
+  },
+  {
+    "id": 771,
+    "url": "https://api.navirec.namespace.ee/interpretations/771/",
+    "key": "reefer_zone_2_evaporator_temperature",
+    "name": "Reefer Zone 2 Evaporator temperature",
+    "name_display": "Reefer Zone 2 Evaporator temperature",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 2
+    },
+    "color": null,
+    "api_field": "reefer_zone_2_evaporator_temperature",
+    "choices": null
+  },
+  {
+    "id": 809,
+    "url": "https://api.navirec.namespace.ee/interpretations/809/",
+    "key": "reefer_zone_2_mode",
+    "name": "Reefer Zone 2 Mode",
+    "name_display": "Reefer Zone 2 Mode",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 769,
+    "url": "https://api.navirec.namespace.ee/interpretations/769/",
+    "key": "reefer_zone_2_return_air_temperature_1",
+    "name": "Reefer Zone 2 Return Air Temperature 1",
+    "name_display": "Reefer Zone 2 Return Air Temperature 1",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 1
+    },
+    "color": null,
+    "api_field": "reefer_zone_2_return_air_temperature_1",
+    "choices": null
+  },
+  {
+    "id": 772,
+    "url": "https://api.navirec.namespace.ee/interpretations/772/",
+    "key": "reefer_zone_2_return_air_temperature_2",
+    "name": "Reefer Zone 2 Return Air Temperature 2",
+    "name_display": "Reefer Zone 2 Return Air Temperature 2",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 2
+    },
+    "color": null,
+    "api_field": "reefer_zone_2_return_air_temperature_2",
+    "choices": null
+  },
+  {
+    "id": 232,
+    "url": "https://api.navirec.namespace.ee/interpretations/232/",
+    "key": "reefer_zone_2_set_temperature",
+    "name": "Reefer Zone 2 Set Temperature",
+    "name_display": "Reefer Zone 2 Set Temperature",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 2
+    },
+    "color": null,
+    "api_field": "reefer_zone_2_set_temperature",
+    "choices": null
+  },
+  {
+    "id": 808,
+    "url": "https://api.navirec.namespace.ee/interpretations/808/",
+    "key": "reefer_zone_2_state",
+    "name": "Reefer Zone 2 State",
+    "name_display": "Reefer Zone 2 State",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 770,
+    "url": "https://api.navirec.namespace.ee/interpretations/770/",
+    "key": "reefer_zone_2_supply_air_temperature_1",
+    "name": "Reefer Zone 2 Supply Air Temperature 1",
+    "name_display": "Reefer Zone 2 Supply Air Temperature 1",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 1
+    },
+    "color": null,
+    "api_field": "reefer_zone_2_supply_air_temperature_1",
+    "choices": null
+  },
+  {
+    "id": 773,
+    "url": "https://api.navirec.namespace.ee/interpretations/773/",
+    "key": "reefer_zone_2_supply_air_temperature_2",
+    "name": "Reefer Zone 2 Supply Air Temperature 2",
+    "name_display": "Reefer Zone 2 Supply Air Temperature 2",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 2
+    },
+    "color": null,
+    "api_field": "reefer_zone_2_supply_air_temperature_2",
+    "choices": null
+  },
+  {
+    "id": 779,
+    "url": "https://api.navirec.namespace.ee/interpretations/779/",
+    "key": "reefer_zone_3_evaporator_temperature",
+    "name": "Reefer Zone 3 Evaporator temperature",
+    "name_display": "Reefer Zone 3 Evaporator temperature",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 3
+    },
+    "color": null,
+    "api_field": "reefer_zone_3_evaporator_temperature",
+    "choices": null
+  },
+  {
+    "id": 775,
+    "url": "https://api.navirec.namespace.ee/interpretations/775/",
+    "key": "reefer_zone_3_mode",
+    "name": "Reefer Zone 3 Mode",
+    "name_display": "Reefer Zone 3 Mode",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 782,
+    "url": "https://api.navirec.namespace.ee/interpretations/782/",
+    "key": "reefer_zone_3_operating_mode",
+    "name": "Reefer Zone 3 Operating Mode",
+    "name_display": "Reefer Zone 3 Operating Mode",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 776,
+    "url": "https://api.navirec.namespace.ee/interpretations/776/",
+    "key": "reefer_zone_3_return_air_temperature_1",
+    "name": "Reefer Zone 3 Return Air Temperature 1",
+    "name_display": "Reefer Zone 3 Return Air Temperature 1",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 1
+    },
+    "color": null,
+    "api_field": "reefer_zone_3_return_air_temperature_1",
+    "choices": null
+  },
+  {
+    "id": 780,
+    "url": "https://api.navirec.namespace.ee/interpretations/780/",
+    "key": "reefer_zone_3_return_air_temperature_2",
+    "name": "Reefer Zone 3 Return Air Temperature 2",
+    "name_display": "Reefer Zone 3 Return Air Temperature 2",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 2
+    },
+    "color": null,
+    "api_field": "reefer_zone_3_return_air_temperature_2",
+    "choices": null
+  },
+  {
+    "id": 778,
+    "url": "https://api.navirec.namespace.ee/interpretations/778/",
+    "key": "reefer_zone_3_set_temperature",
+    "name": "Reefer Zone 3 Set Temperature",
+    "name_display": "Reefer Zone 3 Set Temperature",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 3
+    },
+    "color": null,
+    "api_field": "reefer_zone_3_set_temperature",
+    "choices": null
+  },
+  {
+    "id": 774,
+    "url": "https://api.navirec.namespace.ee/interpretations/774/",
+    "key": "reefer_zone_3_state",
+    "name": "Reefer Zone 3 State",
+    "name_display": "Reefer Zone 3 State",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 777,
+    "url": "https://api.navirec.namespace.ee/interpretations/777/",
+    "key": "reefer_zone_3_supply_air_temperature_1",
+    "name": "Reefer Zone 3 Supply Air Temperature 1",
+    "name_display": "Reefer Zone 3 Supply Air Temperature 1",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 1
+    },
+    "color": null,
+    "api_field": "reefer_zone_3_supply_air_temperature_1",
+    "choices": null
+  },
+  {
+    "id": 781,
+    "url": "https://api.navirec.namespace.ee/interpretations/781/",
+    "key": "reefer_zone_3_supply_air_temperature_2",
+    "name": "Reefer Zone 3 Supply Air Temperature 2",
+    "name_display": "Reefer Zone 3 Supply Air Temperature 2",
+    "unit": "c",
+    "unit_conversion": null,
+    "unit_display": "°C",
+    "data_type": "double",
+    "multiple_value": false,
+    "decimal_places": 1,
+    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
+    "icon_template_vars": {
+      "index": 2
+    },
+    "color": null,
+    "api_field": "reefer_zone_3_supply_air_temperature_2",
     "choices": null
   },
   {
@@ -7906,7 +9038,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "scooter_alarm",
+    "api_field": null,
     "choices": null
   },
   {
@@ -7924,7 +9056,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "scooter_buzzer",
+    "api_field": null,
     "choices": null
   },
   {
@@ -7942,7 +9074,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "scooter_charging",
+    "api_field": null,
     "choices": null
   },
   {
@@ -7960,7 +9092,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "scooter_error",
+    "api_field": null,
     "choices": null
   },
   {
@@ -8126,7 +9258,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_brine_dosage",
     "choices": null
   },
   {
@@ -8146,7 +9278,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_brine_percent",
     "choices": null
   },
   {
@@ -8166,7 +9298,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_brine_spread",
     "choices": null
   },
   {
@@ -8186,7 +9318,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_driven_distance",
     "choices": null
   },
   {
@@ -8206,7 +9338,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_driven_time",
     "choices": null
   },
   {
@@ -8226,7 +9358,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_error_code",
     "choices": null
   },
   {
@@ -8246,7 +9378,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_liquid_material",
     "choices": null
   },
   {
@@ -8326,7 +9458,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_maximum",
     "choices": null
   },
   {
@@ -8346,7 +9478,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_mode",
     "choices": null
   },
   {
@@ -8366,7 +9498,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_solid_dosage",
     "choices": null
   },
   {
@@ -8386,7 +9518,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_solid_material",
     "choices": null
   },
   {
@@ -8466,7 +9598,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_solid_spread",
     "choices": null
   },
   {
@@ -8486,7 +9618,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_speed_adjustment",
     "choices": null
   },
   {
@@ -8506,7 +9638,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "spreader_width",
     "choices": null
   },
   {
@@ -8550,9 +9682,9 @@
   {
     "id": 669,
     "url": "https://api.navirec.namespace.ee/interpretations/669/",
-    "key": "tacho_boarder_crossing_info",
-    "name": "Tacho Boarder Crossing Info",
-    "name_display": "Tacho Boarder Crossing Info",
+    "key": "tacho_border_crossing_info",
+    "name": "Tacho Border Crossing Info",
+    "name_display": "Tacho Border Crossing Info",
     "unit": null,
     "unit_conversion": null,
     "unit_display": null,
@@ -8580,7 +9712,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "tacho_current_time",
+    "api_field": null,
     "choices": null
   },
   {
@@ -8682,16 +9814,16 @@
     "key": "tacho_drivers_hours_rules_pre_warning_time_delay",
     "name": "Tacho Drivers Hours Rules Pre Warning Time Delay",
     "name_display": "Tacho Drivers Hours Rules Pre Warning Time Delay",
-    "unit": null,
+    "unit": "s",
     "unit_conversion": null,
-    "unit_display": null,
+    "unit_display": "s",
     "data_type": "duration",
     "multiple_value": false,
     "decimal_places": null,
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "tacho_drivers_hours_rules_pre_warning_time_delay",
+    "api_field": null,
     "choices": null
   },
   {
@@ -8776,7 +9908,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "tacho_next_calibration_date",
+    "api_field": null,
     "choices": null
   },
   {
@@ -8794,7 +9926,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "tacho_out_of_scope_condition",
+    "api_field": null,
     "choices": null
   },
   {
@@ -8965,7 +10097,7 @@
     "unit_display": null,
     "data_type": "boolean",
     "multiple_value": false,
-    "decimal_places": 0,
+    "decimal_places": null,
     "icon": null,
     "icon_template_vars": {},
     "color": null,
@@ -9200,13 +10332,13 @@
     "unit": null,
     "unit_conversion": null,
     "unit_display": null,
-    "data_type": "boolean",
+    "data_type": "hex",
     "multiple_value": false,
     "decimal_places": null,
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "teltonika_external_digital_sensor_1",
+    "api_field": null,
     "choices": null
   },
   {
@@ -9414,7 +10546,7 @@
       "index": 5
     },
     "color": null,
-    "api_field": "teltonika_temperature_probe_5",
+    "api_field": null,
     "choices": null
   },
   {
@@ -9434,7 +10566,7 @@
       "index": 6
     },
     "color": null,
-    "api_field": "teltonika_temperature_probe_6",
+    "api_field": null,
     "choices": null
   },
   {
@@ -9469,46 +10601,6 @@
     "decimal_places": null,
     "icon": null,
     "icon_template_vars": {},
-    "color": null,
-    "api_field": null,
-    "choices": null
-  },
-  {
-    "id": 231,
-    "url": "https://api.navirec.namespace.ee/interpretations/231/",
-    "key": "teltonika_zone_1_set_temperature",
-    "name": "Teltonika Zone 1 Set Temperature",
-    "name_display": "Teltonika Zone 1 Set Temperature",
-    "unit": "c",
-    "unit_conversion": null,
-    "unit_display": "°C",
-    "data_type": "double",
-    "multiple_value": false,
-    "decimal_places": 1,
-    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
-    "icon_template_vars": {
-      "index": 1
-    },
-    "color": null,
-    "api_field": null,
-    "choices": null
-  },
-  {
-    "id": 232,
-    "url": "https://api.navirec.namespace.ee/interpretations/232/",
-    "key": "teltonika_zone_2_set_temperature",
-    "name": "Teltonika Zone 2 Set Temperature",
-    "name_display": "Teltonika Zone 2 Set Temperature",
-    "unit": "c",
-    "unit_conversion": null,
-    "unit_display": "°C",
-    "data_type": "double",
-    "multiple_value": false,
-    "decimal_places": 1,
-    "icon": "https://api.navirec.namespace.ee/icons/742c7aa1-d837-44ac-9445-90712c0805d6/",
-    "icon_template_vars": {
-      "index": 2
-    },
     "color": null,
     "api_field": null,
     "choices": null
@@ -9697,7 +10789,7 @@
     "key": "timezone_offset",
     "name": "Timezone offset",
     "name_display": "Timezone offset",
-    "unit": "s",
+    "unit": null,
     "unit_conversion": "min",
     "unit_display": "min",
     "data_type": "duration",
@@ -9706,7 +10798,7 @@
     "icon": null,
     "icon_template_vars": {},
     "color": null,
-    "api_field": "timezone_offset",
+    "api_field": null,
     "choices": null
   },
   {
@@ -9725,6 +10817,438 @@
     "icon_template_vars": {},
     "color": null,
     "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 730,
+    "url": "https://api.navirec.namespace.ee/interpretations/730/",
+    "key": "tire_10_pressure",
+    "name": "Tire 10 pressure",
+    "name_display": "Tire 10 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_10_pressure",
+    "choices": null
+  },
+  {
+    "id": 731,
+    "url": "https://api.navirec.namespace.ee/interpretations/731/",
+    "key": "tire_11_pressure",
+    "name": "Tire 11 pressure",
+    "name_display": "Tire 11 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_11_pressure",
+    "choices": null
+  },
+  {
+    "id": 732,
+    "url": "https://api.navirec.namespace.ee/interpretations/732/",
+    "key": "tire_12_pressure",
+    "name": "Tire 12 pressure",
+    "name_display": "Tire 12 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_12_pressure",
+    "choices": null
+  },
+  {
+    "id": 733,
+    "url": "https://api.navirec.namespace.ee/interpretations/733/",
+    "key": "tire_13_pressure",
+    "name": "Tire 13 pressure",
+    "name_display": "Tire 13 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_13_pressure",
+    "choices": null
+  },
+  {
+    "id": 734,
+    "url": "https://api.navirec.namespace.ee/interpretations/734/",
+    "key": "tire_14_pressure",
+    "name": "Tire 14 pressure",
+    "name_display": "Tire 14 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_14_pressure",
+    "choices": null
+  },
+  {
+    "id": 735,
+    "url": "https://api.navirec.namespace.ee/interpretations/735/",
+    "key": "tire_15_pressure",
+    "name": "Tire 15 pressure",
+    "name_display": "Tire 15 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_15_pressure",
+    "choices": null
+  },
+  {
+    "id": 736,
+    "url": "https://api.navirec.namespace.ee/interpretations/736/",
+    "key": "tire_16_pressure",
+    "name": "Tire 16 pressure",
+    "name_display": "Tire 16 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_16_pressure",
+    "choices": null
+  },
+  {
+    "id": 737,
+    "url": "https://api.navirec.namespace.ee/interpretations/737/",
+    "key": "tire_17_pressure",
+    "name": "Tire 17 pressure",
+    "name_display": "Tire 17 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_17_pressure",
+    "choices": null
+  },
+  {
+    "id": 738,
+    "url": "https://api.navirec.namespace.ee/interpretations/738/",
+    "key": "tire_18_pressure",
+    "name": "Tire 18 pressure",
+    "name_display": "Tire 18 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_18_pressure",
+    "choices": null
+  },
+  {
+    "id": 739,
+    "url": "https://api.navirec.namespace.ee/interpretations/739/",
+    "key": "tire_19_pressure",
+    "name": "Tire 19 pressure",
+    "name_display": "Tire 19 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_19_pressure",
+    "choices": null
+  },
+  {
+    "id": 721,
+    "url": "https://api.navirec.namespace.ee/interpretations/721/",
+    "key": "tire_1_pressure",
+    "name": "Tire 1 pressure",
+    "name_display": "Tire 1 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_1_pressure",
+    "choices": null
+  },
+  {
+    "id": 740,
+    "url": "https://api.navirec.namespace.ee/interpretations/740/",
+    "key": "tire_20_pressure",
+    "name": "Tire 20 pressure",
+    "name_display": "Tire 20 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_20_pressure",
+    "choices": null
+  },
+  {
+    "id": 741,
+    "url": "https://api.navirec.namespace.ee/interpretations/741/",
+    "key": "tire_21_pressure",
+    "name": "Tire 21 pressure",
+    "name_display": "Tire 21 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_21_pressure",
+    "choices": null
+  },
+  {
+    "id": 742,
+    "url": "https://api.navirec.namespace.ee/interpretations/742/",
+    "key": "tire_22_pressure",
+    "name": "Tire 22 pressure",
+    "name_display": "Tire 22 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_22_pressure",
+    "choices": null
+  },
+  {
+    "id": 743,
+    "url": "https://api.navirec.namespace.ee/interpretations/743/",
+    "key": "tire_23_pressure",
+    "name": "Tire 23 pressure",
+    "name_display": "Tire 23 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_23_pressure",
+    "choices": null
+  },
+  {
+    "id": 744,
+    "url": "https://api.navirec.namespace.ee/interpretations/744/",
+    "key": "tire_24_pressure",
+    "name": "Tire 24 pressure",
+    "name_display": "Tire 24 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_24_pressure",
+    "choices": null
+  },
+  {
+    "id": 722,
+    "url": "https://api.navirec.namespace.ee/interpretations/722/",
+    "key": "tire_2_pressure",
+    "name": "Tire 2 pressure",
+    "name_display": "Tire 2 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_2_pressure",
+    "choices": null
+  },
+  {
+    "id": 723,
+    "url": "https://api.navirec.namespace.ee/interpretations/723/",
+    "key": "tire_3_pressure",
+    "name": "Tire 3 pressure",
+    "name_display": "Tire 3 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_3_pressure",
+    "choices": null
+  },
+  {
+    "id": 724,
+    "url": "https://api.navirec.namespace.ee/interpretations/724/",
+    "key": "tire_4_pressure",
+    "name": "Tire 4 pressure",
+    "name_display": "Tire 4 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_4_pressure",
+    "choices": null
+  },
+  {
+    "id": 725,
+    "url": "https://api.navirec.namespace.ee/interpretations/725/",
+    "key": "tire_5_pressure",
+    "name": "Tire 5 pressure",
+    "name_display": "Tire 5 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_5_pressure",
+    "choices": null
+  },
+  {
+    "id": 726,
+    "url": "https://api.navirec.namespace.ee/interpretations/726/",
+    "key": "tire_6_pressure",
+    "name": "Tire 6 pressure",
+    "name_display": "Tire 6 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_6_pressure",
+    "choices": null
+  },
+  {
+    "id": 727,
+    "url": "https://api.navirec.namespace.ee/interpretations/727/",
+    "key": "tire_7_pressure",
+    "name": "Tire 7 pressure",
+    "name_display": "Tire 7 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_7_pressure",
+    "choices": null
+  },
+  {
+    "id": 728,
+    "url": "https://api.navirec.namespace.ee/interpretations/728/",
+    "key": "tire_8_pressure",
+    "name": "Tire 8 pressure",
+    "name_display": "Tire 8 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_8_pressure",
+    "choices": null
+  },
+  {
+    "id": 729,
+    "url": "https://api.navirec.namespace.ee/interpretations/729/",
+    "key": "tire_9_pressure",
+    "name": "Tire 9 pressure",
+    "name_display": "Tire 9 pressure",
+    "unit": "kpa",
+    "unit_conversion": null,
+    "unit_display": "kPa",
+    "data_type": "int",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": "tire_9_pressure",
     "choices": null
   },
   {
@@ -9930,7 +11454,7 @@
       "index": null
     },
     "color": null,
-    "api_field": null,
+    "api_field": "trip_type",
     "choices": null
   },
   {
@@ -10037,6 +11561,42 @@
         "Locked"
       ]
     ]
+  },
+  {
+    "id": 801,
+    "url": "https://api.navirec.namespace.ee/interpretations/801/",
+    "key": "vehicle_name",
+    "name": "Vehicle Name",
+    "name_display": "Vehicle Name",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "string",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
+  },
+  {
+    "id": 802,
+    "url": "https://api.navirec.namespace.ee/interpretations/802/",
+    "key": "vehicle_registration",
+    "name": "Vehicle Registration",
+    "name_display": "Vehicle Registration",
+    "unit": null,
+    "unit_conversion": null,
+    "unit_display": null,
+    "data_type": "string",
+    "multiple_value": false,
+    "decimal_places": null,
+    "icon": null,
+    "icon_template_vars": {},
+    "color": null,
+    "api_field": null,
+    "choices": null
   },
   {
     "id": 212,
