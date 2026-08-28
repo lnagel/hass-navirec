@@ -89,19 +89,21 @@ def get_coordinates_from_state(
     return (None, None)
 
 
-def get_sensor_value_from_state(state: VehicleState, interpretation: str) -> Any:
+def get_sensor_value_from_state(state: VehicleState, api_field: str) -> Any:
     """
-    Get a sensor value from VehicleState by interpretation key.
+    Get a sensor value from VehicleState by API field name.
 
     Args:
         state: VehicleState object
-        interpretation: The sensor interpretation key (e.g., 'speed', 'fuel_level')
+        api_field: The interpretation's api_field (e.g., 'speed', 'fuel_level')
 
     Returns:
         The sensor value, or None if not present.
 
     """
-    return getattr(state, interpretation, None)
+    if not api_field:
+        return None
+    return getattr(state, api_field, None)
 
 
 def get_activity_from_state(state: VehicleState) -> str | None:

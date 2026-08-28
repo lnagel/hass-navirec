@@ -32,12 +32,26 @@
     "active": true
   },
   {
+    "id": "06274b87-c52d-4ee3-9a5e-f2db204174fa",
+    "url": "https://api.navirec.namespace.ee/drivers/06274b87-c52d-4ee3-9a5e-f2db204174fa/",
+    "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
+    "user": "https://api.navirec.namespace.ee/users/df814c83-c2c8-4c2a-94a0-9116262510b8/",
+    "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
+    ],
+    "external_id": null,
+    "name": "Ehab El-Kady",
+    "email": "ehab@namespace.ee",
+    "phone": "",
+    "eco_score_enabled": null,
+    "active": true
+  },
+  {
     "id": "16633991-85b6-4a9e-bae2-89d435d3191c",
     "url": "https://api.navirec.namespace.ee/drivers/16633991-85b6-4a9e-bae2-89d435d3191c/",
     "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
     "user": null,
     "driver_groups": [
-      "https://api.navirec.namespace.ee/driver_groups/c8681ad8-b0ca-414f-bf43-928dd5d9e26c/",
       "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
       "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
     ],
@@ -86,6 +100,7 @@
     "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
     "user": null,
     "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/60dc35a8-783c-45ff-9435-1bf670ad349f/",
       "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
       "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
     ],
@@ -102,6 +117,7 @@
     "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
     "user": null,
     "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/60dc35a8-783c-45ff-9435-1bf670ad349f/",
       "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
       "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
     ],
@@ -118,6 +134,7 @@
     "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
     "user": null,
     "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/60dc35a8-783c-45ff-9435-1bf670ad349f/",
       "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
       "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
     ],
@@ -134,6 +151,7 @@
     "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
     "user": null,
     "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/60dc35a8-783c-45ff-9435-1bf670ad349f/",
       "https://api.navirec.namespace.ee/driver_groups/894beacb-7dd9-4562-82cd-4bac1ea54262/",
       "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
     ],
@@ -166,6 +184,7 @@
     "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
     "user": null,
     "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/60dc35a8-783c-45ff-9435-1bf670ad349f/",
       "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
       "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
     ],
@@ -182,6 +201,7 @@
     "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
     "user": null,
     "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/60dc35a8-783c-45ff-9435-1bf670ad349f/",
       "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
       "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
     ],
@@ -198,6 +218,7 @@
     "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
     "user": null,
     "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/60dc35a8-783c-45ff-9435-1bf670ad349f/",
       "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
       "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
     ],
@@ -214,6 +235,7 @@
     "account": "https://api.navirec.namespace.ee/accounts/89ea89c8-bffb-444a-9876-c54a865e4d67/",
     "user": null,
     "driver_groups": [
+      "https://api.navirec.namespace.ee/driver_groups/60dc35a8-783c-45ff-9435-1bf670ad349f/",
       "https://api.navirec.namespace.ee/driver_groups/5eba15cf-bbdd-4c65-8ccb-df39a230228a/",
       "https://api.navirec.namespace.ee/driver_groups/20779c18-a0a0-4fe7-90b4-d5b062b712e2/"
     ],

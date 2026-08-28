@@ -230,6 +230,7 @@ class NavirecSensor(NavirecEntity, SensorEntity):
         self._sensor_def = sensor_def
         self._interpretation = interpretation
         self._interpretation_key = interpretation.key or ""
+        self._api_field = interpretation.api_field or ""
 
         # Entity attributes
         sensor_id = str(sensor_def.id) if sensor_def.id else ""
@@ -263,7 +264,7 @@ class NavirecSensor(NavirecEntity, SensorEntity):
         if not state:
             return None
 
-        value = get_sensor_value_from_state(state, self._interpretation_key)
+        value = get_sensor_value_from_state(state, self._api_field)
         if value is None:
             return None
 

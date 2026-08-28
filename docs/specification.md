@@ -127,14 +127,14 @@ Execute remote vehicle actions (lock doors, block starter, etc.).
 
 ```http
 Authorization: Token {api_token}
-Accept: application/json; version=1.46.2
+Accept: application/json; version=1.51.0
 ```
 
 ### Streaming
 
 ```http
 GET /streams/vehicle_states/?account={id}&updated_at__gt={timestamp}
-Accept: application/x-ndjson; version=1.46.2
+Accept: application/x-ndjson; version=1.51.0
 ```
 
 **Event types:** connected, vehicle_state, initial_state_sent, heartbeat, disconnected

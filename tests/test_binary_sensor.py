@@ -292,3 +292,52 @@ class TestNavirecBinarySensor:
         )
 
         assert sensor.is_on is None
+
+
+class TestApiFieldLookup:
+    """Values must be read via interpretation.api_field, not the key."""
+
+    @staticmethod
+    def _build(
+        interpretation: Interpretation,
+        state: VehicleState,
+    ) -> NavirecBinarySensor:
+        """Build a binary sensor bound to a single state."""
+        coordinator = MagicMock()
+        coordinator.get_vehicle_state.return_value = state
+        return NavirecBinarySensor(
+            coordinator=coordinator,
+            config_entry=MagicMock(),
+            vehicle_id="v1",
+            vehicle=Vehicle(id="a3f1c0de-0000-4000-8000-000000000001"),
+            sensor_def=Sensor(
+                id="b3f1c0de-0000-4000-8000-000000000002",
+                show_in_map=True,
+                show_in_list=True,
+                show_in_icon=False,
+                show_in_chart=False,
+                show_in_report=False,
+            ),
+            interpretation=interpretation,
+            device_class=None,
+        )
+
+    def test_reads_via_api_field_when_it_differs_from_key(self) -> None:
+        """A key that is not a state attribute must still resolve via api_field."""
+        sensor = self._build(
+            Interpretation(
+                key="ignition_v2", api_field="ignition", data_type="boolean"
+            ),
+            VehicleState(ignition=True),
+        )
+
+        assert sensor.is_on is True
+
+    def test_returns_none_when_interpretation_has_no_api_field(self) -> None:
+        """An interpretation with no api_field is not readable from the state."""
+        sensor = self._build(
+            Interpretation(key="ignition", api_field=None, data_type="boolean"),
+            VehicleState(ignition=True),
+        )
+
+        assert sensor.is_on is None

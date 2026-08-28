@@ -25,7 +25,6 @@ if TYPE_CHECKING:
 BINARY_SENSOR_DEVICE_CLASSES: dict[str, BinarySensorDeviceClass | None] = {
     "ignition": BinarySensorDeviceClass.POWER,
     "alarm": BinarySensorDeviceClass.SAFETY,
-    "panic": BinarySensorDeviceClass.SAFETY,
     "digital_input_1": None,
     "digital_input_2": None,
     "digital_input_3": None,
@@ -44,8 +43,8 @@ BINARY_SENSOR_DEVICE_CLASSES: dict[str, BinarySensorDeviceClass | None] = {
     "starter_blocked": BinarySensorDeviceClass.LOCK,
     "vehicle_locked": BinarySensorDeviceClass.LOCK,
     "hv_battery_charging": BinarySensorDeviceClass.BATTERY_CHARGING,
-    "scooter_charging": BinarySensorDeviceClass.BATTERY_CHARGING,
-    "scooter_buzzer": BinarySensorDeviceClass.SOUND,
+    "continuation": None,
+    "spreader_maximum": None,
 }
 
 # Binary sensors that need their values inverted
@@ -140,6 +139,7 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         self._sensor_def = sensor_def
         self._interpretation = interpretation
         self._interpretation_key = interpretation.key or ""
+        self._api_field = interpretation.api_field or ""
 
         # Entity attributes
         sensor_id = str(sensor_def.id) if sensor_def.id else ""
@@ -159,7 +159,7 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         """Return true if the binary sensor is on."""
         state = self.vehicle_state
         if state:
-            value = get_sensor_value_from_state(state, self._interpretation_key)
+            value = get_sensor_value_from_state(state, self._api_field)
             if value is not None:
                 bool_value = bool(value)
                 # Invert value for sensors in the inversion list

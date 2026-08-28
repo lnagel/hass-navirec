@@ -80,7 +80,7 @@ tests/                        # Test suite
 
 docs/                         # Documentation
 ├── navirec-api.md            # API communication principles
-└── openapi-navirec-1.46.2.json  # OpenAPI spec
+└── openapi-navirec-1.51.0.json  # OpenAPI spec
 
 scripts/                      # Development utilities
 ├── download_fixtures.py      # Download API fixtures
@@ -93,7 +93,7 @@ The `docs/specification.md` file is the source of truth for design decisions.
 
 The `docs/navirec-api.md` file describes generic principles of API communication.
 
-The `docs/openapi-navirec-1.46.2.json` contains the OpenAPI spec (versioned).
+The `docs/openapi-navirec-1.51.0.json` contains the OpenAPI spec (versioned).
 
 ## Testing Requirements
 

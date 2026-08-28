@@ -258,3 +258,53 @@ def test_native_value_enum_handling(mock_config_entry, fixtures, mode, expected)
         options=["offline", "parking", "driving", "idling"],
     )
     assert sensor.native_value == expected
+
+
+class TestSensorApiFieldLookup:
+    """NavirecSensor must read values via interpretation.api_field."""
+
+    @staticmethod
+    def _build(interpretation: Interpretation, state: VehicleState) -> NavirecSensor:
+        """Build a sensor bound to a single state."""
+        coord = MagicMock(
+            get_vehicle_state=MagicMock(return_value=state), connected=True
+        )
+        return NavirecSensor(
+            coordinator=coord,
+            config_entry=MagicMock(),
+            vehicle_id="v1",
+            vehicle=Vehicle(id="a3f1c0de-0000-4000-8000-000000000001"),
+            sensor_def=Sensor(
+                id="b3f1c0de-0000-4000-8000-000000000002",
+                show_in_map=True,
+                show_in_list=True,
+                show_in_icon=False,
+                show_in_chart=False,
+                show_in_report=False,
+            ),
+            interpretation=interpretation,
+            device_class=None,
+            native_unit=None,
+            suggested_unit=None,
+            state_class=None,
+            options=None,
+            decimal_precision=None,
+        )
+
+    def test_reads_via_api_field_when_it_differs_from_key(self) -> None:
+        """A key that is not a state attribute must still resolve via api_field."""
+        sensor = self._build(
+            Interpretation(key="speed_v2", api_field="speed", data_type="int"),
+            VehicleState(speed=72),
+        )
+
+        assert sensor.native_value == 72
+
+    def test_returns_none_when_interpretation_has_no_api_field(self) -> None:
+        """An interpretation with no api_field is not readable from the state."""
+        sensor = self._build(
+            Interpretation(key="speed", api_field=None, data_type="int"),
+            VehicleState(speed=72),
+        )
+
+        assert sensor.native_value is None

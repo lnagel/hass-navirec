@@ -192,10 +192,10 @@ uv run ty check
 
 ### Development Scripts
 
-| Command                                      | Description                                      |
-|----------------------------------------------|--------------------------------------------------|
-| `uv run python scripts/generate_models.py`   | Regenerate Pydantic models from OpenAPI spec     |
-| `uv run python scripts/download_fixtures.py` | Download fresh test fixtures from the API        |
+| Command                                      | Description                                  |
+|----------------------------------------------|----------------------------------------------|
+| `uv run python -m scripts.generate_models`   | Regenerate Pydantic models from OpenAPI spec |
+| `uv run python -m scripts.download_fixtures` | Download fresh test fixtures from the API    |
 
 ## Contributing
 
