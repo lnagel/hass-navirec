@@ -22,8 +22,6 @@ from custom_components.navirec.const import API_VERSION
 
 # Project root
 ROOT = Path(__file__).parent.parent
-
-# API_VERSION in const.py is the single source of truth for the API version.
 SPEC_NAME = f"openapi-navirec-{API_VERSION}.json"
 OPENAPI_SPEC = ROOT / "docs" / SPEC_NAME
 OUTPUT_FILE = ROOT / "custom_components" / "navirec" / "models.py"
