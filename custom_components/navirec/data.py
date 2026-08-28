@@ -93,11 +93,6 @@ def get_sensor_value_from_state(state: VehicleState, api_field: str) -> Any:
     """
     Get a sensor value from VehicleState by API field name.
 
-    The field to read is the interpretation's api_field, not its key. The two
-    happen to coincide for every interpretation the API currently publishes,
-    but api_field is the declared way to address the value, and an
-    interpretation with no api_field is not readable from the state at all.
-
     Args:
         state: VehicleState object
         api_field: The interpretation's api_field (e.g., 'speed', 'fuel_level')

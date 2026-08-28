@@ -139,8 +139,6 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         self._sensor_def = sensor_def
         self._interpretation = interpretation
         self._interpretation_key = interpretation.key or ""
-        # Values are addressed by api_field; the key only identifies the
-        # interpretation for translations and device class lookup.
         self._api_field = interpretation.api_field or ""
 
         # Entity attributes
