@@ -7,7 +7,7 @@ Usage:
        NAVIREC_API_TOKEN=your-api-token
 
     2. Run:
-       uv run python scripts/download_fixtures.py
+       uv run python -m scripts.download_fixtures
 """
 
 from __future__ import annotations
@@ -22,9 +22,6 @@ from pathlib import Path
 
 import aiohttp
 from dotenv import load_dotenv
-
-# Allow importing the integration when run as `uv run python scripts/...`
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from custom_components.navirec.const import API_VERSION, USER_AGENT
 
