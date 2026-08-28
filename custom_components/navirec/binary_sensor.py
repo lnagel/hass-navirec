@@ -25,7 +25,6 @@ if TYPE_CHECKING:
 BINARY_SENSOR_DEVICE_CLASSES: dict[str, BinarySensorDeviceClass | None] = {
     "ignition": BinarySensorDeviceClass.POWER,
     "alarm": BinarySensorDeviceClass.SAFETY,
-    "panic": BinarySensorDeviceClass.SAFETY,
     "digital_input_1": None,
     "digital_input_2": None,
     "digital_input_3": None,
@@ -44,8 +43,8 @@ BINARY_SENSOR_DEVICE_CLASSES: dict[str, BinarySensorDeviceClass | None] = {
     "starter_blocked": BinarySensorDeviceClass.LOCK,
     "vehicle_locked": BinarySensorDeviceClass.LOCK,
     "hv_battery_charging": BinarySensorDeviceClass.BATTERY_CHARGING,
-    "scooter_charging": BinarySensorDeviceClass.BATTERY_CHARGING,
-    "scooter_buzzer": BinarySensorDeviceClass.SOUND,
+    "continuation": None,
+    "spreader_maximum": None,
 }
 
 # Binary sensors that need their values inverted
