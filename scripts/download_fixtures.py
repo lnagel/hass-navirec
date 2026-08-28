@@ -23,6 +23,9 @@ from pathlib import Path
 import aiohttp
 from dotenv import load_dotenv
 
+# Allow importing the integration when run as `uv run python scripts/...`
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from custom_components.navirec.const import API_VERSION, USER_AGENT
 
 load_dotenv()
