@@ -13,7 +13,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "pytest-homeassistant-custom-component==0.13.357",
+    "pytest-homeassistant-custom-component==0.13.363",
     "bump-my-version",
     "datamodel-code-generator",
     "diff-cover",

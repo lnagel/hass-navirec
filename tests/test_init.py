@@ -373,7 +373,9 @@ async def test_setup_platforms_registered(
         # Platforms should be loaded (entities registered)
         # We verify this by checking that devices exist for vehicles
         device_registry = dr.async_get(hass)
-        devices = list(device_registry.devices.values())
+        devices = dr.async_entries_for_config_entry(
+            device_registry, mock_config_entry.entry_id
+        )
 
         # Should have devices for vehicles
         assert len(devices) > 0
