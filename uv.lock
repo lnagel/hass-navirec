@@ -1216,7 +1216,7 @@ dev = [
     { name = "bump-my-version" },
     { name = "datamodel-code-generator" },
     { name = "diff-cover" },
-    { name = "pytest-homeassistant-custom-component", specifier = "==0.13.364" },
+    { name = "pytest-homeassistant-custom-component" },
     { name = "python-dotenv" },
     { name = "ruff" },
     { name = "ty" },
