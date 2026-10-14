@@ -257,6 +257,8 @@ class NavirecSensor(NavirecEntity, SensorEntity):
         if device_class == SensorDeviceClass.ENUM and options:
             self._attr_options = options
 
+        self._update_attrs()
+
     def _update_attrs(self) -> None:
         """Set the sensor value from coordinator data."""
         self._attr_native_value = self._get_native_value()
@@ -324,6 +326,7 @@ class NavirecDiagnosticSensor(NavirecEntity, SensorEntity):
         self._sensor_key = sensor_key
         self._attr_unique_id = f"{vehicle_id}_{sensor_key}"
         self._attr_translation_key = translation_key
+        self._update_attrs()
 
     def _update_attrs(self) -> None:
         """Set the sensor value from coordinator data."""

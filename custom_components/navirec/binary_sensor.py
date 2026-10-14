@@ -154,6 +154,8 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         if device_class:
             self._attr_device_class = device_class
 
+        self._update_attrs()
+
     def _update_attrs(self) -> None:
         """Set the binary sensor state from coordinator data."""
         self._attr_is_on = None

@@ -161,8 +161,6 @@ class TestNavirecBinarySensor:
             device_class=BINARY_SENSOR_DEVICE_CLASSES.get("ignition"),
         )
 
-        sensor._update_attrs()
-
         # Value should match what's in the state
         expected_ignition = state_data.get("ignition")
         if expected_ignition is not None:
@@ -292,7 +290,6 @@ class TestNavirecBinarySensor:
             interpretation=interpretation,
             device_class=BINARY_SENSOR_DEVICE_CLASSES.get("ignition"),
         )
-        sensor._update_attrs()
 
         assert sensor.is_on is None
 
@@ -308,7 +305,7 @@ class TestApiFieldLookup:
         """Build a binary sensor bound to a single state."""
         coordinator = MagicMock()
         coordinator.get_vehicle_state.return_value = state
-        sensor = NavirecBinarySensor(
+        return NavirecBinarySensor(
             coordinator=coordinator,
             config_entry=MagicMock(),
             vehicle_id="v1",
@@ -324,8 +321,6 @@ class TestApiFieldLookup:
             interpretation=interpretation,
             device_class=None,
         )
-        sensor._update_attrs()
-        return sensor
 
     def test_reads_via_api_field_when_it_differs_from_key(self) -> None:
         """A key that is not a state attribute must still resolve via api_field."""
@@ -347,27 +342,18 @@ class TestApiFieldLookup:
 
         assert sensor.is_on is None
 
-    def test_inverts_lock_sensors(self) -> None:
-        """LOCK sensors invert the API value (is_on=True means unlocked)."""
+    def test_coordinator_update_refreshes_state_before_write(self) -> None:
+        """A coordinator update must refresh is_on before writing state."""
+        state = VehicleState(vehicle_locked=False)
         sensor = self._build(
             Interpretation(
                 key="vehicle_locked", api_field="vehicle_locked", data_type="boolean"
             ),
-            VehicleState(vehicle_locked=True),
-        )
-
-        assert sensor.is_on is False
-
-    def test_coordinator_update_refreshes_state_before_write(self) -> None:
-        """A coordinator update must refresh is_on before writing state."""
-        state = VehicleState(ignition=False)
-        sensor = self._build(
-            Interpretation(key="ignition", api_field="ignition", data_type="boolean"),
             state,
         )
-        assert sensor.is_on is False
+        assert sensor.is_on is True  # LOCK semantics: unlocked -> on
 
-        state.ignition = True
+        state.vehicle_locked = True
         written: list[bool | None] = []
         sensor.async_write_ha_state = MagicMock(
             side_effect=lambda: written.append(sensor.is_on)
@@ -375,4 +361,4 @@ class TestApiFieldLookup:
 
         sensor._handle_coordinator_update()
 
-        assert written == [True]
+        assert written == [False]

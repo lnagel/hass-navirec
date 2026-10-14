@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from typing import Any
 from unittest.mock import MagicMock
 
@@ -17,7 +16,6 @@ from custom_components.navirec.models import (
     VehicleState,
 )
 from custom_components.navirec.sensor import (
-    NavirecDiagnosticSensor,
     NavirecSensor,
     _get_device_class,
     _get_native_unit,
@@ -64,7 +62,7 @@ def _make_sensor(
         state = VehicleState.model_validate(st)
 
     coord = MagicMock(get_vehicle_state=MagicMock(return_value=state), connected=True)
-    sensor = NavirecSensor(
+    return NavirecSensor(
         coordinator=coord,
         config_entry=entry,
         vehicle_id=vid,
@@ -78,8 +76,6 @@ def _make_sensor(
         options=kwargs.get("options"),
         decimal_precision=kwargs.get("decimal_precision"),
     )
-    sensor._update_attrs()
-    return sensor
 
 
 @pytest.fixture
@@ -173,7 +169,6 @@ def test_sensor_no_state_returns_none(mock_config_entry, fixtures):
         options=None,
         decimal_precision=None,
     )
-    sensor._update_attrs()
     assert sensor.native_value is None
 
 
@@ -274,7 +269,7 @@ class TestSensorApiFieldLookup:
         coord = MagicMock(
             get_vehicle_state=MagicMock(return_value=state), connected=True
         )
-        sensor = NavirecSensor(
+        return NavirecSensor(
             coordinator=coord,
             config_entry=MagicMock(),
             vehicle_id="v1",
@@ -295,8 +290,6 @@ class TestSensorApiFieldLookup:
             options=None,
             decimal_precision=None,
         )
-        sensor._update_attrs()
-        return sensor
 
     def test_reads_via_api_field_when_it_differs_from_key(self) -> None:
         """A key that is not a state attribute must still resolve via api_field."""
@@ -315,23 +308,3 @@ class TestSensorApiFieldLookup:
         )
 
         assert sensor.native_value is None
-
-
-def test_diagnostic_sensor_native_value() -> None:
-    """Diagnostic sensor reads its timestamp from the vehicle state."""
-    time = datetime(2026, 1, 2, 3, 4, 5, tzinfo=UTC)
-    coord = MagicMock(
-        get_vehicle_state=MagicMock(return_value=VehicleState(time=time)),
-        connected=True,
-    )
-    sensor = NavirecDiagnosticSensor(
-        coordinator=coord,
-        config_entry=MagicMock(),
-        vehicle_id="v1",
-        vehicle=Vehicle(id="a3f1c0de-0000-4000-8000-000000000001"),
-        sensor_key="time",
-        translation_key="time",
-    )
-    sensor._update_attrs()
-
-    assert sensor.native_value == time

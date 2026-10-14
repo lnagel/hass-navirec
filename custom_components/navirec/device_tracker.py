@@ -66,6 +66,7 @@ class NavirecDeviceTracker(NavirecEntity, TrackerEntity):
         )
         # Unique ID for this entity
         self._attr_unique_id = f"{vehicle_id}_location"
+        self._update_attrs()
 
     @property
     def source_type(self) -> SourceType:
