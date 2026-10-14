@@ -95,6 +95,7 @@ class TestNavirecDeviceTracker:
             vehicle_id=vehicle_id,
             vehicle=mock_vehicle,
         )
+        tracker._update_attrs()
 
         # GeoJSON is [longitude, latitude], so latitude is coords[1]
         expected_lat = sample_vehicle_state["location"]["coordinates"][1]
@@ -115,6 +116,7 @@ class TestNavirecDeviceTracker:
             vehicle_id=vehicle_id,
             vehicle=mock_vehicle,
         )
+        tracker._update_attrs()
 
         # GeoJSON is [longitude, latitude], so longitude is coords[0]
         expected_lon = sample_vehicle_state["location"]["coordinates"][0]
@@ -135,9 +137,11 @@ class TestNavirecDeviceTracker:
             vehicle_id=vehicle_id,
             vehicle=mock_vehicle,
         )
+        tracker._update_attrs()
 
         attrs = tracker.extra_state_attributes
 
+        assert attrs is not None
         assert attrs["name_display"] == "TEST-1"
         assert attrs["registration"] == "TEST-1"
         assert attrs["speed"] == sample_vehicle_state["speed"]
@@ -171,6 +175,7 @@ class TestNavirecDeviceTracker:
             vehicle_id=vehicle_id,
             vehicle=mock_vehicle,
         )
+        tracker._update_attrs()
 
         assert tracker.latitude is None
         assert tracker.longitude is None

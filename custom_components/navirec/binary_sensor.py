@@ -8,7 +8,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
 )
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import LOGGER
@@ -154,9 +154,9 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
         if device_class:
             self._attr_device_class = device_class
 
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if the binary sensor is on."""
+    def _update_attrs(self) -> None:
+        """Set the binary sensor state from coordinator data."""
+        self._attr_is_on = None
         state = self.vehicle_state
         if state:
             value = get_sensor_value_from_state(state, self._api_field)
@@ -164,11 +164,6 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
                 bool_value = bool(value)
                 # Invert value for sensors in the inversion list
                 if self._interpretation_key in BINARY_SENSOR_INVERTED:
-                    return not bool_value
-                return bool_value
-        return None
-
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        self.async_write_ha_state()
+                    self._attr_is_on = not bool_value
+                else:
+                    self._attr_is_on = bool_value

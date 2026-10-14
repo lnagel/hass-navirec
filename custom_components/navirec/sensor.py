@@ -11,7 +11,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import EntityCategory
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import API_UNIT_TO_HA_UNIT, INTERPRETATIONS_TOTAL_INCREASING, LOGGER
@@ -257,8 +257,11 @@ class NavirecSensor(NavirecEntity, SensorEntity):
         if device_class == SensorDeviceClass.ENUM and options:
             self._attr_options = options
 
-    @property
-    def native_value(self) -> Any:
+    def _update_attrs(self) -> None:
+        """Set the sensor value from coordinator data."""
+        self._attr_native_value = self._get_native_value()
+
+    def _get_native_value(self) -> Any:
         """Return the native value of the sensor."""
         state = self.vehicle_state
         if not state:
@@ -294,11 +297,6 @@ class NavirecSensor(NavirecEntity, SensorEntity):
 
         return value
 
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        self.async_write_ha_state()
-
 
 class NavirecDiagnosticSensor(NavirecEntity, SensorEntity):
     """Diagnostic sensor entity for Navirec vehicle metadata."""
@@ -327,8 +325,11 @@ class NavirecDiagnosticSensor(NavirecEntity, SensorEntity):
         self._attr_unique_id = f"{vehicle_id}_{sensor_key}"
         self._attr_translation_key = translation_key
 
-    @property
-    def native_value(self) -> datetime | None:
+    def _update_attrs(self) -> None:
+        """Set the sensor value from coordinator data."""
+        self._attr_native_value = self._get_native_value()
+
+    def _get_native_value(self) -> datetime | None:
         """Return the native value of the sensor."""
         state = self.vehicle_state
         if not state:
@@ -344,8 +345,3 @@ class NavirecDiagnosticSensor(NavirecEntity, SensorEntity):
             except ValueError:
                 LOGGER.warning("Failed to parse datetime: %s", value)
         return None
-
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        self.async_write_ha_state()
