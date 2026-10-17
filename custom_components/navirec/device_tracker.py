@@ -75,18 +75,23 @@ class NavirecDeviceTracker(NavirecEntity, TrackerEntity):
 
     def _update_attrs(self) -> None:
         """Set the location and extra state attributes from coordinator data."""
+        self._attr_latitude, self._attr_longitude = self._compute_coordinates()
+        self._attr_extra_state_attributes = self._compute_extra_state_attributes()
+
+    def _compute_coordinates(self) -> tuple[float | None, float | None]:
+        """Return the (latitude, longitude) of the device."""
         state = self.vehicle_state
         if state:
-            self._attr_latitude, self._attr_longitude = get_coordinates_from_state(
-                state
-            )
-        else:
-            self._attr_latitude, self._attr_longitude = None, None
+            return get_coordinates_from_state(state)
+        return None, None
 
+    def _compute_extra_state_attributes(self) -> dict[str, Any]:
+        """Return extra state attributes."""
         attrs: dict[str, Any] = {
             "name_display": self._vehicle.name_display,
             "registration": self._vehicle.registration,
         }
+        state = self.vehicle_state
 
         if state:
             if state.speed is not None:
@@ -101,4 +106,4 @@ class NavirecDeviceTracker(NavirecEntity, TrackerEntity):
             if state.time:
                 attrs["last_update"] = state.time.isoformat()
 
-        self._attr_extra_state_attributes = attrs
+        return attrs
