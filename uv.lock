@@ -1279,7 +1279,7 @@ wheels = [
 
 [[package]]
 name = "hass-navirec"
-version = "0.2.7"
+version = "0.2.8"
 source = { virtual = "." }
 dependencies = [
     { name = "aiohttp" },
