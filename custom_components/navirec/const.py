@@ -16,6 +16,7 @@ from homeassistant.const import (
     UnitOfTime,
     UnitOfVolume,
 )
+from homeassistant.helpers.aiohttp_client import SERVER_SOFTWARE
 
 LOGGER: Logger = getLogger(__package__)
 
@@ -30,7 +31,7 @@ VERSION = _MANIFEST["version"]
 # API Configuration
 API_VERSION = "1.51.0"
 DEFAULT_API_URL = "https://api.navirec.com/"
-USER_AGENT = f"hass-navirec/{VERSION}"
+USER_AGENT = f"hass-navirec/{VERSION} {SERVER_SOFTWARE}"
 
 # Config entry keys
 CONF_API_URL = "api_url"

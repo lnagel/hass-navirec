@@ -20,4 +20,4 @@ def test_version_matches_manifest() -> None:
 
 def test_user_agent_includes_version() -> None:
     """Test that USER_AGENT includes the version number."""
-    assert f"hass-navirec/{VERSION}" == USER_AGENT
+    assert USER_AGENT.startswith(f"hass-navirec/{VERSION} ")
