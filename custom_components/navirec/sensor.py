@@ -261,9 +261,9 @@ class NavirecSensor(NavirecEntity, SensorEntity):
 
     def _update_attrs(self) -> None:
         """Set the sensor value from coordinator data."""
-        self._attr_native_value = self._get_native_value()
+        self._attr_native_value = self._compute_native_value()
 
-    def _get_native_value(self) -> Any:
+    def _compute_native_value(self) -> Any:
         """Return the native value of the sensor."""
         state = self.vehicle_state
         if not state:
@@ -330,9 +330,9 @@ class NavirecDiagnosticSensor(NavirecEntity, SensorEntity):
 
     def _update_attrs(self) -> None:
         """Set the sensor value from coordinator data."""
-        self._attr_native_value = self._get_native_value()
+        self._attr_native_value = self._compute_native_value()
 
-    def _get_native_value(self) -> datetime | None:
+    def _compute_native_value(self) -> datetime | None:
         """Return the native value of the sensor."""
         state = self.vehicle_state
         if not state:

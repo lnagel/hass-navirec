@@ -158,7 +158,10 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
 
     def _update_attrs(self) -> None:
         """Set the binary sensor state from coordinator data."""
-        self._attr_is_on = None
+        self._attr_is_on = self._compute_is_on()
+
+    def _compute_is_on(self) -> bool | None:
+        """Return true if the binary sensor is on."""
         state = self.vehicle_state
         if state:
             value = get_sensor_value_from_state(state, self._api_field)
@@ -166,6 +169,6 @@ class NavirecBinarySensor(NavirecEntity, BinarySensorEntity):
                 bool_value = bool(value)
                 # Invert value for sensors in the inversion list
                 if self._interpretation_key in BINARY_SENSOR_INVERTED:
-                    self._attr_is_on = not bool_value
-                else:
-                    self._attr_is_on = bool_value
+                    return not bool_value
+                return bool_value
+        return None
