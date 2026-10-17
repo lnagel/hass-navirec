@@ -341,3 +341,24 @@ class TestApiFieldLookup:
         )
 
         assert sensor.is_on is None
+
+    def test_coordinator_update_refreshes_state_before_write(self) -> None:
+        """A coordinator update must refresh is_on before writing state."""
+        state = VehicleState(vehicle_locked=False)
+        sensor = self._build(
+            Interpretation(
+                key="vehicle_locked", api_field="vehicle_locked", data_type="boolean"
+            ),
+            state,
+        )
+        assert sensor.is_on is True  # LOCK semantics: unlocked -> on
+
+        state.vehicle_locked = True
+        written: list[bool | None] = []
+        sensor.async_write_ha_state = MagicMock(
+            side_effect=lambda: written.append(sensor.is_on)
+        )
+
+        sensor._handle_coordinator_update()
+
+        assert written == [False]

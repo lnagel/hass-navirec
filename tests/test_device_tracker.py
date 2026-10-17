@@ -138,6 +138,7 @@ class TestNavirecDeviceTracker:
 
         attrs = tracker.extra_state_attributes
 
+        assert attrs is not None
         assert attrs["name_display"] == "TEST-1"
         assert attrs["registration"] == "TEST-1"
         assert attrs["speed"] == sample_vehicle_state["speed"]

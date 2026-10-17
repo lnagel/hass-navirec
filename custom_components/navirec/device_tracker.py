@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.device_tracker import SourceType, TrackerEntity
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import LOGGER
@@ -66,38 +66,27 @@ class NavirecDeviceTracker(NavirecEntity, TrackerEntity):
         )
         # Unique ID for this entity
         self._attr_unique_id = f"{vehicle_id}_location"
+        self._update_attrs()
 
     @property
     def source_type(self) -> SourceType:
         """Return the source type."""
         return SourceType.GPS
 
-    @property
-    def latitude(self) -> float | None:
-        """Return latitude value of the device."""
+    def _update_attrs(self) -> None:
+        """Set the location and extra state attributes from coordinator data."""
         state = self.vehicle_state
         if state:
-            lat, _ = get_coordinates_from_state(state)
-            return lat
-        return None
+            self._attr_latitude, self._attr_longitude = get_coordinates_from_state(
+                state
+            )
+        else:
+            self._attr_latitude, self._attr_longitude = None, None
 
-    @property
-    def longitude(self) -> float | None:
-        """Return longitude value of the device."""
-        state = self.vehicle_state
-        if state:
-            _, lon = get_coordinates_from_state(state)
-            return lon
-        return None
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        """Return extra state attributes."""
         attrs: dict[str, Any] = {
             "name_display": self._vehicle.name_display,
             "registration": self._vehicle.registration,
         }
-        state = self.vehicle_state
 
         if state:
             if state.speed is not None:
@@ -112,9 +101,4 @@ class NavirecDeviceTracker(NavirecEntity, TrackerEntity):
             if state.time:
                 attrs["last_update"] = state.time.isoformat()
 
-        return attrs
-
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        self.async_write_ha_state()
+        self._attr_extra_state_attributes = attrs
