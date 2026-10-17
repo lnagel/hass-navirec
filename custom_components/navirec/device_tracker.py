@@ -75,25 +75,15 @@ class NavirecDeviceTracker(NavirecEntity, TrackerEntity):
 
     def _update_attrs(self) -> None:
         """Set the location and extra state attributes from coordinator data."""
-        self._attr_latitude = self._compute_latitude()
-        self._attr_longitude = self._compute_longitude()
+        self._attr_latitude, self._attr_longitude = self._compute_coordinates()
         self._attr_extra_state_attributes = self._compute_extra_state_attributes()
 
-    def _compute_latitude(self) -> float | None:
-        """Return latitude value of the device."""
+    def _compute_coordinates(self) -> tuple[float | None, float | None]:
+        """Return the (latitude, longitude) of the device."""
         state = self.vehicle_state
         if state:
-            lat, _ = get_coordinates_from_state(state)
-            return lat
-        return None
-
-    def _compute_longitude(self) -> float | None:
-        """Return longitude value of the device."""
-        state = self.vehicle_state
-        if state:
-            _, lon = get_coordinates_from_state(state)
-            return lon
-        return None
+            return get_coordinates_from_state(state)
+        return None, None
 
     def _compute_extra_state_attributes(self) -> dict[str, Any]:
         """Return extra state attributes."""
