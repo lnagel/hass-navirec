@@ -76,7 +76,7 @@ def _find_vehicle_and_action(
     action_id: str,
 ) -> tuple[NavirecConfigEntry | None, Vehicle | None, Action | None]:
     """Find vehicle and action by their IDs across all config entries."""
-    entries: list[NavirecConfigEntry] = hass.config_entries.async_entries(DOMAIN)
+    entries: list[NavirecConfigEntry] = hass.config_entries.async_loaded_entries(DOMAIN)
 
     for entry in entries:
         if entry.runtime_data is None:
@@ -97,8 +97,3 @@ def _find_vehicle_and_action(
                 return entry, vehicle, action
 
     return None, None, None
-
-
-async def async_unload_services(hass: HomeAssistant) -> None:
-    """Unload Navirec services."""
-    hass.services.async_remove(DOMAIN, SERVICE_EXECUTE_ACTION)

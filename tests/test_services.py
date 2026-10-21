@@ -14,7 +14,6 @@ from custom_components.navirec.services import (
     SERVICE_EXECUTE_ACTION,
     _find_vehicle_and_action,
     async_setup_services,
-    async_unload_services,
 )
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
@@ -66,7 +65,7 @@ def mock_hass(mock_vehicle, mock_action, sample_vehicle, sample_action) -> Magic
     mock_entry.runtime_data.actions_by_vehicle = {vehicle_id: [mock_action]}
 
     hass.config_entries = MagicMock()
-    hass.config_entries.async_entries = MagicMock(return_value=[mock_entry])
+    hass.config_entries.async_loaded_entries = MagicMock(return_value=[mock_entry])
 
     return hass
 
@@ -83,19 +82,6 @@ class TestAsyncSetupServices:
         call_args = mock_hass.services.async_register.call_args
         assert call_args[0][0] == "navirec"
         assert call_args[0][1] == SERVICE_EXECUTE_ACTION
-
-
-class TestAsyncUnloadServices:
-    """Tests for async_unload_services function."""
-
-    @pytest.mark.asyncio
-    async def test_removes_service(self, mock_hass) -> None:
-        """Test that service is removed."""
-        await async_unload_services(mock_hass)
-
-        mock_hass.services.async_remove.assert_called_once_with(
-            "navirec", SERVICE_EXECUTE_ACTION
-        )
 
 
 class TestFindVehicleAndAction:
@@ -158,7 +144,7 @@ class TestFindVehicleAndAction:
         mock_entry_with_data.runtime_data = MagicMock()
         mock_entry_with_data.runtime_data.vehicles = {}  # Empty vehicles
 
-        mock_hass.config_entries.async_entries = MagicMock(
+        mock_hass.config_entries.async_loaded_entries = MagicMock(
             return_value=[mock_entry_no_data, mock_entry_with_data]
         )
 
@@ -208,7 +194,7 @@ class TestExecuteActionService:
         mock_entry.runtime_data.actions_by_vehicle = {vehicle_id: [mock_action]}
 
         hass.config_entries = MagicMock()
-        hass.config_entries.async_entries = MagicMock(return_value=[mock_entry])
+        hass.config_entries.async_loaded_entries = MagicMock(return_value=[mock_entry])
 
         return hass
 
