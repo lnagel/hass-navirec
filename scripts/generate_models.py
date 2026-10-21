@@ -49,7 +49,7 @@ REQUIRED_SCHEMAS = {
     "FuelTypeEnum",
     "ActivityEnum",  # Used by VehicleState.activity
     # Interpretation type for Sensor
-    "InterpretationEd4Enum",
+    "Interpretation396Enum",
 }
 
 
