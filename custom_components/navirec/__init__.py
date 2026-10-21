@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.loader import async_get_loaded_integration
 
@@ -20,10 +21,14 @@ from .const import CONF_ACCOUNT_ID, CONF_API_TOKEN, CONF_API_URL, DOMAIN, LOGGER
 from .coordinator import NavirecCoordinator
 from .data import NavirecData, get_vehicle_id_from_action, get_vehicle_id_from_sensor
 from .models import Action, Interpretation, Sensor, Vehicle
-from .services import async_setup_services, async_unload_services
+from .services import async_setup_services
 
 if TYPE_CHECKING:
+    from homeassistant.helpers.typing import ConfigType
+
     from .data import NavirecConfigEntry
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 PLATFORMS: list[Platform] = [
     Platform.BUTTON,
@@ -31,6 +36,12 @@ PLATFORMS: list[Platform] = [
     Platform.SENSOR,
     Platform.BINARY_SENSOR,
 ]
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Set up the Navirec integration."""
+    await async_setup_services(hass)
+    return True
 
 
 async def async_setup_entry(
@@ -142,10 +153,6 @@ async def async_setup_entry(
     # Set up platforms
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    # Register services (only once, when first entry is set up)
-    if not hass.services.has_service(DOMAIN, "execute_action"):
-        await async_setup_services(hass)
-
     # Start streaming
     await coordinator.async_start_streaming()
 
@@ -162,12 +169,4 @@ async def async_unload_entry(
         await entry.runtime_data.coordinator.async_stop_streaming()
 
     # Unload platforms
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-
-    # Unload services if this is the last entry
-    if unload_ok:
-        remaining_entries = hass.config_entries.async_entries(DOMAIN)
-        if len(remaining_entries) == 1:  # This entry is the last one being unloaded
-            await async_unload_services(hass)
-
-    return unload_ok
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
