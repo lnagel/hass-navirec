@@ -31,6 +31,7 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
     def __init__(
         self,
         hass: HomeAssistant,
+        config_entry: NavirecConfigEntry,
         api_url: str,
         api_token: str,
         account_id: str,
@@ -40,6 +41,7 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
         super().__init__(
             hass,
             LOGGER,
+            config_entry=config_entry,
             name=f"Navirec {account_name}",
             # No update_interval - we use streaming
             update_interval=None,

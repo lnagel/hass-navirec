@@ -119,6 +119,7 @@ async def async_setup_entry(
     # Create single coordinator for this account
     coordinator = NavirecCoordinator(
         hass=hass,
+        config_entry=entry,
         api_url=api_url,
         api_token=api_token,
         account_id=account_id,

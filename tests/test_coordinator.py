@@ -8,12 +8,14 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from homeassistant.core import HomeAssistant
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.navirec.api import (
     NavirecApiClientAuthenticationError,
     NavirecApiClientCommunicationError,
     NavirecApiClientRateLimitError,
 )
+from custom_components.navirec.const import DOMAIN
 from custom_components.navirec.coordinator import NavirecCoordinator
 
 
@@ -27,6 +29,7 @@ class TestNavirecCoordinator:
         """Test coordinator initialization."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -46,6 +49,7 @@ class TestNavirecCoordinator:
         """Test getting vehicle state when no states exist."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -62,6 +66,7 @@ class TestNavirecCoordinator:
         """Test that start_streaming creates a background task."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -89,6 +94,7 @@ class TestNavirecCoordinator:
         """Test that stop_streaming clears task and client."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -126,6 +132,7 @@ class TestStreamEventHandling:
         """Test handling connected event (logs but doesn't change state)."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -143,6 +150,7 @@ class TestStreamEventHandling:
         """Test handling heartbeat event (should not raise)."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -163,6 +171,7 @@ class TestStreamEventHandling:
         """Test handling vehicle_state event stores state data."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -194,6 +203,7 @@ class TestStreamEventHandling:
         """Test handling initial_state_sent event."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -214,6 +224,7 @@ class TestStreamEventHandling:
         """Test handling disconnected event (logs reconnect info)."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -235,6 +246,7 @@ class TestStreamStatePersistence:
         """Test loading stream state when no persisted data exists."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -254,6 +266,7 @@ class TestStreamStatePersistence:
         """Test loading stream state from persisted storage."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -278,6 +291,7 @@ class TestStreamStatePersistence:
         """Test loading stream state when storage has invalid data."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -299,6 +313,7 @@ class TestStreamStatePersistence:
         """Test that updating stream state saves to storage."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -320,6 +335,7 @@ class TestStreamStatePersistence:
         """Test that updating stream state with same value doesn't save."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -345,6 +361,7 @@ class TestStreamStatePersistence:
         """Test that vehicle_state event triggers stream state persistence."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -377,6 +394,7 @@ class TestStreamStatePersistence:
         """Test that vehicle_state event without updated_at doesn't crash."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -408,6 +426,7 @@ class TestStreamStatePersistence:
         """Test that stream state is loaded when streaming starts."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -444,6 +463,7 @@ class TestStreamStatePersistence:
 
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -480,6 +500,7 @@ class TestStreamStatePersistence:
         """Test that stream state is updated with latest last_updated_at from multiple events."""
         coordinator = NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
@@ -513,6 +534,7 @@ class TestStreamLoopErrorHandling:
         """Create a coordinator instance for testing."""
         return NavirecCoordinator(
             hass=hass,
+            config_entry=MockConfigEntry(domain=DOMAIN),
             api_url="https://api.navirec.com",
             api_token="test-token",
             account_id="test-account-id",
