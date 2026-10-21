@@ -5,12 +5,12 @@ from logging import Logger, getLogger
 from pathlib import Path
 
 from homeassistant.const import (
-    PERCENTAGE,
     REVOLUTIONS_PER_MINUTE,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
     UnitOfLength,
     UnitOfMass,
+    UnitOfRatio,
     UnitOfSpeed,
     UnitOfTemperature,
     UnitOfTime,
@@ -69,7 +69,7 @@ API_UNIT_TO_HA_UNIT: dict[str, str] = {
     "l": UnitOfVolume.LITERS,
     "m": UnitOfLength.METERS,
     "km": UnitOfLength.KILOMETERS,
-    "percent": PERCENTAGE,
+    "percent": UnitOfRatio.PERCENTAGE,
     "rpm": REVOLUTIONS_PER_MINUTE,
     "s": UnitOfTime.SECONDS,
     "hr": UnitOfTime.HOURS,
