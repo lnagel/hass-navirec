@@ -141,7 +141,7 @@ Each vehicle also has diagnostic sensors (disabled by default):
 
 - **IoT Class**: Cloud Push (real-time streaming)
 - **Integration Type**: Hub
-- **Minimum HA Version**: 2026.3.0
+- **Minimum HA Version**: 2026.7.0
 
 The integration uses Navirec's NDJSON streaming API to receive real-time vehicle state updates. This provides immediate
 updates without polling, reducing latency and API load.
