@@ -2,14 +2,25 @@
 
 from __future__ import annotations
 
+from datetime import timedelta
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from homeassistant.config_entries import ConfigEntryState
+from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntryState
 from homeassistant.core import HomeAssistant
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from homeassistant.util import dt as dt_util
+from pytest_homeassistant_custom_component.common import (
+    MockConfigEntry,
+    async_fire_time_changed,
+)
 
+from custom_components.navirec.api import (
+    NavirecApiClientAuthenticationError,
+    NavirecApiClientCommunicationError,
+    NavirecApiClientError,
+    NavirecApiClientRateLimitError,
+)
 from custom_components.navirec.const import DOMAIN
 
 
@@ -423,3 +434,148 @@ async def test_setup_and_reload(
         # Streaming should have been stopped and restarted
         mock_coordinator.async_stop_streaming.assert_called_once()
         assert mock_coordinator.async_start_streaming.call_count == 2
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("error", "expected_state"),
+    [
+        (
+            NavirecApiClientCommunicationError("Connection refused"),
+            ConfigEntryState.SETUP_RETRY,
+        ),
+        (
+            NavirecApiClientRateLimitError("Rate limited", retry_after=30),
+            ConfigEntryState.SETUP_RETRY,
+        ),
+        (NavirecApiClientError("Unexpected API error"), ConfigEntryState.SETUP_RETRY),
+        (
+            NavirecApiClientAuthenticationError("Invalid credentials"),
+            ConfigEntryState.SETUP_ERROR,
+        ),
+    ],
+)
+@pytest.mark.parametrize(
+    "failing_call",
+    [
+        "async_get_accounts",
+        "async_get_vehicles",
+        "async_get_sensors",
+        "async_get_interpretations",
+        "async_get_actions",
+    ],
+)
+async def test_setup_entry_api_error(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_api_client: MagicMock,
+    mock_coordinator: MagicMock,
+    enable_custom_integrations: None,
+    failing_call: str,
+    error: Exception,
+    expected_state: ConfigEntryState,
+) -> None:
+    """Test API errors during setup are retried, or start reauth on auth errors."""
+    mock_config_entry.add_to_hass(hass)
+    setattr(mock_api_client, failing_call, AsyncMock(side_effect=error))
+
+    with (
+        patch(
+            "custom_components.navirec.NavirecApiClient",
+            return_value=mock_api_client,
+        ),
+        patch(
+            "custom_components.navirec.NavirecCoordinator",
+            return_value=mock_coordinator,
+        ),
+    ):
+        await hass.config_entries.async_setup(mock_config_entry.entry_id)
+        await hass.async_block_till_done()
+
+    assert mock_config_entry.state is expected_state
+    # Nothing is started when metadata could not be fetched
+    mock_coordinator.async_start_streaming.assert_not_called()
+
+    reauth_flows = [
+        flow
+        for flow in hass.config_entries.flow.async_progress_by_handler(DOMAIN)
+        if flow["context"]["source"] == SOURCE_REAUTH
+    ]
+    is_auth_error = isinstance(error, NavirecApiClientAuthenticationError)
+    assert len(reauth_flows) == (1 if is_auth_error else 0)
+
+
+@pytest.mark.asyncio
+async def test_setup_entry_recovers_after_retry(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_api_client: MagicMock,
+    mock_coordinator: MagicMock,
+    vehicles_fixture: list[dict[str, Any]],
+    enable_custom_integrations: None,
+) -> None:
+    """Test a transient failure at startup is followed by a successful retry."""
+    mock_config_entry.add_to_hass(hass)
+    mock_api_client.async_get_vehicles = AsyncMock(
+        side_effect=[
+            NavirecApiClientCommunicationError("Network unreachable"),
+            vehicles_fixture,
+        ]
+    )
+
+    with (
+        patch(
+            "custom_components.navirec.NavirecApiClient",
+            return_value=mock_api_client,
+        ),
+        patch(
+            "custom_components.navirec.NavirecCoordinator",
+            return_value=mock_coordinator,
+        ),
+    ):
+        await hass.config_entries.async_setup(mock_config_entry.entry_id)
+        await hass.async_block_till_done()
+        assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
+
+        async_fire_time_changed(hass, dt_util.utcnow() + timedelta(minutes=5))
+        await hass.async_block_till_done(wait_background_tasks=True)
+
+    assert mock_config_entry.state is ConfigEntryState.LOADED
+    assert len(mock_config_entry.runtime_data.vehicles) == len(vehicles_fixture)
+    mock_coordinator.async_start_streaming.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_setup_entry_skips_invalid_items(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_api_client: MagicMock,
+    mock_coordinator: MagicMock,
+    vehicles_fixture: list[dict[str, Any]],
+    sensors_fixture: list[dict[str, Any]],
+    enable_custom_integrations: None,
+) -> None:
+    """Test a malformed item is skipped instead of failing the whole setup."""
+    mock_config_entry.add_to_hass(hass)
+    invalid_vehicle = {"id": "not-a-uuid", "name": 123}
+    mock_api_client.async_get_vehicles = AsyncMock(
+        return_value=[*vehicles_fixture, invalid_vehicle, "not-a-dict"]
+    )
+
+    with (
+        patch(
+            "custom_components.navirec.NavirecApiClient",
+            return_value=mock_api_client,
+        ),
+        patch(
+            "custom_components.navirec.NavirecCoordinator",
+            return_value=mock_coordinator,
+        ),
+    ):
+        await hass.config_entries.async_setup(mock_config_entry.entry_id)
+        await hass.async_block_till_done()
+
+    assert mock_config_entry.state is ConfigEntryState.LOADED
+    assert len(mock_config_entry.runtime_data.vehicles) == len(vehicles_fixture)
+    assert "not-a-uuid" not in mock_config_entry.runtime_data.vehicles
+    assert len(mock_config_entry.runtime_data.sensors) == len(sensors_fixture)
