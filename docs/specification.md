@@ -143,9 +143,50 @@ Accept: application/x-ndjson; version=1.54.0
 
 ### Rate Limiting
 
-- Respects HTTP 429 with `Retry-After` header
+- Respects HTTP 429 with `Retry-After` header (delay-seconds form; anything
+  else falls back to 60s)
 - Stream connections: 6/minute limit
-- Exponential backoff on connection failure (1s → 60s)
+- Exponential backoff on connection failure (1s → 60s). The backoff persists
+  across reconnect attempts and resets only once a connection delivers events.
+
+### Error Handling
+
+The REST client raises only `NavirecApiClientError` subclasses. Sending the
+request and reading the JSON body share one 30s timeout; network errors,
+timeouts, 5xx responses and non-JSON bodies all become
+`NavirecApiClientCommunicationError`. Error responses are released back to the
+connection pool.
+
+**Setup (`async_setup_entry`):**
+
+| API error | Raised to HA | Result |
+|---|---|---|
+| Authentication (401/403) | `ConfigEntryAuthFailed` | Reauth flow is started |
+| Rate limit (429) | `ConfigEntryNotReady` | Setup retried with HA backoff |
+| Communication / other API error | `ConfigEntryNotReady` | Setup retried with HA backoff |
+
+All metadata is fetched before anything is registered, so a failed setup leaves
+no partial state. Items that fail model validation are logged and skipped
+individually rather than failing the entry.
+
+**Stream (after setup):**
+
+| Condition | Behaviour |
+|---|---|
+| Authentication error | Reauth flow is started and the stream loop stops |
+| Rate limit | Wait `Retry-After` seconds, reconnect |
+| Communication error, or stream closed without events | Exponential backoff, reconnect |
+| Stream closed after delivering events (server recycling) | Reconnect immediately |
+| Unexpected error | Logged, reconnect after 30s |
+| Invalid `vehicle_state` event | Logged and skipped; stream continues |
+| Unreadable persisted stream state | Logged; stream starts without resume point |
+
+The stream connection attempt is bounded (30s connect timeout) and reads are
+bounded by the 35s heartbeat timeout; there is no total timeout.
+
+**Reauthentication:** the `reauth_confirm` step asks for a new API token only.
+It is validated against the entry's existing API URL and account; on success
+the entry is updated and reloaded.
 
 ## Key Design Decisions
 
@@ -196,6 +237,10 @@ Accept: application/x-ndjson; version=1.54.0
 - Single startup cost (~5-10 API requests)
 
 **Trade-off:** New vehicles/sensors require integration reload.
+
+If any metadata request fails, setup raises `ConfigEntryNotReady` (or
+`ConfigEntryAuthFailed`) instead of starting with partial metadata, which would
+silently drop entities until the next reload.
 
 ### 6. Command Polling with Exponential Backoff
 
