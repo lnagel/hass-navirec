@@ -11,8 +11,12 @@ from typing import TYPE_CHECKING, Any
 import aiohttp
 
 from .const import (
+    API_REQUEST_TIMEOUT,
     API_VERSION,
+    DEFAULT_RETRY_AFTER,
     LOGGER,
+    STREAM_CONNECT_TIMEOUT,
+    STREAM_READ_TIMEOUT,
     STREAM_RECONNECT_MAX_DELAY,
     STREAM_RECONNECT_MIN_DELAY,
     STREAM_RECONNECT_MULTIPLIER,
@@ -20,7 +24,7 @@ from .const import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import AsyncIterator
+    from collections.abc import AsyncIterator, Mapping
 
 
 class NavirecApiClientError(Exception):
@@ -38,10 +42,24 @@ class NavirecApiClientAuthenticationError(NavirecApiClientError):
 class NavirecApiClientRateLimitError(NavirecApiClientError):
     """Exception to indicate rate limiting."""
 
-    def __init__(self, message: str, retry_after: int = 60) -> None:
+    def __init__(self, message: str, retry_after: int = DEFAULT_RETRY_AFTER) -> None:
         """Initialize rate limit error."""
         super().__init__(message)
         self.retry_after = retry_after
+
+
+def parse_retry_after(value: str | None) -> int:
+    """
+    Parse a Retry-After header value into seconds.
+
+    Only the delay-seconds form is supported. Missing, malformed (e.g. the
+    HTTP-date form) or negative values fall back to DEFAULT_RETRY_AFTER.
+    """
+    try:
+        seconds = int(value) if value is not None else DEFAULT_RETRY_AFTER
+    except ValueError:
+        return DEFAULT_RETRY_AFTER
+    return seconds if seconds >= 0 else DEFAULT_RETRY_AFTER
 
 
 class NavirecApiClient:
@@ -83,8 +101,8 @@ class NavirecApiClient:
         typically have access to just one account, and we only need to find
         that account's ID and name.
         """
-        response = await self._async_request("GET", f"{self._api_url}/accounts/")
-        return await response.json()
+        data, _ = await self._async_request_json("GET", f"{self._api_url}/accounts/")
+        return data
 
     async def async_get_vehicles(
         self, account_id: str | None = None, active_only: bool = True
@@ -144,20 +162,20 @@ class NavirecApiClient:
         vehicle_url = f"{self._api_url}/vehicles/{vehicle_id}/"
         action_url = f"{self._api_url}/actions/{action_id}/"
 
-        response = await self._async_request(
+        data, _ = await self._async_request_json(
             "POST",
             f"{self._api_url}/device_commands/",
             json={"vehicle": vehicle_url, "action": action_url},
         )
-        return await response.json()
+        return data
 
     async def async_get_device_command(self, command_id: str) -> dict[str, Any]:
         """Get a device command by ID."""
-        response = await self._async_request(
+        data, _ = await self._async_request_json(
             "GET",
             f"{self._api_url}/device_commands/{command_id}/",
         )
-        return await response.json()
+        return data
 
     async def _async_get_paginated(self, url: str) -> list[dict[str, Any]]:
         """Fetch all pages of a paginated endpoint."""
@@ -174,48 +192,54 @@ class NavirecApiClient:
         self, url: str
     ) -> tuple[list[dict[str, Any]], str | None]:
         """Fetch a single page and return data with next page URL."""
-        response = await self._async_request("GET", url)
+        data, headers = await self._async_request_json("GET", url)
 
-        # Parse Link header for pagination
+        # Parse Link header for pagination: <url>; rel="next"
         next_url = None
-        if isinstance(response, aiohttp.ClientResponse):
-            link_header = response.headers.get("Link", "")
-            # Parse: <url>; rel="next"
-            for link in link_header.split(","):
-                if 'rel="next"' in link:
-                    match = re.search(r"<([^>]+)>", link)
-                    if match:
-                        next_url = match.group(1)
-                        break
+        for link in headers.get("Link", "").split(","):
+            if 'rel="next"' in link:
+                match = re.search(r"<([^>]+)>", link)
+                if match:
+                    next_url = match.group(1)
+                    break
 
-            data = await response.json()
-            return data, next_url
+        return data, next_url
 
-        # Response is already parsed JSON (from _async_request wrapper)
-        return response, None
-
-    async def _async_request(
+    async def _async_request_json(
         self,
         method: str,
         url: str,
         **kwargs: Any,
-    ) -> aiohttp.ClientResponse:
-        """Make an API request."""
+    ) -> tuple[Any, Mapping[str, str]]:
+        """
+        Make an API request and decode the JSON body.
+
+        Sending the request and reading the body share one timeout, and every
+        failure (network, HTTP status, non-JSON body) is raised as a
+        NavirecApiClientError subclass so callers only need to handle those.
+        """
         try:
-            async with asyncio.timeout(30):
+            async with asyncio.timeout(API_REQUEST_TIMEOUT):
                 response = await self._session.request(
                     method=method,
                     url=url,
                     headers=self._headers,
                     **kwargs,
                 )
-                self._verify_response_or_raise(response)
-                return response
+                try:
+                    self._verify_response_or_raise(response)
+                except Exception:
+                    response.release()
+                    raise
+                return await response.json(), response.headers
 
         except TimeoutError as exception:
             msg = f"Timeout error fetching information from {url}"
             raise NavirecApiClientCommunicationError(msg) from exception
-        except (aiohttp.ClientError, socket.gaierror) as exception:
+        except (aiohttp.ClientError, socket.gaierror, ValueError) as exception:
+            # ValueError covers json.JSONDecodeError for malformed bodies;
+            # aiohttp.ContentTypeError (a ClientError) covers non-JSON bodies
+            # such as HTML error pages from proxies.
             msg = f"Error fetching information from {url}: {exception}"
             raise NavirecApiClientCommunicationError(msg) from exception
 
@@ -225,7 +249,7 @@ class NavirecApiClient:
             msg = "Invalid credentials"
             raise NavirecApiClientAuthenticationError(msg)
         if response.status == 429:
-            retry_after = int(response.headers.get("Retry-After", "60"))
+            retry_after = parse_retry_after(response.headers.get("Retry-After"))
             msg = f"Rate limited. Retry after {retry_after} seconds"
             raise NavirecApiClientRateLimitError(msg, retry_after)
         response.raise_for_status()
@@ -250,7 +274,6 @@ class NavirecStreamClient:
         self._response: aiohttp.ClientResponse | None = None
         self._connected = False
         self._last_updated_at: str | None = last_updated_at
-        self._reconnect_delay = STREAM_RECONNECT_MIN_DELAY
         self._should_stop = False
 
     @property
@@ -283,11 +306,16 @@ class NavirecStreamClient:
         LOGGER.debug("Connecting to stream: %s", url)
 
         try:
-            # Heartbeats are sent every 30 seconds, so 35s timeout is appropriate
+            # The stream is long-lived so there is no total timeout, but the
+            # connection attempt and each read (heartbeats every 30s) are bounded.
             self._response = await self._session.get(
                 url,
                 headers=self._headers,
-                timeout=aiohttp.ClientTimeout(total=None, sock_read=35),
+                timeout=aiohttp.ClientTimeout(
+                    total=None,
+                    sock_connect=STREAM_CONNECT_TIMEOUT,
+                    sock_read=STREAM_READ_TIMEOUT,
+                ),
             )
 
             if self._response.status in (401, 403):
@@ -295,17 +323,18 @@ class NavirecStreamClient:
                 raise NavirecApiClientAuthenticationError(msg)
 
             if self._response.status == 429:
-                retry_after = int(self._response.headers.get("Retry-After", "60"))
+                retry_after = parse_retry_after(
+                    self._response.headers.get("Retry-After")
+                )
                 msg = f"Rate limited. Retry after {retry_after} seconds"
                 raise NavirecApiClientRateLimitError(msg, retry_after)
 
             self._response.raise_for_status()
             self._connected = True
-            self._reconnect_delay = STREAM_RECONNECT_MIN_DELAY
             LOGGER.info("Connected to Navirec stream for account %s", self._account_id)
 
-        except (aiohttp.ClientError, socket.gaierror) as exception:
-            msg = f"Error connecting to stream: {exception}"
+        except (aiohttp.ClientError, socket.gaierror, TimeoutError) as exception:
+            msg = f"Error connecting to stream: {exception!r}"
             raise NavirecApiClientCommunicationError(msg) from exception
 
     async def async_disconnect(self) -> None:
@@ -357,15 +386,34 @@ class NavirecStreamClient:
         finally:
             self._connected = False
 
-    def get_reconnect_delay(self) -> float:
-        """Get the current reconnect delay and increase it for next time."""
-        delay = self._reconnect_delay
-        self._reconnect_delay = min(
-            self._reconnect_delay * STREAM_RECONNECT_MULTIPLIER,
-            STREAM_RECONNECT_MAX_DELAY,
-        )
+
+class ReconnectBackoff:
+    """
+    Exponential reconnect backoff.
+
+    Kept separate from NavirecStreamClient because a new stream client is
+    created for every connection attempt, while the backoff has to grow
+    across consecutive failed attempts.
+    """
+
+    def __init__(
+        self,
+        min_delay: float = STREAM_RECONNECT_MIN_DELAY,
+        max_delay: float = STREAM_RECONNECT_MAX_DELAY,
+        multiplier: float = STREAM_RECONNECT_MULTIPLIER,
+    ) -> None:
+        """Initialize the backoff."""
+        self._min_delay = min_delay
+        self._max_delay = max_delay
+        self._multiplier = multiplier
+        self._delay = min_delay
+
+    def next_delay(self) -> float:
+        """Return the current delay and increase it for next time."""
+        delay = self._delay
+        self._delay = min(self._delay * self._multiplier, self._max_delay)
         return delay
 
-    def reset_reconnect_delay(self) -> None:
-        """Reset reconnect delay after successful connection."""
-        self._reconnect_delay = STREAM_RECONNECT_MIN_DELAY
+    def reset(self) -> None:
+        """Reset the delay after a healthy connection."""
+        self._delay = self._min_delay

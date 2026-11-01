@@ -7,16 +7,24 @@ import contextlib
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from pydantic import ValidationError
 
 from .api import (
     NavirecApiClientAuthenticationError,
     NavirecApiClientCommunicationError,
     NavirecApiClientRateLimitError,
     NavirecStreamClient,
+    ReconnectBackoff,
 )
-from .const import LOGGER, STORAGE_KEY, STORAGE_VERSION
+from .const import (
+    LOGGER,
+    STORAGE_KEY,
+    STORAGE_VERSION,
+    STREAM_UNEXPECTED_ERROR_DELAY,
+)
 from .data import VehicleState, get_vehicle_id_from_state
 
 if TYPE_CHECKING:
@@ -54,6 +62,7 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
         self._stream_task: asyncio.Task | None = None
         self._initial_state_received = False
         self._should_stop = False
+        self._backoff = ReconnectBackoff()
 
         # Vehicle states keyed by vehicle_id
         self.data: dict[str, VehicleState] = {}
@@ -109,12 +118,13 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
         LOGGER.info("Stopped streaming task for account %s", self._account_name)
 
     async def _async_stream_loop(self) -> None:
-        """Main streaming loop with reconnection logic."""
+        """Run the stream, reconnecting until stopped or auth fails."""
         from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
         session = async_get_clientsession(self.hass)
 
         while not self._should_stop:
+            delay: float = 0
             try:
                 # Create stream client with stream state for resume
                 self._stream_client = NavirecStreamClient(
@@ -125,23 +135,19 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
                     last_updated_at=self._last_updated_at,
                 )
 
-                # Connect to stream
-                await self._stream_client.async_connect()
-                self._stream_client.reset_reconnect_delay()
-
-                # Process events
-                async for event in self._stream_client.async_iter_events():
-                    if self._should_stop:
-                        break
-                    await self._async_handle_event(event)
+                if not await self._async_consume_stream(self._stream_client):
+                    # Stream ended without delivering anything
+                    delay = self._backoff.next_delay()
 
             except NavirecApiClientAuthenticationError:
                 LOGGER.error(
-                    "Authentication failed for account %s. Check your API token.",
+                    "Authentication failed for account %s, starting reauthentication",
                     self._account_name,
                 )
-                # Don't retry on auth errors - wait longer
-                await asyncio.sleep(300)
+                # Retrying with a rejected token is pointless; ask the user for
+                # a new one. A successful reauth reloads the config entry.
+                self.config_entry.async_start_reauth(self.hass)
+                break
 
             except NavirecApiClientRateLimitError as err:
                 LOGGER.warning(
@@ -149,17 +155,12 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
                     self._account_name,
                     err.retry_after,
                 )
-                await asyncio.sleep(err.retry_after)
+                delay = err.retry_after
 
             except NavirecApiClientCommunicationError as err:
                 if self._should_stop:
                     break
-
-                delay = (
-                    self._stream_client.get_reconnect_delay()
-                    if self._stream_client
-                    else 5
-                )
+                delay = self._backoff.next_delay()
                 LOGGER.warning(
                     "Stream connection lost for account %s: %s. "
                     "Reconnecting in %d seconds.",
@@ -167,7 +168,6 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
                     err,
                     delay,
                 )
-                await asyncio.sleep(delay)
 
             except asyncio.CancelledError:
                 break
@@ -183,11 +183,30 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
                 LOGGER.exception(
                     "Unexpected error in stream for account %s", self._account_name
                 )
-                await asyncio.sleep(30)
+                delay = STREAM_UNEXPECTED_ERROR_DELAY
 
             finally:
                 if self._stream_client:
                     await self._stream_client.async_disconnect()
+
+            if delay and not self._should_stop:
+                await asyncio.sleep(delay)
+
+    async def _async_consume_stream(self, stream_client: NavirecStreamClient) -> bool:
+        """Connect and process events until the stream ends; True if any arrived."""
+        await stream_client.async_connect()
+
+        received_events = False
+        async for event in stream_client.async_iter_events():
+            if self._should_stop:
+                break
+            if not received_events:
+                # Only a stream that actually delivers events counts as healthy;
+                # a server that accepts and immediately drops keeps backing off.
+                received_events = True
+                self._backoff.reset()
+            await self._async_handle_event(event)
+        return received_events
 
     async def _async_handle_event(self, event: dict[str, Any]) -> None:
         """Handle a stream event."""
@@ -199,7 +218,16 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
         elif event_type == "vehicle_state":
             data = event.get("data", {})
             if data:
-                state = VehicleState.model_validate(data)
+                try:
+                    state = VehicleState.model_validate(data)
+                except ValidationError as err:
+                    # One malformed state must not tear down the stream
+                    LOGGER.warning(
+                        "Ignoring invalid vehicle state for account %s: %s",
+                        self._account_name,
+                        err,
+                    )
+                    return
                 vehicle_id = get_vehicle_id_from_state(state)
                 if vehicle_id:
                     self.data[vehicle_id] = state
@@ -246,7 +274,17 @@ class NavirecCoordinator(DataUpdateCoordinator[dict[str, VehicleState]]):
 
     async def _async_load_stream_state(self) -> None:
         """Load the stream state from persistent storage."""
-        data = await self._store.async_load()
+        try:
+            data = await self._store.async_load()
+        except (HomeAssistantError, OSError) as err:
+            # Unreadable state only costs the resume point; the stream then
+            # starts with a full initial state instead.
+            LOGGER.warning(
+                "Could not load stream state for account %s: %s",
+                self._account_name,
+                err,
+            )
+            data = None
         if data and "last_updated_at" in data:
             self._last_updated_at = data["last_updated_at"]
             LOGGER.debug(

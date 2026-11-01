@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import asyncio
+import json
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import aiohttp
 import pytest
@@ -16,6 +17,8 @@ from custom_components.navirec.api import (
     NavirecApiClientError,
     NavirecApiClientRateLimitError,
     NavirecStreamClient,
+    ReconnectBackoff,
+    parse_retry_after,
 )
 
 
@@ -262,6 +265,189 @@ class TestNavirecApiClient:
         # Should have made only 1 request (no pagination follow)
         assert mock_session.request.call_count == 1
 
+    @pytest.mark.asyncio
+    async def test_get_rate_limit_invalid_retry_after(
+        self, api_client: NavirecApiClient, mock_session: MagicMock
+    ) -> None:
+        """Test an HTTP-date Retry-After falls back to the default delay."""
+        mock_response = create_mock_response(
+            status=429, headers={"Retry-After": "Wed, 21 Oct 2026 07:28:00 GMT"}
+        )
+        mock_session.request = AsyncMock(return_value=mock_response)
+
+        with pytest.raises(NavirecApiClientRateLimitError) as exc_info:
+            await api_client.async_get_accounts()
+
+        assert exc_info.value.retry_after == 60
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("status", [401, 429, 500])
+    async def test_error_response_is_released(
+        self, api_client: NavirecApiClient, mock_session: MagicMock, status: int
+    ) -> None:
+        """Test error responses release their connection back to the pool."""
+        mock_response = create_mock_response(status=status)
+        mock_response.raise_for_status = MagicMock(
+            side_effect=aiohttp.ClientResponseError(
+                MagicMock(), (), status=status, message="error"
+            )
+        )
+        mock_session.request = AsyncMock(return_value=mock_response)
+
+        with pytest.raises(NavirecApiClientError):
+            await api_client.async_get_vehicles()
+
+        mock_response.release.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_server_error_raises_communication_error(
+        self, api_client: NavirecApiClient, mock_session: MagicMock
+    ) -> None:
+        """Test 5xx responses raise a communication error (retryable)."""
+        mock_response = create_mock_response(status=503)
+        mock_response.raise_for_status = MagicMock(
+            side_effect=aiohttp.ClientResponseError(
+                MagicMock(), (), status=503, message="Service Unavailable"
+            )
+        )
+        mock_session.request = AsyncMock(return_value=mock_response)
+
+        with pytest.raises(NavirecApiClientCommunicationError):
+            await api_client.async_get_sensors()
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "json_error",
+        [
+            aiohttp.ContentTypeError(MagicMock(), (), message="text/html"),
+            json.JSONDecodeError("Expecting value", "<html>", 0),
+        ],
+    )
+    async def test_non_json_body_raises_communication_error(
+        self,
+        api_client: NavirecApiClient,
+        mock_session: MagicMock,
+        json_error: Exception,
+    ) -> None:
+        """
+        Test a non-JSON body raises a client error, not a raw exception.
+
+        Regression: body decoding happened outside the error handling, so e.g.
+        an HTML error page from a proxy escaped as an unexpected exception.
+        """
+        mock_response = create_mock_response(status=200)
+        mock_response.json = AsyncMock(side_effect=json_error)
+        mock_session.request = AsyncMock(return_value=mock_response)
+
+        with pytest.raises(NavirecApiClientCommunicationError):
+            await api_client.async_get_interpretations()
+
+    @pytest.mark.asyncio
+    async def test_request_timeout_raises_communication_error(
+        self, api_client: NavirecApiClient, mock_session: MagicMock
+    ) -> None:
+        """Test a timeout raises a communication error."""
+        mock_session.request = AsyncMock(side_effect=TimeoutError)
+
+        with pytest.raises(NavirecApiClientCommunicationError, match="Timeout"):
+            await api_client.async_get_actions()
+
+    @pytest.mark.asyncio
+    async def test_body_read_timeout_raises_communication_error(
+        self, api_client: NavirecApiClient, mock_session: MagicMock
+    ) -> None:
+        """Test a stalled body read is bounded by the request timeout."""
+
+        async def stalled_json() -> Any:
+            await asyncio.sleep(3600)
+
+        mock_response = create_mock_response(status=200)
+        mock_response.json = AsyncMock(side_effect=stalled_json)
+        mock_session.request = AsyncMock(return_value=mock_response)
+
+        with (
+            patch("custom_components.navirec.api.API_REQUEST_TIMEOUT", 0.01),
+            pytest.raises(NavirecApiClientCommunicationError, match="Timeout"),
+        ):
+            await api_client.async_get_actions()
+
+    @pytest.mark.asyncio
+    async def test_create_device_command(
+        self, api_client: NavirecApiClient, mock_session: MagicMock
+    ) -> None:
+        """Test creating a device command posts vehicle and action URLs."""
+        command = {"id": "cmd-1", "state": "pending"}
+        mock_session.request = AsyncMock(
+            return_value=create_mock_response(status=201, json_data=command)
+        )
+
+        result = await api_client.async_create_device_command("veh-1", "act-1")
+
+        assert result == command
+        kwargs = mock_session.request.call_args.kwargs
+        assert kwargs["method"] == "POST"
+        assert kwargs["url"] == "https://api.navirec.test/device_commands/"
+        assert kwargs["json"] == {
+            "vehicle": "https://api.navirec.test/vehicles/veh-1/",
+            "action": "https://api.navirec.test/actions/act-1/",
+        }
+
+    @pytest.mark.asyncio
+    async def test_get_device_command(
+        self, api_client: NavirecApiClient, mock_session: MagicMock
+    ) -> None:
+        """Test fetching a device command by ID."""
+        command = {"id": "cmd-1", "state": "completed"}
+        mock_session.request = AsyncMock(
+            return_value=create_mock_response(status=200, json_data=command)
+        )
+
+        result = await api_client.async_get_device_command("cmd-1")
+
+        assert result == command
+        kwargs = mock_session.request.call_args.kwargs
+        assert kwargs["url"] == "https://api.navirec.test/device_commands/cmd-1/"
+
+
+class TestReconnectBackoff:
+    """Test ReconnectBackoff."""
+
+    def test_exponential_backoff(self) -> None:
+        """Test delay increases exponentially."""
+        backoff = ReconnectBackoff()
+        assert [backoff.next_delay() for _ in range(4)] == [1, 2, 4, 8]
+
+    def test_max_cap(self) -> None:
+        """Test delay is capped at maximum."""
+        backoff = ReconnectBackoff()
+        for _ in range(10):
+            backoff.next_delay()
+        assert backoff.next_delay() == 60
+
+    def test_reset(self) -> None:
+        """Test resetting the delay."""
+        backoff = ReconnectBackoff()
+        backoff.next_delay()
+        backoff.next_delay()
+        backoff.reset()
+        assert backoff.next_delay() == 1
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("30", 30),
+        ("0", 0),
+        (None, 60),
+        ("Wed, 21 Oct 2026 07:28:00 GMT", 60),
+        ("-5", 60),
+        ("", 60),
+    ],
+)
+def test_parse_retry_after(value: str | None, expected: int) -> None:
+    """Test Retry-After parsing falls back to the default for unusable values."""
+    assert parse_retry_after(value) == expected
+
 
 class TestNavirecStreamClient:
     """Test NavirecStreamClient."""
@@ -280,44 +466,6 @@ class TestNavirecStreamClient:
             session=mock_session,
             account_id="test-account-id",
         )
-
-    def test_reconnect_delay_exponential_backoff(
-        self, stream_client: NavirecStreamClient
-    ) -> None:
-        """Test reconnect delay increases exponentially."""
-        delay1 = stream_client.get_reconnect_delay()
-        assert delay1 == 1  # Initial delay
-
-        delay2 = stream_client.get_reconnect_delay()
-        assert delay2 == 2
-
-        delay3 = stream_client.get_reconnect_delay()
-        assert delay3 == 4
-
-        delay4 = stream_client.get_reconnect_delay()
-        assert delay4 == 8
-
-    def test_reconnect_delay_max_cap(self, stream_client: NavirecStreamClient) -> None:
-        """Test reconnect delay is capped at maximum."""
-        # Get delays until we hit the cap
-        for _ in range(10):
-            stream_client.get_reconnect_delay()
-
-        delay = stream_client.get_reconnect_delay()
-        assert delay == 60  # Max delay
-
-    def test_reset_reconnect_delay(self, stream_client: NavirecStreamClient) -> None:
-        """Test resetting reconnect delay."""
-        # Increase delay
-        stream_client.get_reconnect_delay()
-        stream_client.get_reconnect_delay()
-
-        # Reset
-        stream_client.reset_reconnect_delay()
-
-        # Should be back to initial
-        delay = stream_client.get_reconnect_delay()
-        assert delay == 1
 
     def test_initial_last_updated_at_none(self, mock_session: MagicMock) -> None:
         """Test stream client initializes with no last_updated_at by default."""
@@ -429,6 +577,36 @@ class TestNavirecStreamClient:
             await stream_client.async_connect()
 
         assert stream_client.connected is False
+
+    @pytest.mark.asyncio
+    async def test_connect_timeout(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test a connect timeout raises a communication error."""
+        mock_session.get = AsyncMock(side_effect=TimeoutError)
+
+        with pytest.raises(NavirecApiClientCommunicationError):
+            await stream_client.async_connect()
+
+        assert stream_client.connected is False
+
+    @pytest.mark.asyncio
+    async def test_connect_uses_bounded_timeouts(
+        self, stream_client: NavirecStreamClient, mock_session: MagicMock
+    ) -> None:
+        """Test the stream bounds connecting and reads but not total duration."""
+        mock_response = AsyncMock(spec=aiohttp.ClientResponse)
+        mock_response.status = 200
+        mock_response.raise_for_status = MagicMock()
+        mock_session.get = AsyncMock(return_value=mock_response)
+
+        await stream_client.async_connect()
+
+        timeout = mock_session.get.call_args.kwargs["timeout"]
+        assert timeout.total is None
+        assert timeout.sock_connect == 30
+        assert timeout.sock_read == 35
+        assert stream_client.connected is True
 
     @pytest.mark.asyncio
     async def test_disconnect(

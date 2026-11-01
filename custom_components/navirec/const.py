@@ -38,6 +38,15 @@ CONF_API_URL = "api_url"
 CONF_API_TOKEN = "api_token"
 CONF_ACCOUNT_ID = "account_id"
 
+# Request settings
+API_REQUEST_TIMEOUT = 30  # seconds, per REST request incl. reading the body
+DEFAULT_RETRY_AFTER = 60  # seconds, when a 429 has no usable Retry-After
+
+# Stream connection settings
+STREAM_CONNECT_TIMEOUT = 30  # seconds, to establish the stream connection
+STREAM_READ_TIMEOUT = 35  # seconds between reads (heartbeats every 30s)
+STREAM_UNEXPECTED_ERROR_DELAY = 30  # seconds
+
 # Stream reconnection settings
 STREAM_RECONNECT_MIN_DELAY = 1  # seconds
 STREAM_RECONNECT_MAX_DELAY = 60  # seconds
