@@ -11,6 +11,11 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
+from custom_components.navirec.api import (
+    NavirecApiClientAuthenticationError,
+    NavirecApiClientCommunicationError,
+    NavirecApiClientError,
+)
 from custom_components.navirec.const import (
     CONF_ACCOUNT_ID,
     CONF_API_TOKEN,
@@ -73,8 +78,6 @@ async def test_form_auth_error(
     )
 
     with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
-        from custom_components.navirec.api import NavirecApiClientAuthenticationError
-
         mock_client_instance = mock_client.return_value
         mock_client_instance.async_get_accounts = AsyncMock(
             side_effect=NavirecApiClientAuthenticationError("Invalid credentials")
@@ -104,8 +107,6 @@ async def test_form_connection_error(
     )
 
     with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
-        from custom_components.navirec.api import NavirecApiClientCommunicationError
-
         mock_client_instance = mock_client.return_value
         mock_client_instance.async_get_accounts = AsyncMock(
             side_effect=NavirecApiClientCommunicationError("Connection failed")
@@ -289,8 +290,6 @@ async def test_reconfigure_auth_error(
     result = await entry.start_reconfigure_flow(hass)
 
     with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
-        from custom_components.navirec.api import NavirecApiClientAuthenticationError
-
         mock_client_instance = mock_client.return_value
         mock_client_instance.async_get_accounts = AsyncMock(
             side_effect=NavirecApiClientAuthenticationError("Invalid credentials")
@@ -321,8 +320,6 @@ async def test_form_unknown_error(
     )
 
     with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
-        from custom_components.navirec.api import NavirecApiClientError
-
         mock_client_instance = mock_client.return_value
         mock_client_instance.async_get_accounts = AsyncMock(
             side_effect=NavirecApiClientError("Unknown error")
@@ -361,8 +358,6 @@ async def test_reconfigure_connection_error(
     result = await entry.start_reconfigure_flow(hass)
 
     with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
-        from custom_components.navirec.api import NavirecApiClientCommunicationError
-
         mock_client_instance = mock_client.return_value
         mock_client_instance.async_get_accounts = AsyncMock(
             side_effect=NavirecApiClientCommunicationError("Connection failed")
@@ -402,8 +397,6 @@ async def test_reconfigure_unknown_error(
     result = await entry.start_reconfigure_flow(hass)
 
     with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
-        from custom_components.navirec.api import NavirecApiClientError
-
         mock_client_instance = mock_client.return_value
         mock_client_instance.async_get_accounts = AsyncMock(
             side_effect=NavirecApiClientError("Unknown error")
@@ -420,3 +413,109 @@ async def test_reconfigure_unknown_error(
 
     assert result["type"] == FlowResultType.FORM
     assert result["errors"] == {"base": "unknown"}
+
+
+@pytest.fixture
+def reauth_entry(hass: HomeAssistant) -> MockConfigEntry:
+    """Create an existing entry whose token was rejected."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        title="Test Account",
+        data={
+            CONF_API_URL: "https://api.navirec.com",
+            CONF_API_TOKEN: "old-token",
+            CONF_ACCOUNT_ID: "test-account-id",
+        },
+        unique_id="test-account-id",
+    )
+    entry.add_to_hass(hass)
+    return entry
+
+
+@pytest.mark.asyncio
+async def test_reauth_success(
+    hass: HomeAssistant,
+    reauth_entry: MockConfigEntry,
+    mock_setup_entry: AsyncMock,
+    mock_accounts: list[dict[str, Any]],
+    enable_custom_integrations: None,
+) -> None:
+    """Test reauth stores the new token and keeps URL and account."""
+    result = await reauth_entry.start_reauth_flow(hass)
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == "reauth_confirm"
+    placeholders = result["description_placeholders"]
+    assert placeholders is not None
+    assert placeholders["account"] == "Test Account"
+
+    with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
+        mock_client.return_value.async_get_accounts = AsyncMock(
+            return_value=mock_accounts
+        )
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {CONF_API_TOKEN: "new-token"}
+        )
+        await hass.async_block_till_done()
+
+    assert result["type"] == FlowResultType.ABORT
+    assert result["reason"] == "reauth_successful"
+    assert mock_client.call_args.kwargs["api_token"] == "new-token"
+    assert mock_client.call_args.kwargs["api_url"] == "https://api.navirec.com"
+    assert reauth_entry.data == {
+        CONF_API_URL: "https://api.navirec.com",
+        CONF_API_TOKEN: "new-token",
+        CONF_ACCOUNT_ID: "test-account-id",
+    }
+    # Entry is reloaded with the new token
+    assert len(mock_setup_entry.mock_calls) == 1
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("side_effect", "accounts", "expected_error"),
+    [
+        (NavirecApiClientAuthenticationError("Invalid"), None, "auth"),
+        (NavirecApiClientCommunicationError("Down"), None, "connection"),
+        (NavirecApiClientError("Boom"), None, "unknown"),
+        # Valid token, but for a different account
+        (None, [{"id": "other-account-id", "name": "Other"}], "auth"),
+    ],
+)
+async def test_reauth_errors_then_recover(
+    hass: HomeAssistant,
+    reauth_entry: MockConfigEntry,
+    mock_setup_entry: AsyncMock,
+    mock_accounts: list[dict[str, Any]],
+    enable_custom_integrations: None,
+    side_effect: Exception | None,
+    accounts: list[dict[str, Any]] | None,
+    expected_error: str,
+) -> None:
+    """Test reauth shows an error and lets the user try again."""
+    result = await reauth_entry.start_reauth_flow(hass)
+
+    with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
+        mock_client.return_value.async_get_accounts = AsyncMock(
+            side_effect=side_effect, return_value=accounts
+        )
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {CONF_API_TOKEN: "bad-token"}
+        )
+
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == "reauth_confirm"
+    assert result["errors"] == {"base": expected_error}
+    assert reauth_entry.data[CONF_API_TOKEN] == "old-token"
+
+    with patch("custom_components.navirec.config_flow.NavirecApiClient") as mock_client:
+        mock_client.return_value.async_get_accounts = AsyncMock(
+            return_value=mock_accounts
+        )
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {CONF_API_TOKEN: "good-token"}
+        )
+        await hass.async_block_till_done()
+
+    assert result["type"] == FlowResultType.ABORT
+    assert result["reason"] == "reauth_successful"
+    assert reauth_entry.data[CONF_API_TOKEN] == "good-token"

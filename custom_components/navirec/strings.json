@@ -11,6 +11,16 @@
                     "api_url": "The Navirec API URL. Use the default unless you have a custom deployment.",
                     "api_token": "Your API access token from the Navirec web app."
                 }
+            },
+            "reauth_confirm": {
+                "title": "Reauthenticate Navirec",
+                "description": "The Navirec API rejected the API token for {account}. Enter a new API token for the same account.",
+                "data": {
+                    "api_token": "API Token"
+                },
+                "data_description": {
+                    "api_token": "Your API access token from the Navirec web app."
+                }
             }
         },
         "error": {
@@ -19,7 +29,8 @@
             "unknown": "Unknown error occurred."
         },
         "abort": {
-            "already_configured": "This Navirec instance is already configured."
+            "already_configured": "This Navirec instance is already configured.",
+            "reauth_successful": "Reauthentication was successful."
         }
     },
     "entity": {
