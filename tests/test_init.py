@@ -209,6 +209,46 @@ async def test_unload_entry_success(
 
 
 @pytest.mark.asyncio
+async def test_unload_entry_platforms_fail(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_api_client: MagicMock,
+    mock_coordinator: MagicMock,
+) -> None:
+    """Test that a failed platform unload fails the unload and keeps streaming."""
+    mock_config_entry.add_to_hass(hass)
+
+    with (
+        patch(
+            "custom_components.navirec.NavirecApiClient",
+            return_value=mock_api_client,
+        ),
+        patch(
+            "custom_components.navirec.NavirecCoordinator",
+            return_value=mock_coordinator,
+        ),
+        patch(
+            "custom_components.navirec.async_get_loaded_integration",
+        ) as mock_integration,
+    ):
+        mock_integration.return_value = MagicMock()
+
+        await hass.config_entries.async_setup(mock_config_entry.entry_id)
+        await hass.async_block_till_done()
+
+        assert mock_config_entry.state is ConfigEntryState.LOADED
+
+        with patch.object(
+            hass.config_entries, "async_unload_platforms", return_value=False
+        ):
+            await hass.config_entries.async_unload(mock_config_entry.entry_id)
+            await hass.async_block_till_done()
+
+        assert mock_config_entry.state is ConfigEntryState.FAILED_UNLOAD
+        mock_coordinator.async_stop_streaming.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_unload_entry_no_runtime_data(
     hass: HomeAssistant,
     accounts_fixture: list[dict[str, Any]],

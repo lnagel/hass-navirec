@@ -47,7 +47,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: NavirecConfigEntry,
-) -> bool:
+) -> None:
     """Set up this integration using UI."""
     api_url = entry.data[CONF_API_URL]
     api_token = entry.data[CONF_API_TOKEN]
@@ -157,17 +157,15 @@ async def async_setup_entry(
     # Start streaming
     await coordinator.async_start_streaming()
 
-    return True
-
 
 async def async_unload_entry(
     hass: HomeAssistant,
     entry: NavirecConfigEntry,
-) -> bool:
+) -> None:
     """Handle removal of an entry."""
+    # Unload platforms
+    await hass.config_entries.async_unload_platforms_or_raise(entry, PLATFORMS)
+
     # Stop streaming
     if entry.runtime_data is not None:
         await entry.runtime_data.coordinator.async_stop_streaming()
-
-    # Unload platforms
-    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
