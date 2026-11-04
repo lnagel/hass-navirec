@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 from custom_components.navirec.const import DOMAIN
 
@@ -47,7 +47,6 @@ async def test_setup_entry_success(
     accounts_fixture: list[dict[str, Any]],
     vehicles_fixture: list[dict[str, Any]],
     sensors_fixture: list[dict[str, Any]],
-    enable_custom_integrations: None,
 ) -> None:
     """Test successful setup of a config entry."""
     mock_config_entry.add_to_hass(hass)
@@ -98,7 +97,6 @@ async def test_setup_entry_creates_vehicles_dict(
     mock_api_client: MagicMock,
     mock_coordinator: MagicMock,
     vehicles_fixture: list[dict[str, Any]],
-    enable_custom_integrations: None,
 ) -> None:
     """Test that setup creates proper vehicles dictionary."""
     mock_config_entry.add_to_hass(hass)
@@ -137,7 +135,6 @@ async def test_setup_entry_groups_sensors_by_vehicle(
     mock_coordinator: MagicMock,
     sensors_fixture: list[dict[str, Any]],
     vehicles_fixture: list[dict[str, Any]],
-    enable_custom_integrations: None,
 ) -> None:
     """Test that setup groups sensors by vehicle ID."""
     mock_config_entry.add_to_hass(hass)
@@ -176,7 +173,6 @@ async def test_unload_entry_success(
     mock_config_entry: MockConfigEntry,
     mock_api_client: MagicMock,
     mock_coordinator: MagicMock,
-    enable_custom_integrations: None,
 ) -> None:
     """Test successful unload of a config entry."""
     mock_config_entry.add_to_hass(hass)
@@ -215,7 +211,6 @@ async def test_unload_entry_success(
 @pytest.mark.asyncio
 async def test_unload_entry_no_runtime_data(
     hass: HomeAssistant,
-    enable_custom_integrations: None,
     accounts_fixture: list[dict[str, Any]],
     mock_config_entry_data: dict[str, Any],
 ) -> None:
@@ -247,7 +242,6 @@ async def test_setup_account_name_fallback(
     sensors_fixture: list[dict[str, Any]],
     interpretations_fixture: list[dict[str, Any]],
     actions_fixture: list[dict[str, Any]],
-    enable_custom_integrations: None,
 ) -> None:
     """Test that account ID is used as fallback when name is missing."""
     mock_config_entry.add_to_hass(hass)
@@ -295,7 +289,6 @@ async def test_setup_account_not_found_uses_id_as_name(
     sensors_fixture: list[dict[str, Any]],
     interpretations_fixture: list[dict[str, Any]],
     actions_fixture: list[dict[str, Any]],
-    enable_custom_integrations: None,
 ) -> None:
     """Test that account ID is used as name when account not in response."""
     mock_config_entry.add_to_hass(hass)
@@ -342,7 +335,6 @@ async def test_setup_platforms_registered(
     mock_config_entry: MockConfigEntry,
     mock_api_client: MagicMock,
     mock_coordinator: MagicMock,
-    enable_custom_integrations: None,
 ) -> None:
     """Test that all expected platforms are set up."""
     from homeassistant.helpers import device_registry as dr
@@ -387,7 +379,6 @@ async def test_setup_and_reload(
     mock_config_entry: MockConfigEntry,
     mock_api_client: MagicMock,
     mock_coordinator: MagicMock,
-    enable_custom_integrations: None,
 ) -> None:
     """Test that config entry can be reloaded."""
     mock_config_entry.add_to_hass(hass)
