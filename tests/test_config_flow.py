@@ -9,7 +9,7 @@ import pytest
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 from custom_components.navirec.const import (
     CONF_ACCOUNT_ID,
@@ -30,7 +30,6 @@ async def test_form_success(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
     mock_accounts: list[dict[str, Any]],
-    enable_custom_integrations: None,
 ) -> None:
     """Test successful config flow."""
     result = await hass.config_entries.flow.async_init(
@@ -65,7 +64,6 @@ async def test_form_success(
 async def test_form_auth_error(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
-    enable_custom_integrations: None,
 ) -> None:
     """Test config flow with authentication error."""
     result = await hass.config_entries.flow.async_init(
@@ -96,7 +94,6 @@ async def test_form_auth_error(
 async def test_form_connection_error(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
-    enable_custom_integrations: None,
 ) -> None:
     """Test config flow with connection error."""
     result = await hass.config_entries.flow.async_init(
@@ -128,7 +125,6 @@ async def test_form_already_configured(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
     mock_accounts: list[dict[str, Any]],
-    enable_custom_integrations: None,
 ) -> None:
     """Test config flow when already configured."""
     # Create an existing entry - unique_id is just the account_id
@@ -169,7 +165,6 @@ async def test_form_with_account_id(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
     mock_accounts: list[dict[str, Any]],
-    enable_custom_integrations: None,
 ) -> None:
     """Test successful config flow with explicit account_id."""
     result = await hass.config_entries.flow.async_init(
@@ -201,7 +196,6 @@ async def test_form_invalid_account_id(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
     mock_accounts: list[dict[str, Any]],
-    enable_custom_integrations: None,
 ) -> None:
     """Test config flow with invalid account_id."""
     result = await hass.config_entries.flow.async_init(
@@ -229,7 +223,6 @@ async def test_form_invalid_account_id(
 async def test_reconfigure_success(
     hass: HomeAssistant,
     mock_accounts: list[dict[str, Any]],
-    enable_custom_integrations: None,
 ) -> None:
     """Test successful reconfiguration."""
     # Create an existing entry
@@ -271,7 +264,6 @@ async def test_reconfigure_success(
 @pytest.mark.asyncio
 async def test_reconfigure_auth_error(
     hass: HomeAssistant,
-    enable_custom_integrations: None,
 ) -> None:
     """Test reconfiguration with authentication error."""
     entry = MockConfigEntry(
@@ -313,7 +305,6 @@ async def test_reconfigure_auth_error(
 async def test_form_unknown_error(
     hass: HomeAssistant,
     mock_setup_entry: AsyncMock,
-    enable_custom_integrations: None,
 ) -> None:
     """Test config flow with unknown error."""
     result = await hass.config_entries.flow.async_init(
@@ -343,7 +334,6 @@ async def test_form_unknown_error(
 @pytest.mark.asyncio
 async def test_reconfigure_connection_error(
     hass: HomeAssistant,
-    enable_custom_integrations: None,
 ) -> None:
     """Test reconfiguration with connection error."""
     entry = MockConfigEntry(
@@ -384,7 +374,6 @@ async def test_reconfigure_connection_error(
 @pytest.mark.asyncio
 async def test_reconfigure_unknown_error(
     hass: HomeAssistant,
-    enable_custom_integrations: None,
 ) -> None:
     """Test reconfiguration with unknown error."""
     entry = MockConfigEntry(

@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from homeassistant.core import HomeAssistant
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 from custom_components.navirec.api import (
     NavirecApiClientAuthenticationError,
@@ -23,9 +23,7 @@ class TestNavirecCoordinator:
     """Tests for NavirecCoordinator."""
 
     @pytest.mark.asyncio
-    async def test_coordinator_init(
-        self, hass: HomeAssistant, enable_custom_integrations: None
-    ) -> None:
+    async def test_coordinator_init(self, hass: HomeAssistant) -> None:
         """Test coordinator initialization."""
         coordinator = NavirecCoordinator(
             hass=hass,
@@ -43,9 +41,7 @@ class TestNavirecCoordinator:
         assert coordinator.data == {}
 
     @pytest.mark.asyncio
-    async def test_get_vehicle_state_empty(
-        self, hass: HomeAssistant, enable_custom_integrations: None
-    ) -> None:
+    async def test_get_vehicle_state_empty(self, hass: HomeAssistant) -> None:
         """Test getting vehicle state when no states exist."""
         coordinator = NavirecCoordinator(
             hass=hass,
@@ -60,9 +56,7 @@ class TestNavirecCoordinator:
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_start_streaming_creates_task(
-        self, hass: HomeAssistant, enable_custom_integrations: None
-    ) -> None:
+    async def test_start_streaming_creates_task(self, hass: HomeAssistant) -> None:
         """Test that start_streaming creates a background task."""
         coordinator = NavirecCoordinator(
             hass=hass,
@@ -88,9 +82,7 @@ class TestNavirecCoordinator:
             assert coordinator._stream_task is not None
 
     @pytest.mark.asyncio
-    async def test_stop_streaming_clears_state(
-        self, hass: HomeAssistant, enable_custom_integrations: None
-    ) -> None:
+    async def test_stop_streaming_clears_state(self, hass: HomeAssistant) -> None:
         """Test that stop_streaming clears task and client."""
         coordinator = NavirecCoordinator(
             hass=hass,
@@ -126,9 +118,7 @@ class TestStreamEventHandling:
     """Tests for stream event handling."""
 
     @pytest.mark.asyncio
-    async def test_handle_connected_event_logs(
-        self, hass: HomeAssistant, enable_custom_integrations: None
-    ) -> None:
+    async def test_handle_connected_event_logs(self, hass: HomeAssistant) -> None:
         """Test handling connected event (logs but doesn't change state)."""
         coordinator = NavirecCoordinator(
             hass=hass,
@@ -144,9 +134,7 @@ class TestStreamEventHandling:
         await coordinator._async_handle_event(event)
 
     @pytest.mark.asyncio
-    async def test_handle_heartbeat_event(
-        self, hass: HomeAssistant, enable_custom_integrations: None
-    ) -> None:
+    async def test_handle_heartbeat_event(self, hass: HomeAssistant) -> None:
         """Test handling heartbeat event (should not raise)."""
         coordinator = NavirecCoordinator(
             hass=hass,
@@ -165,7 +153,6 @@ class TestStreamEventHandling:
     async def test_handle_vehicle_state_event(
         self,
         hass: HomeAssistant,
-        enable_custom_integrations: None,
         vehicle_states_fixture: list[dict[str, Any]],
     ) -> None:
         """Test handling vehicle_state event stores state data."""
@@ -197,9 +184,7 @@ class TestStreamEventHandling:
         assert state.speed == sample_state["speed"]
 
     @pytest.mark.asyncio
-    async def test_handle_initial_state_sent_event(
-        self, hass: HomeAssistant, enable_custom_integrations: None
-    ) -> None:
+    async def test_handle_initial_state_sent_event(self, hass: HomeAssistant) -> None:
         """Test handling initial_state_sent event."""
         coordinator = NavirecCoordinator(
             hass=hass,
@@ -218,9 +203,7 @@ class TestStreamEventHandling:
         assert coordinator._initial_state_received is True
 
     @pytest.mark.asyncio
-    async def test_handle_disconnected_event_logs(
-        self, hass: HomeAssistant, enable_custom_integrations: None
-    ) -> None:
+    async def test_handle_disconnected_event_logs(self, hass: HomeAssistant) -> None:
         """Test handling disconnected event (logs reconnect info)."""
         coordinator = NavirecCoordinator(
             hass=hass,
@@ -241,7 +224,7 @@ class TestStreamStatePersistence:
 
     @pytest.mark.asyncio
     async def test_load_stream_state_no_existing_data(
-        self, hass: HomeAssistant, enable_custom_integrations: None
+        self, hass: HomeAssistant
     ) -> None:
         """Test loading stream state when no persisted data exists."""
         coordinator = NavirecCoordinator(
@@ -261,7 +244,7 @@ class TestStreamStatePersistence:
 
     @pytest.mark.asyncio
     async def test_load_stream_state_with_existing_data(
-        self, hass: HomeAssistant, enable_custom_integrations: None
+        self, hass: HomeAssistant
     ) -> None:
         """Test loading stream state from persisted storage."""
         coordinator = NavirecCoordinator(
@@ -286,7 +269,7 @@ class TestStreamStatePersistence:
 
     @pytest.mark.asyncio
     async def test_load_stream_state_with_invalid_data(
-        self, hass: HomeAssistant, enable_custom_integrations: None
+        self, hass: HomeAssistant
     ) -> None:
         """Test loading stream state when storage has invalid data."""
         coordinator = NavirecCoordinator(
@@ -308,7 +291,7 @@ class TestStreamStatePersistence:
 
     @pytest.mark.asyncio
     async def test_update_stream_state_saves_new_value(
-        self, hass: HomeAssistant, enable_custom_integrations: None
+        self, hass: HomeAssistant
     ) -> None:
         """Test that updating stream state saves to storage."""
         coordinator = NavirecCoordinator(
@@ -330,7 +313,7 @@ class TestStreamStatePersistence:
 
     @pytest.mark.asyncio
     async def test_update_stream_state_skips_duplicate(
-        self, hass: HomeAssistant, enable_custom_integrations: None
+        self, hass: HomeAssistant
     ) -> None:
         """Test that updating stream state with same value doesn't save."""
         coordinator = NavirecCoordinator(
@@ -355,7 +338,6 @@ class TestStreamStatePersistence:
     async def test_vehicle_state_event_persists_updated_at(
         self,
         hass: HomeAssistant,
-        enable_custom_integrations: None,
         vehicle_states_fixture: list[dict[str, Any]],
     ) -> None:
         """Test that vehicle_state event triggers stream state persistence."""
@@ -389,7 +371,6 @@ class TestStreamStatePersistence:
     async def test_vehicle_state_event_without_updated_at(
         self,
         hass: HomeAssistant,
-        enable_custom_integrations: None,
     ) -> None:
         """Test that vehicle_state event without updated_at doesn't crash."""
         coordinator = NavirecCoordinator(
@@ -421,7 +402,7 @@ class TestStreamStatePersistence:
 
     @pytest.mark.asyncio
     async def test_stream_state_loaded_on_start_streaming(
-        self, hass: HomeAssistant, enable_custom_integrations: None
+        self, hass: HomeAssistant
     ) -> None:
         """Test that stream state is loaded when streaming starts."""
         coordinator = NavirecCoordinator(
@@ -456,7 +437,7 @@ class TestStreamStatePersistence:
 
     @pytest.mark.asyncio
     async def test_stream_client_receives_initial_last_updated_at(
-        self, hass: HomeAssistant, enable_custom_integrations: None
+        self, hass: HomeAssistant
     ) -> None:
         """Test that stream client is created with persisted last_updated_at."""
         from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -494,7 +475,6 @@ class TestStreamStatePersistence:
     async def test_stream_state_persists_across_multiple_events(
         self,
         hass: HomeAssistant,
-        enable_custom_integrations: None,
         vehicle_states_fixture: list[dict[str, Any]],
     ) -> None:
         """Test that stream state is updated with latest last_updated_at from multiple events."""
@@ -543,7 +523,7 @@ class TestStreamLoopErrorHandling:
 
     @pytest.mark.asyncio
     async def test_stream_loop_auth_error(
-        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+        self, hass: HomeAssistant, coordinator
     ) -> None:
         """Test auth error triggers long wait and retry."""
         call_count = 0
@@ -575,7 +555,7 @@ class TestStreamLoopErrorHandling:
 
     @pytest.mark.asyncio
     async def test_stream_loop_rate_limit_error(
-        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+        self, hass: HomeAssistant, coordinator
     ) -> None:
         """Test rate limit error waits retry_after seconds."""
         call_count = 0
@@ -606,7 +586,7 @@ class TestStreamLoopErrorHandling:
 
     @pytest.mark.asyncio
     async def test_stream_loop_communication_error(
-        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+        self, hass: HomeAssistant, coordinator
     ) -> None:
         """Test communication error triggers reconnect with backoff."""
         call_count = 0
@@ -639,7 +619,7 @@ class TestStreamLoopErrorHandling:
 
     @pytest.mark.asyncio
     async def test_stream_loop_session_closed_error(
-        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+        self, hass: HomeAssistant, coordinator
     ) -> None:
         """Test session closed error exits gracefully."""
 
@@ -659,7 +639,7 @@ class TestStreamLoopErrorHandling:
 
     @pytest.mark.asyncio
     async def test_stream_loop_unexpected_error(
-        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+        self, hass: HomeAssistant, coordinator
     ) -> None:
         """Test unexpected error logs and retries with default delay."""
         call_count = 0
@@ -691,7 +671,6 @@ class TestStreamLoopErrorHandling:
     async def test_stream_loop_successful_connection(
         self,
         hass: HomeAssistant,
-        enable_custom_integrations: None,
         coordinator,
         vehicle_states_fixture: list[dict[str, Any]],
     ) -> None:
@@ -724,7 +703,7 @@ class TestStreamLoopErrorHandling:
 
     @pytest.mark.asyncio
     async def test_stream_loop_cancelled_error(
-        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+        self, hass: HomeAssistant, coordinator
     ) -> None:
         """Test CancelledError exits loop cleanly."""
 
@@ -744,7 +723,7 @@ class TestStreamLoopErrorHandling:
 
     @pytest.mark.asyncio
     async def test_stream_loop_should_stop_during_reconnect(
-        self, hass: HomeAssistant, enable_custom_integrations: None, coordinator
+        self, hass: HomeAssistant, coordinator
     ) -> None:
         """Test loop exits when should_stop is set during communication error handling."""
 

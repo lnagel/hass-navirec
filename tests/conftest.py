@@ -20,7 +20,7 @@ from custom_components.navirec.const import (
 def mock_setup_entry() -> Any:
     """Override async_setup_entry."""
     with patch(
-        "custom_components.navirec.async_setup_entry", return_value=True
+        "custom_components.navirec.async_setup_entry", return_value=None
     ) as mock:
         yield mock
 
