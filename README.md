@@ -2,7 +2,7 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/lnagel/hass-navirec)](https://github.com/lnagel/hass-navirec/releases)
 [![License](https://img.shields.io/github/license/lnagel/hass-navirec)](https://github.com/lnagel/hass-navirec/blob/main/LICENSE)
-[![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=lnagel&repository=hass-navirec&category=integration)
+[![Marketplace](https://img.shields.io/badge/Home_Assistant-Marketplace-41BDF5.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=lnagel&repository=hass-navirec&category=integration)
 [![CI](https://img.shields.io/github/actions/workflow/status/lnagel/hass-navirec/checks.yml?branch=main&label=tests)](https://github.com/lnagel/hass-navirec/actions)
 [![codecov](https://codecov.io/gh/lnagel/hass-navirec/branch/main/graph/badge.svg)](https://codecov.io/gh/lnagel/hass-navirec)
 
@@ -28,21 +28,11 @@ vehicles in real-time with GPS location, sensor data, and vehicle state monitori
 
 ## Installation
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=lnagel&repository=hass-navirec&category=integration)
+[![Open your Home Assistant instance and open a repository in the Marketplace.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=lnagel&repository=hass-navirec&category=integration)
 
-### HACS (Recommended)
-
-1. Open HACS in Home Assistant
-2. Click the three dots menu and select "Custom repositories"
-3. Add `https://github.com/lnagel/hass-navirec` as an Integration
-4. Search for "Navirec" and install it
-5. Restart Home Assistant
-
-### Manual Installation
-
-1. Download the `custom_components/navirec` folder from this repository
-2. Copy it to your Home Assistant's `custom_components` directory
-3. Restart Home Assistant
+1. Open **Settings > Marketplace** in Home Assistant, or use the button above.
+2. Search for "Navirec" and select **Install**.
+3. Continue with the integration setup when prompted.
 
 ## Configuration
 
